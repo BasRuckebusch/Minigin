@@ -16,7 +16,7 @@ namespace dae
 		virtual void Render() const;
 
 		void SetPosition(float x, float y);
-		const Transform* GetTransform() const { return &m_transform; }
+		const Transform* GetTransform() const { return &m_Transform; }
 
 		GameObject() = default;
 		virtual ~GameObject();
@@ -32,7 +32,7 @@ namespace dae
 		Component* AddComponent(Component* pComponent);
 
 	private:
-		Transform m_transform{};
+		Transform m_Transform{};
 		std::vector<Component*> m_pComponents;
 
 	};
