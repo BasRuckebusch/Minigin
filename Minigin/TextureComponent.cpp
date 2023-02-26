@@ -11,7 +11,7 @@ dae::TextureComponent::TextureComponent(const std::string& filename) :
 	m_Texture = ResourceManager::GetInstance().LoadTexture(filename);
 }
 
-void dae::TextureComponent::Update() {}
+void dae::TextureComponent::Update(const float& deltaTime) { deltaTime; }
 
 void dae::TextureComponent::Render() const
 {

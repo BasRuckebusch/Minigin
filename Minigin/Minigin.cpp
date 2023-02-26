@@ -5,6 +5,10 @@
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 #include "Minigin.h"
+
+#include <chrono>
+#include <iostream>
+
 #include "InputManager.h"
 #include "SceneManager.h"
 #include "Renderer.h"
@@ -79,16 +83,58 @@ void dae::Minigin::Run(const std::function<void()>& load)
 {
 	load();
 
+	// Get screen refresh rate for vsync
+	SDL_DisplayMode Mode;
+	int DisplayIndex = SDL_GetWindowDisplayIndex(g_window);
+
+	SDL_GetDesktopDisplayMode(DisplayIndex, &Mode);
+
+	m_MsPerFrame = static_cast<int>(1000.f / Mode.refresh_rate);
+
+	std::cout << Mode.refresh_rate << " hz - " << m_MsPerFrame << " ms\n";
+
 	auto& renderer = Renderer::GetInstance();
 	auto& sceneManager = SceneManager::GetInstance();
 	auto& input = InputManager::GetInstance();
 
+	
+
 	// todo: this update loop could use some work.
+	//while (doContinue)
+	//{
+	//	doContinue = input.ProcessInput();
+	//	sceneManager.Update();
+	//	renderer.Render();
+	//}
+
+	// Loop flag
 	bool doContinue = true;
+	const bool framelock = true;
+
+	// Set start time
+	std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
+
 	while (doContinue)
 	{
+		// Get current time
+		std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
+
+		// Calculate delta time
+		const float deltaTime = std::chrono::duration<float>(t2 - t1).count();
+
+		// Update current time
+		t1 = t2;
+
 		doContinue = input.ProcessInput();
-		sceneManager.Update();
+		sceneManager.Update(deltaTime);
 		renderer.Render();
+
+		if (framelock)
+		{
+			const auto sleepTime = t1 + std::chrono::milliseconds(m_MsPerFrame) - std::chrono::high_resolution_clock::now();
+			std::this_thread::sleep_for(sleepTime);
+		}
+		
 	}
+
 }

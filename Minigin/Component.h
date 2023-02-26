@@ -19,7 +19,7 @@ namespace dae
 		Component& operator=(const Component& other) = delete;
 		Component& operator=(Component&& other) = delete;
 
-		virtual void Update() = 0;
+		virtual void Update(const float& deltaTime) = 0;
 		virtual void Render() const;
 
 		const GameObject* GetParent() const { return m_pParent; }

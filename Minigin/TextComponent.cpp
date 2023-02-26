@@ -13,11 +13,12 @@ dae::TextComponent::TextComponent(std::string text, std::shared_ptr<Font> font) 
 	m_Text(std::move(text)),
 	m_Font(std::move(font)), 
 	m_TextTexture(nullptr)
-{;
+{
 }
 
-void dae::TextComponent::Update()
+void dae::TextComponent::Update(const float& deltaTime)
 {
+	deltaTime;
 	if (m_NeedsUpdate)
 	{
 		const SDL_Color color = { 255,255,255 }; // only white text is supported now

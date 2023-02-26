@@ -3,7 +3,6 @@
 #include <string>
 
 #include "Component.h"
-#include "Transform.h"
 
 namespace dae
 {
@@ -20,7 +19,7 @@ namespace dae
 		TextureComponent& operator=(const TextureComponent& other) = delete;
 		TextureComponent& operator=(TextureComponent&& other) = delete;
 
-		void Update() override;
+		void Update(const float& deltaTime) override;
 		void Render() const override;
 
 		void SetTexture(const std::string& filename);
