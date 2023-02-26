@@ -13,11 +13,11 @@ dae::GameObject::~GameObject()
 	}
 };
 
-void dae::GameObject::Update()
+void dae::GameObject::Update(const float& deltaTime)
 {
 	for (auto* pComponent : m_pComponents)
 	{
-		pComponent->Update();
+		pComponent->Update(deltaTime);
 	}
 }
 
