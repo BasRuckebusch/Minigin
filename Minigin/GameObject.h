@@ -25,7 +25,6 @@ namespace dae
 		GameObject& operator=(const GameObject& other) = delete;
 		GameObject& operator=(GameObject&& other) = delete;
 
-
 		template<typename Component>
 		Component* GetComponent() const;
 		template<typename Component>
@@ -34,7 +33,6 @@ namespace dae
 		void RemoveComponent(Component* pComponent);
 		template<typename Component>
 		bool HasComponent(Component* pComponent) const;
-
 
 	private:
 		Transform m_Transform{};
@@ -58,7 +56,6 @@ namespace dae
 	Component* GameObject::AddComponent(Component* pComponent)
 	{
 		m_pComponents.push_back(pComponent);
-		pComponent->SetParent(this);
 		return pComponent;
 	}
 	template<typename Component>
@@ -72,7 +69,7 @@ namespace dae
 	{
 		for (const auto* pComponent : m_pComponents)
 		{
-			Component* pComp = dynamic_cast<Component*>(pComponent);
+			const Component* pComp = dynamic_cast<Component*>(pComponent);
 			if (pComp)
 			{
 				return true;

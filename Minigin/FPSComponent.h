@@ -8,7 +8,7 @@ namespace dae
 	class FPSComponent final : public Component
 	{
 	public:
-		FPSComponent();
+		FPSComponent(std::shared_ptr<GameObject> pParent);
 		~FPSComponent() override;
 
 		FPSComponent(const FPSComponent& other) = delete;

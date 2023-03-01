@@ -1,5 +1,6 @@
 #include "TextComponent.h"
 #include <stdexcept>
+#include <utility>
 #include <SDL_ttf.h>
 
 #include "Renderer.h"
@@ -7,8 +8,9 @@
 #include "Texture2D.h"
 #include "GameObject.h"
 
-dae::TextComponent::TextComponent(std::string text, std::shared_ptr<Font> font) :
-	Component(nullptr),
+
+dae::TextComponent::TextComponent(std::string text, std::shared_ptr<Font> font, std::shared_ptr<GameObject> pParent) :
+	Component(std::move(pParent)),
 	m_NeedsUpdate(true),
 	m_Text(std::move(text)),
 	m_Font(std::move(font)), 
@@ -42,7 +44,7 @@ void dae::TextComponent::Render() const
 {
 	if (m_TextTexture != nullptr)
 	{
-		const auto& pos = m_pParent->GetTransform()->GetPosition();
+		const auto& pos = GetParent()->GetTransform()->GetPosition();
 		Renderer::GetInstance().RenderTexture(*m_TextTexture, pos.x, pos.y);
 	}
 }

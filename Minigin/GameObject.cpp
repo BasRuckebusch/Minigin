@@ -1,15 +1,14 @@
-#include <string>
 #include "GameObject.h"
+
+#include <iostream>
+
 #include "Component.h"
-#include "ResourceManager.h"
-#include "Renderer.h"
 
 dae::GameObject::~GameObject()
 {
 	for (const auto* pComponent : m_pComponents)
 	{
-		delete pComponent;
-		pComponent = nullptr;
+		RemoveComponent(pComponent);
 	}
 };
 

@@ -11,7 +11,7 @@ namespace dae
 	class TextureComponent final : public Component
 	{
 	public:
-		TextureComponent(const std::string& filename);
+		TextureComponent(const std::string& filename, std::shared_ptr<GameObject> pParent);
 		~TextureComponent() override = default;
 
 		TextureComponent(const TextureComponent& other) = delete;

@@ -85,19 +85,18 @@ void dae::Minigin::Run(const std::function<void()>& load)
 
 	// Get screen refresh rate for vsync
 	SDL_DisplayMode Mode;
-	int DisplayIndex = SDL_GetWindowDisplayIndex(g_window);
-
+	const int DisplayIndex = SDL_GetWindowDisplayIndex(g_window);
+	
 	SDL_GetDesktopDisplayMode(DisplayIndex, &Mode);
-
+	
 	m_MsPerFrame = static_cast<int>(1000.f / Mode.refresh_rate);
-
+	
 	std::cout << Mode.refresh_rate << " hz - " << m_MsPerFrame << " ms\n";
-
+	
 	auto& renderer = Renderer::GetInstance();
 	auto& sceneManager = SceneManager::GetInstance();
 	auto& input = InputManager::GetInstance();
 
-	
 
 	// todo: this update loop could use some work.
 	//while (doContinue)
@@ -134,7 +133,5 @@ void dae::Minigin::Run(const std::function<void()>& load)
 			const auto sleepTime = t1 + std::chrono::milliseconds(m_MsPerFrame) - std::chrono::high_resolution_clock::now();
 			std::this_thread::sleep_for(sleepTime);
 		}
-		
 	}
-
 }

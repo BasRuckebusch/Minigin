@@ -12,7 +12,7 @@ namespace dae
 	class TextComponent final : public Component
 	{
 	public:
-		TextComponent(std::string text, std::shared_ptr<Font> font);
+		TextComponent(std::string text, std::shared_ptr<Font> font, std::shared_ptr<GameObject> pParent);
 		~TextComponent() override = default;
 
 		TextComponent(const TextComponent& other) = delete;

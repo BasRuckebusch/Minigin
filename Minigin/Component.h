@@ -1,8 +1,8 @@
 #pragma once
 #include <memory>
-#include <string>
+#include <utility>
 
-#include "Transform.h"
+#include "GameObject.h"
 
 namespace dae
 {
@@ -10,8 +10,8 @@ namespace dae
 
 	class Component
 	{
+		std::shared_ptr<GameObject> m_pParent;
 	public:
-		Component(GameObject* pParent);
 		virtual ~Component();
 
 		Component(const Component& other) = delete;
@@ -22,10 +22,11 @@ namespace dae
 		virtual void Update(const float& deltaTime) = 0;
 		virtual void Render() const;
 
-		const GameObject* GetParent() const { return m_pParent; }
-		void SetParent(GameObject* pParent) { m_pParent = pParent; }
+		//	const GameObject* GetParent() const { return m_pParent; }
+		//	void SetParent(GameObject* pParent) { m_pParent = pParent; }
 
 	protected:
-		GameObject* m_pParent;
+		explicit Component(std::shared_ptr<GameObject> pParent) : m_pParent(std::move(pParent)) { m_pParent->AddComponent(this); }
+		std::shared_ptr<GameObject> GetParent() const { return m_pParent; }
 	};
 }
