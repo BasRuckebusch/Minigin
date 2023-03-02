@@ -5,16 +5,18 @@
 
 #include "Component.h"
 
+
 namespace dae
 {
 	class Font;
 	class Texture2D;
+	class TextureComponent;
 
 	class TextComponent final : public Component
 	{
 	public:
 		TextComponent(std::string text, std::shared_ptr<Font> font);
-		TextComponent(const std::string& text, std::shared_ptr<Font> font, const SDL_Color& color);
+		TextComponent(std::string text, std::shared_ptr<Font> font, const SDL_Color& color);
 		~TextComponent() override = default;
 
 		TextComponent(const TextComponent& other) = delete;
@@ -33,6 +35,6 @@ namespace dae
 		SDL_Color m_Color {255,255,255};
 		std::string m_Text{" "};
 		std::shared_ptr<Font> m_Font;
-		std::shared_ptr<Texture2D> m_TextTexture;
+		TextureComponent* m_pTexture{ nullptr };
 	};
 }
