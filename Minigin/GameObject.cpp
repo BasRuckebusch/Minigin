@@ -23,7 +23,7 @@ void dae::GameObject::Update(const float& deltaTime)
 
 void dae::GameObject::Render() const
 {
-	for (auto* pComponent : m_pComponents)
+	for (const auto* pComponent : m_pComponents)
 	{
 		pComponent->Render();
 	}

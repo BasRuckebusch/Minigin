@@ -22,7 +22,7 @@ void dae::FPSComponent::Update(const float& deltaTime)
 		m_Timer += deltaTime;
 		if (m_Timer >= 0.5f)
 		{
-			m_pText->SetText("FPS: " + std::to_string(fps));
+			m_pText->SetText(std::to_string(fps));
 			m_Timer = 0.f;
 		}
 	}

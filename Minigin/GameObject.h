@@ -72,7 +72,7 @@ namespace dae
 	{
 		for (const auto* pComponent : m_pComponents)
 		{
-			Component* pComp = dynamic_cast<Component*>(pComponent);
+			const Component* pComp = dynamic_cast<Component*>(pComponent);
 			if (pComp)
 			{
 				return true;
