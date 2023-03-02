@@ -85,7 +85,7 @@ void dae::Minigin::Run(const std::function<void()>& load)
 
 	// Get screen refresh rate for vsync
 	SDL_DisplayMode Mode;
-	int DisplayIndex = SDL_GetWindowDisplayIndex(g_window);
+	const int DisplayIndex = SDL_GetWindowDisplayIndex(g_window);
 
 	SDL_GetDesktopDisplayMode(DisplayIndex, &Mode);
 
@@ -93,7 +93,7 @@ void dae::Minigin::Run(const std::function<void()>& load)
 
 	std::cout << Mode.refresh_rate << " hz - " << m_MsPerFrame << " ms\n";
 
-	auto& renderer = Renderer::GetInstance();
+	const auto& renderer = Renderer::GetInstance();
 	auto& sceneManager = SceneManager::GetInstance();
 	auto& input = InputManager::GetInstance();
 

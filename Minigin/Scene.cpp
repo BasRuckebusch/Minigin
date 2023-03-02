@@ -26,7 +26,7 @@ void Scene::RemoveAll()
 
 void Scene::Update(const float& deltaTime)
 {
-	for(auto& object : m_objects)
+	for(const auto& object : m_objects)
 	{
 		object->Update(deltaTime);
 	}
