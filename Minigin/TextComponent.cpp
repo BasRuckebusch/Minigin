@@ -1,11 +1,8 @@
 #include "TextComponent.h"
 #include <stdexcept>
 #include <utility>
-#include <SDL_ttf.h>
 
-#include "Renderer.h"
 #include "Font.h"
-#include "Texture2D.h"
 #include "GameObject.h"
 #include "TextureComponent.h"
 

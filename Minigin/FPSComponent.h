@@ -22,5 +22,7 @@ namespace dae
 	private:
 		TextComponent* m_pText{ nullptr };
 		float m_Timer{};
+
+		std::vector<int> averages;
 	};
 }

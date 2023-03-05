@@ -24,7 +24,7 @@ void dae::TextureComponent::Update([[maybe_unused]] const float& deltaTime) {  }
 
 void dae::TextureComponent::Render() const
 {
-	const auto& pos = m_pParent->GetTransform()->GetPosition();
+	const auto& pos = m_pParent->GetWorldPosition();
 	Renderer::GetInstance().RenderTexture(*m_Texture, pos.x, pos.y);
 }
 
