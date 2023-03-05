@@ -16,7 +16,12 @@ namespace dae
 		void Render() const;
 
 		void SetPosition(float x, float y);
-		const Transform* GetTransform() const { return &m_Transform; }
+		//const Transform* GetTransform() const { return &m_Transform; }
+		void SetLocalPosition(const glm::vec3& pos);
+		const glm::vec3& GetWorldPosition();
+		const glm::vec3& GetLocalPosition() const { return m_LocalPosition; }
+		void SetPositionDirty();
+		const std::shared_ptr<GameObject> GetParent() const { return m_pParent; }
 
 		GameObject() = default;
 		~GameObject();
@@ -24,7 +29,6 @@ namespace dae
 		GameObject(GameObject&& other) = delete;
 		GameObject& operator=(const GameObject& other) = delete;
 		GameObject& operator=(GameObject&& other) = delete;
-
 
 		template<typename Component>
 		Component* GetComponent() const;
@@ -35,11 +39,22 @@ namespace dae
 		template<typename Component>
 		bool HasComponent(Component* pComponent) const;
 
+		void SetParent(std::shared_ptr<GameObject> parent, bool keepWorldPosition);
 
 	private:
-		Transform m_Transform{};
+		//Transform m_Transform{};
+		bool m_PositionIsDirty{ true };
+		glm::vec3 m_LocalPosition{};
+		glm::vec3 m_WorldPosition{};
 		std::vector<Component*> m_pComponents;
 
+		std::shared_ptr<GameObject> m_pParent;
+		std::vector<GameObject*> m_pChildren;
+
+		void UpdateWorldPosition();
+
+		void AddChild(GameObject* child);
+		void RemoveChild(GameObject* child);
 	};
 
 	template<typename Component>
