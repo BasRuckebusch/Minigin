@@ -12,7 +12,7 @@ namespace dae
 	class GameObject final
 	{
 	public:
-		void Update(const float& deltaTime);
+		void Update(float deltaTime);
 		void Render() const;
 
 		void SetPosition(float x, float y);

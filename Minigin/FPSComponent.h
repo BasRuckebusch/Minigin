@@ -16,7 +16,7 @@ namespace dae
 		FPSComponent& operator=(const FPSComponent& other) = delete;
 		FPSComponent& operator=(FPSComponent&& other) = delete;
 
-		void Update(const float& deltaTime) override;
+		void Update(float deltaTime) override;
 		void Render() const override;
 
 	private:

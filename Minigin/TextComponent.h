@@ -24,7 +24,7 @@ namespace dae
 		TextComponent& operator=(const TextComponent& other) = delete;
 		TextComponent& operator=(TextComponent&& other) = delete;
 
-		void Update(const float& deltaTime) override;
+		void Update(float deltaTime) override;
 		void Render() const override;
 
 		void SetText(const std::string& text);

@@ -15,7 +15,7 @@ namespace dae
 		RotateComponent& operator=(const RotateComponent& other) = delete;
 		RotateComponent& operator=(RotateComponent&& other) = delete;
 
-		void Update(const float& deltaTime) override;
+		void Update(float deltaTime) override;
 		void Render() const override;
 	private:
 		float m_Angle{ 0.f };

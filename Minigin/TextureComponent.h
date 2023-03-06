@@ -22,7 +22,7 @@ namespace dae
 		TextureComponent& operator=(const TextureComponent& other) = delete;
 		TextureComponent& operator=(TextureComponent&& other) = delete;
 
-		void Update(const float& deltaTime) override;
+		void Update(float deltaTime) override;
 		void Render() const override;
 
 		void SetTexture(const std::string& filename);
