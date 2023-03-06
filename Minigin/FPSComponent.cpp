@@ -10,7 +10,7 @@ dae::FPSComponent::FPSComponent():
 dae::FPSComponent::~FPSComponent()
 = default;
 
-void dae::FPSComponent::Update(const float& deltaTime)
+void dae::FPSComponent::Update(float deltaTime)
 {
 	if (!m_pText) m_pText = m_pParent->GetComponent<TextComponent>();
 

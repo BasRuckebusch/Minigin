@@ -11,7 +11,7 @@ dae::GameObject::~GameObject()
 		pComponent = nullptr;
 	}
 }
-void dae::GameObject::Update(const float& deltaTime)
+void dae::GameObject::Update(float deltaTime)
 {
 	for (auto* pComponent : m_pComponents)
 	{
@@ -43,9 +43,13 @@ void dae::GameObject::UpdateWorldPosition()
 	if (m_PositionIsDirty)
 	{
 		if (m_pParent == nullptr)
+		{
 			m_WorldPosition = m_LocalPosition;
+		}
 		else
+		{
 			m_WorldPosition = m_pParent->GetWorldPosition() + m_LocalPosition;
+		}
 	}
 	m_PositionIsDirty = false;
 }

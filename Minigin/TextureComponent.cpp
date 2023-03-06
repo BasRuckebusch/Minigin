@@ -20,7 +20,7 @@ dae::TextureComponent::TextureComponent() :
 	m_Texture = ResourceManager::GetInstance().LoadTexture("missing.tga");
 }
 
-void dae::TextureComponent::Update([[maybe_unused]] const float& deltaTime) {  }
+void dae::TextureComponent::Update([[maybe_unused]] float deltaTime) {  }
 
 void dae::TextureComponent::Render() const
 {

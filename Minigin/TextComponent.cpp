@@ -21,7 +21,7 @@ dae::TextComponent::TextComponent(std::string text, std::shared_ptr<Font> font) 
 }
 
 
-void dae::TextComponent::Update([[maybe_unused]] const float& deltaTime)
+void dae::TextComponent::Update([[maybe_unused]] float deltaTime)
 {
 	if (m_NeedsUpdate)
 	{

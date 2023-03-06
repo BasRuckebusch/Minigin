@@ -8,12 +8,21 @@ dae::RotateComponent::RotateComponent(float radius) :
 	
 }
 
-void dae::RotateComponent::Update([[maybe_unused]] const float& deltaTime)
+void dae::RotateComponent::Update(float deltaTime)
 {
 	m_Angle += deltaTime;
+	constexpr float maxAngle = 360.f;
+	if (m_Angle > maxAngle)
+	{
+		m_Angle = 0.f;
+	}
 
-	float x = m_Radius * cos(m_Angle);
-	float y = m_Radius * sin(m_Angle);
+	glm::vec3 pos{ m_pParent->GetLocalPosition() };
+
+	pos.x += m_Radius * cos(m_Angle);
+	pos.y += m_Radius * sin(m_Angle);
+
+	m_pParent->SetLocalPosition(pos);
 
 	//if (m_pParent->GetParent() != nullptr)
 	//{
@@ -26,10 +35,8 @@ void dae::RotateComponent::Update([[maybe_unused]] const float& deltaTime)
 	//	y += m_pParent->GetLocalPosition().y;
 	//}
 
-	x += m_pParent->GetLocalPosition().x;
-	y += m_pParent->GetLocalPosition().y;
-
-	m_pParent->SetLocalPosition(glm::vec3(x,y,0));
+	//x += m_pParent->GetLocalPosition().x;
+	//y += m_pParent->GetLocalPosition().y;
 }
 
 void dae::RotateComponent::Render() const
