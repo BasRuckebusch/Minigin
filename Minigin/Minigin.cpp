@@ -93,19 +93,9 @@ void dae::Minigin::Run(const std::function<void()>& load)
 
 	std::cout << Mode.refresh_rate << " hz - " << m_MsPerFrame << " ms\n";
 
-	const auto& renderer = Renderer::GetInstance();
+	auto& renderer = Renderer::GetInstance();
 	auto& sceneManager = SceneManager::GetInstance();
 	auto& input = InputManager::GetInstance();
-
-	
-
-	// todo: this update loop could use some work.
-	//while (doContinue)
-	//{
-	//	doContinue = input.ProcessInput();
-	//	sceneManager.Update();
-	//	renderer.Render();
-	//}
 
 	// Loop flag
 	bool doContinue = true;
