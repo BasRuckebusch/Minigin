@@ -51,25 +51,27 @@ void dae::Renderer::Render()
 	// hint: something should come here :)
 
 
-	// First window
+	// Render UI in gameobject, use component
+	// check slides
 
-	const std::vector data = { 86.534f, 40.185f, 34.045f, 30.88f, 26.815f, 19.59f, 10.581f, 5.695f, 3.971f, 2.158f, 1.532f };
-	ImGui::SetNextWindowSize(ImVec2(250, 150), ImGuiCond_FirstUseEver);
-	ImGui::Begin("Exercise 1");
-	ImVec2 plot_size(250, 150);
-	ImGui::PlotLines("Exercise 1", &data[0], data.size(), 0, NULL, FLT_MAX, FLT_MAX, plot_size);
-	ImGui::End();
-
-	// Second window
-
-	const std::vector data2 = { 80.489f, 72.074f, 64.107f, 55.394f, 48.166f, 21.538f, 12.52f, 8.116f, 4.495f, 3.296f, 1.31f };
-	ImGui::SetNextWindowSize(ImVec2(250, 150), ImGuiCond_FirstUseEver);
-	ImGui::SetNextWindowPos(ImVec2(400, 0), ImGuiCond_FirstUseEver);
-	ImGui::Begin("Exercise 2");
-	ImVec2 plot_size2(250, 150);
-	ImGui::PlotLines("Exercise 2", &data2[0], data2.size(), 0, NULL, FLT_MAX, FLT_MAX, plot_size2);
-	ImGui::End();
-
+	//	// First window
+	//	
+	//	const std::vector data = { 86.534f, 40.185f, 34.045f, 30.88f, 26.815f, 19.59f, 10.581f, 5.695f, 3.971f, 2.158f, 1.532f };
+	//	ImGui::SetNextWindowSize(ImVec2(250, 150), ImGuiCond_FirstUseEver);
+	//	ImGui::Begin("Exercise 1");
+	//	ImVec2 plot_size(250, 150);
+	//	ImGui::PlotLines("Exercise 1", &data[0], data.size(), 0, NULL, FLT_MAX, FLT_MAX, plot_size);
+	//	ImGui::End();
+	//	
+	//	// Second window
+	//	
+	//	const std::vector data2 = { 80.489f, 72.074f, 64.107f, 55.394f, 48.166f, 21.538f, 12.52f, 8.116f, 4.495f, 3.296f, 1.31f };
+	//	ImGui::SetNextWindowSize(ImVec2(250, 150), ImGuiCond_FirstUseEver);
+	//	ImGui::SetNextWindowPos(ImVec2(400, 0), ImGuiCond_FirstUseEver);
+	//	ImGui::Begin("Exercise 2");
+	//	ImVec2 plot_size2(250, 150);
+	//	ImGui::PlotLines("Exercise 2", &data2[0], data2.size(), 0, NULL, FLT_MAX, FLT_MAX, plot_size2);
+	//	ImGui::End();
 
 	if (m_showDemo)
 		ImGui::ShowDemoWindow(&m_showDemo);
