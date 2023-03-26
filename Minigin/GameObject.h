@@ -76,14 +76,9 @@ namespace dae
 	template<typename Component, typename...Arguments>
 	Component* GameObject::AddComponent(Arguments&&... args)
 	{
-		//std::shared_ptr<Component> newComponent = std::make_shared<Component>(this, std::forward<Arguments>(args)...);
 		Component* pComponent = new Component(this, std::forward<Arguments>(args)...);
 		m_pComponents.push_back(pComponent);
 		return pComponent;
-
-		//m_pComponents.push_back(pComponent);
-		//->SetParent(this);
-		//return pComponent;
 	}
 	template<typename Component>
 	void GameObject::RemoveComponent(Component* pComponent)
