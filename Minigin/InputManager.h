@@ -16,6 +16,7 @@ namespace dae
 		void AddPlayer(GameObject* player);
 	private:
 		XINPUT_STATE m_CurrentState{};
+		int m_DeadZone = 7000;
 
 		std::vector<GameObject*>m_pPlayers{};
 	};
