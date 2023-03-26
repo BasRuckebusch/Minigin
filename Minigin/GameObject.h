@@ -36,8 +36,6 @@ namespace dae
 		Component* GetComponent() const;
 		template <class Component, class ... Arguments>
 		Component* AddComponent(Arguments&& ... args);
-		//template<typename Component>
-		//Component* AddComponent(Component* pComponent);
 		template<typename Component>
 		void RemoveComponent(Component* pComponent);
 		template<typename Component>
