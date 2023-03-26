@@ -15,8 +15,8 @@ namespace dae
 	class TextComponent final : public Component
 	{
 	public:
-		TextComponent(std::string text, std::shared_ptr<Font> font);
-		TextComponent(std::string text, std::shared_ptr<Font> font, const SDL_Color& color);
+		TextComponent(GameObject* parent, std::string text, std::shared_ptr<Font> font);
+		TextComponent(GameObject* parent, std::string text, std::shared_ptr<Font> font, const SDL_Color& color);
 		~TextComponent() override = default;
 
 		TextComponent(const TextComponent& other) = delete;

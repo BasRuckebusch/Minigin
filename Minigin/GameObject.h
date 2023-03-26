@@ -14,6 +14,8 @@ namespace dae
 	public:
 		void Update(float deltaTime);
 		void Render() const;
+		void RenderUI() const;
+
 
 		void SetPosition(float x, float y);
 		//const Transform* GetTransform() const { return &m_Transform; }
@@ -32,8 +34,10 @@ namespace dae
 
 		template<typename Component>
 		Component* GetComponent() const;
-		template<typename Component>
-		Component* AddComponent(Component* pComponent);
+		template <class Component, class ... Arguments>
+		Component* AddComponent(Arguments&& ... args);
+		//template<typename Component>
+		//Component* AddComponent(Component* pComponent);
 		template<typename Component>
 		void RemoveComponent(Component* pComponent);
 		template<typename Component>
@@ -69,11 +73,11 @@ namespace dae
 		}
 		return nullptr;
 	}
-	template<typename Component>
-	Component* GameObject::AddComponent(Component* pComponent)
+	template<typename Component, typename...Arguments>
+	Component* GameObject::AddComponent(Arguments&&... args)
 	{
+		Component* pComponent = new Component(this, std::forward<Arguments>(args)...);
 		m_pComponents.push_back(pComponent);
-		pComponent->SetParent(this);
 		return pComponent;
 	}
 	template<typename Component>

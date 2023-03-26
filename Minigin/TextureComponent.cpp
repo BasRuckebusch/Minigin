@@ -8,14 +8,14 @@
 #include "Renderer.h"
 #include "Texture2D.h"
 
-dae::TextureComponent::TextureComponent(const std::string& filename) :
-	Component(nullptr)
+dae::TextureComponent::TextureComponent(GameObject* parent, const std::string& filename) :
+	Component(parent)
 {
 	m_Texture = ResourceManager::GetInstance().LoadTexture(filename);
 }
 
-dae::TextureComponent::TextureComponent() :
-	Component(nullptr)
+dae::TextureComponent::TextureComponent(GameObject* parent) :
+	Component(parent)
 {
 	m_Texture = ResourceManager::GetInstance().LoadTexture("missing.tga");
 }
@@ -24,7 +24,7 @@ void dae::TextureComponent::Update([[maybe_unused]] float deltaTime) {  }
 
 void dae::TextureComponent::Render() const
 {
-	const auto& pos = m_pParent->GetWorldPosition();
+	const auto& pos = GetParent()->GetWorldPosition();
 	Renderer::GetInstance().RenderTexture(*m_Texture, pos.x, pos.y);
 }
 

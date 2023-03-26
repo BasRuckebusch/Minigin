@@ -6,8 +6,8 @@
 #include "GameObject.h"
 #include "TextureComponent.h"
 
-dae::TextComponent::TextComponent(std::string text, std::shared_ptr<Font> font, const SDL_Color& color) :
-	Component(nullptr),
+dae::TextComponent::TextComponent(GameObject* parent, std::string text, std::shared_ptr<Font> font, const SDL_Color& color) :
+	Component(parent),
 	m_Color(color),
 	m_Text(std::move(text)),
 	m_Font(std::move(font))
@@ -15,8 +15,8 @@ dae::TextComponent::TextComponent(std::string text, std::shared_ptr<Font> font, 
 }
 
 
-dae::TextComponent::TextComponent(std::string text, std::shared_ptr<Font> font) :
-	TextComponent(std::move(text), std::move(font), SDL_Color(255,255,255))
+dae::TextComponent::TextComponent(GameObject* parent, std::string text, std::shared_ptr<Font> font) :
+	TextComponent(parent, std::move(text), std::move(font), SDL_Color(255,255,255))
 {
 }
 
@@ -25,7 +25,7 @@ void dae::TextComponent::Update([[maybe_unused]] float deltaTime)
 {
 	if (m_NeedsUpdate)
 	{
-		if (!m_pTexture) m_pTexture = m_pParent->GetComponent<TextureComponent>();
+		if (!m_pTexture) m_pTexture = GetParent()->GetComponent<TextureComponent>();
 
 		if (m_pTexture)
 		{

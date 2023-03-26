@@ -17,12 +17,12 @@ void dae::RotateComponent::Update(float deltaTime)
 		m_Angle = 0.f;
 	}
 
-	glm::vec3 pos{ m_pParent->GetLocalPosition() };
+	glm::vec3 pos{ GetParent()->GetLocalPosition() };
 
 	pos.x += m_Radius * cos(m_Angle);
 	pos.y += m_Radius * sin(m_Angle);
 
-	m_pParent->SetLocalPosition(pos);
+	GetParent()->SetLocalPosition(pos);
 
 	//if (m_pParent->GetParent() != nullptr)
 	//{
