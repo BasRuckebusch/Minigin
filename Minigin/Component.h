@@ -5,10 +5,15 @@ namespace dae
 {
 	class GameObject;
 
+	
 	class Component
 	{
+		GameObject* m_pParent;
 	public:
-		Component(GameObject* pParent);
+		//Component(GameObject* pParent);
+		//const GameObject* GetParent() const { return m_pParent; }
+		//void SetParent(GameObject* pParent) { m_pParent = pParent; }
+
 		virtual ~Component();
 
 		Component(const Component& other) = delete;
@@ -18,11 +23,10 @@ namespace dae
 
 		virtual void Update(float deltaTime) = 0;
 		virtual void Render() const;
-
-		const GameObject* GetParent() const { return m_pParent; }
-		void SetParent(GameObject* pParent) { m_pParent = pParent; }
+		virtual void RenderUI() const;
 
 	protected:
-		GameObject* m_pParent;
+		explicit Component(GameObject* pParent) : m_pParent(pParent) {}
+		GameObject* GetParent() const { return m_pParent; }
 	};
 }

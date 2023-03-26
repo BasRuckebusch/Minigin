@@ -14,6 +14,7 @@ namespace dae
 
 		void Update(const float& deltaTime);
 		void Render();
+		void RenderUI();
 	private:
 		friend class Singleton<SceneManager>;
 		SceneManager() = default;

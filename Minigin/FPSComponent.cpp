@@ -2,8 +2,8 @@
 #include "GameObject.h"
 #include "TextComponent.h"
 
-dae::FPSComponent::FPSComponent():
-	Component(nullptr)
+dae::FPSComponent::FPSComponent(GameObject* parent):
+	Component(parent)
 {
 }
 
@@ -12,7 +12,7 @@ dae::FPSComponent::~FPSComponent()
 
 void dae::FPSComponent::Update(float deltaTime)
 {
-	if (!m_pText) m_pText = m_pParent->GetComponent<TextComponent>();
+	if (!m_pText) m_pText = GetParent()->GetComponent<TextComponent>();
 
 	int fps = static_cast<int>(1.f / deltaTime);
 
