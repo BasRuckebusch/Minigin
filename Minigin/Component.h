@@ -5,15 +5,9 @@ namespace dae
 {
 	class GameObject;
 
-	
 	class Component
 	{
-		GameObject* m_pParent;
 	public:
-		//Component(GameObject* pParent);
-		//const GameObject* GetParent() const { return m_pParent; }
-		//void SetParent(GameObject* pParent) { m_pParent = pParent; }
-
 		virtual ~Component();
 
 		Component(const Component& other) = delete;
@@ -28,5 +22,7 @@ namespace dae
 	protected:
 		explicit Component(GameObject* pParent) : m_pParent(pParent) {}
 		GameObject* GetParent() const { return m_pParent; }
+	private:
+		GameObject* m_pParent;
 	};
 }

@@ -7,10 +7,10 @@ namespace dae {
 	class Command
 	{
 	public:
-		Command() {};
-		virtual ~Command() {}
-		virtual void Execute(GameObject& actor) = 0;
-	protected:
+		Command() = default;
+		virtual ~Command() = default;
+		virtual void Execute();
+		virtual void Execute(GameObject& actor);
 	};
 
 	class MoveCommand final : public Command

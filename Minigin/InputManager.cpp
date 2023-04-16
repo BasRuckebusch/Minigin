@@ -5,6 +5,7 @@
 #include "Command.h"
 
 
+
 bool IsPressed(const XINPUT_GAMEPAD& gamepad, int button)
 {
 	return ((gamepad.wButtons & button) != 0);
