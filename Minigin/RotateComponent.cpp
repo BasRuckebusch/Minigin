@@ -1,8 +1,8 @@
 #include "RotateComponent.h"
 #include <cmath>
 
-dae::RotateComponent::RotateComponent(float radius) :
-	Component(nullptr),
+dae::RotateComponent::RotateComponent(GameObject* parent, float radius) :
+	Component(parent),
 	m_Radius(radius)
 {
 	

@@ -12,7 +12,7 @@ namespace dae
 	class GameObject final
 	{
 	public:
-		void Update(float deltaTime);
+		void Update(float deltaTime) const;
 		void Render() const;
 		void RenderUI() const;
 
@@ -23,7 +23,7 @@ namespace dae
 		const glm::vec3& GetWorldPosition();
 		const glm::vec3& GetLocalPosition() const { return m_LocalPosition; }
 		void SetPositionDirty();
-		const std::shared_ptr<GameObject> GetParent() const { return m_pParent; }
+		std::shared_ptr<GameObject> GetParent() const { return m_pParent; }
 
 		GameObject() = default;
 		~GameObject();
@@ -36,8 +36,6 @@ namespace dae
 		Component* GetComponent() const;
 		template <class Component, class ... Arguments>
 		Component* AddComponent(Arguments&& ... args);
-		//template<typename Component>
-		//Component* AddComponent(Component* pComponent);
 		template<typename Component>
 		void RemoveComponent(Component* pComponent);
 		template<typename Component>
@@ -83,8 +81,11 @@ namespace dae
 	template<typename Component>
 	void GameObject::RemoveComponent(Component* pComponent)
 	{
-		m_pComponents.erase(std::remove(m_pComponents.begin(), m_pComponents.end(), pComponent), m_pComponents.end());
-		delete pComponent;
+		if (HasComponent(pComponent))
+		{
+			m_pComponents.erase(std::remove(m_pComponents.begin(), m_pComponents.end(), pComponent), m_pComponents.end());
+			delete pComponent;
+		}
 	}
 	template<typename Component>
 	bool GameObject::HasComponent(Component* pComponent) const

@@ -10,12 +10,21 @@ dae::GameObject::~GameObject()
 		delete pComponent;
 		pComponent = nullptr;
 	}
+	for (const auto* child : m_pChildren)
+	{
+		delete child;
+		child = nullptr;
+	}
 }
-void dae::GameObject::Update(float deltaTime)
+void dae::GameObject::Update(float deltaTime) const
 {
 	for (auto* pComponent : m_pComponents)
 	{
 		pComponent->Update(deltaTime);
+	}
+	for (const auto* child : m_pChildren)
+	{
+		child->Update(deltaTime);
 	}
 }
 

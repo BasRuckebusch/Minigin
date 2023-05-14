@@ -1,13 +1,12 @@
 #pragma once
 #include "Component.h"
 
-
 namespace dae
 {
 	class RotateComponent final : public Component
 	{
 	public:
-		RotateComponent(float radius);
+		RotateComponent(GameObject* parent, float radius);
 		~RotateComponent() override = default;
 
 		RotateComponent(const RotateComponent& other) = delete;
