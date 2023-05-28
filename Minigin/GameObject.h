@@ -1,4 +1,5 @@
 #pragma once
+#include <algorithm>
 #include <memory>
 #include <vector>
 
@@ -16,6 +17,8 @@ namespace dae
 		void Render() const;
 		void RenderUI() const;
 
+		void Destroy() { m_IsDestroyed = true; }
+		bool IsDestroyed() const { return m_IsDestroyed; }
 
 		void SetPosition(float x, float y);
 		//const Transform* GetTransform() const { return &m_Transform; }
@@ -36,10 +39,10 @@ namespace dae
 		Component* GetComponent() const;
 		template <class Component, class ... Arguments>
 		Component* AddComponent(Arguments&& ... args);
-		template<typename Component>
-		void RemoveComponent(Component* pComponent);
-		template<typename Component>
-		bool HasComponent(Component* pComponent) const;
+		template <class Component>
+		void RemoveComponent();
+		template <class Component>
+		bool HasComponent() const;
 
 		void SetParent(std::shared_ptr<GameObject> parent, bool keepWorldPosition);
 
@@ -48,7 +51,9 @@ namespace dae
 		bool m_PositionIsDirty{ true };
 		glm::vec3 m_LocalPosition{};
 		glm::vec3 m_WorldPosition{};
-		std::vector<Component*> m_pComponents;
+		std::vector<std::unique_ptr<Component>> m_pComponents;
+
+		bool m_IsDestroyed{ false };
 
 		std::shared_ptr<GameObject> m_pParent;
 		std::vector<GameObject*> m_pChildren;
@@ -62,9 +67,9 @@ namespace dae
 	template<typename Component>
 	Component* GameObject::GetComponent() const
 	{
-		for (auto* pComponent : m_pComponents)
+		for (const auto& pComponent : m_pComponents)
 		{
-			if (Component* pComp = dynamic_cast<Component*>(pComponent))
+			if (Component* pComp = dynamic_cast<Component*>(pComponent.get()))
 			{
 				return pComp;
 			}
@@ -74,30 +79,31 @@ namespace dae
 	template<typename Component, typename...Arguments>
 	Component* GameObject::AddComponent(Arguments&&... args)
 	{
-		Component* pComponent = new Component(this, std::forward<Arguments>(args)...);
-		m_pComponents.push_back(pComponent);
-		return pComponent;
+		std::unique_ptr<Component> pComponent = std::make_unique<Component>(this, std::forward<Arguments>(args)...);
+		Component* rawPtr = pComponent.get();
+		m_pComponents.push_back(std::move(pComponent));
+		return rawPtr;
 	}
 	template<typename Component>
-	void GameObject::RemoveComponent(Component* pComponent)
+	void GameObject::RemoveComponent()
 	{
-		if (HasComponent(pComponent))
+		if (HasComponent<Component>())
 		{
-			m_pComponents.erase(std::remove(m_pComponents.begin(), m_pComponents.end(), pComponent), m_pComponents.end());
-			delete pComponent;
+			auto it = std::remove_if(m_pComponents.begin(), m_pComponents.end(), [](const auto& pComponent)
+				{
+					return dynamic_cast<Component*>(pComponent.get()) != nullptr;
+				}
+			);
+			m_pComponents.erase(it, m_pComponents.end());
 		}
 	}
 	template<typename Component>
-	bool GameObject::HasComponent(Component* pComponent) const
+	bool GameObject::HasComponent() const
 	{
-		for (const auto* pComponent : m_pComponents)
-		{
-			const Component* pComp = dynamic_cast<Component*>(pComponent);
-			if (pComp)
+		return std::any_of(m_pComponents.begin(), m_pComponents.end(), [](const auto& pComponent)
 			{
-				return true;
+				return dynamic_cast<Component*>(pComponent.get()) != nullptr;
 			}
-		}
-		return false;
+		);
 	}
 }

@@ -5,11 +5,7 @@
 
 dae::GameObject::~GameObject()
 {
-	for (const auto* pComponent : m_pComponents)
-	{
-		delete pComponent;
-		pComponent = nullptr;
-	}
+	m_pComponents.clear();
 	for (const auto* child : m_pChildren)
 	{
 		delete child;
@@ -18,7 +14,7 @@ dae::GameObject::~GameObject()
 }
 void dae::GameObject::Update(float deltaTime) const
 {
-	for (auto* pComponent : m_pComponents)
+	for (const auto& pComponent : m_pComponents)
 	{
 		pComponent->Update(deltaTime);
 	}
@@ -30,7 +26,7 @@ void dae::GameObject::Update(float deltaTime) const
 
 void dae::GameObject::Render() const
 {
-	for (const auto* pComponent : m_pComponents)
+	for (const auto& pComponent : m_pComponents)
 	{
 		pComponent->Render();
 	}
@@ -38,7 +34,7 @@ void dae::GameObject::Render() const
 
 void dae::GameObject::RenderUI() const
 {
-	for (const auto* pComponent : m_pComponents)
+	for (const auto& pComponent : m_pComponents)
 	{
 		pComponent->RenderUI();
 	}
@@ -117,5 +113,5 @@ void dae::GameObject::AddChild(GameObject* child)
 
 void dae::GameObject::RemoveChild(GameObject* child)
 {
-	m_pChildren.erase(std::remove(m_pChildren.begin(), m_pChildren.end(), child), m_pChildren.end());
+	std::erase(m_pChildren, child);
 }
