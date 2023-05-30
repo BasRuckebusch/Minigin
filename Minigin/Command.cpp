@@ -7,11 +7,7 @@ void dae::Command::Execute()
 {
 }
 
-void dae::Command::Execute([[maybe_unused]] GameObject& actor)
+void dae::MoveCommand::Execute()
 {
-}
-
-void dae::MoveCommand::Execute(GameObject& actor)
-{
-	actor.GetComponent<MoveComponent>()->SetDirection(m_Direction);
+	m_pGameObject->GetComponent<MoveComponent>()->SetDirection(m_Direction);
 }

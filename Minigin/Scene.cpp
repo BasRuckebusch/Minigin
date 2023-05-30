@@ -16,7 +16,7 @@ void Scene::Add(std::shared_ptr<GameObject> object)
 
 void Scene::Remove(std::shared_ptr<GameObject> object)
 {
-	m_Objects.erase(std::remove(m_Objects.begin(), m_Objects.end(), object), m_Objects.end());
+	std::erase(m_Objects, object);
 }
 
 void Scene::RemoveAll()

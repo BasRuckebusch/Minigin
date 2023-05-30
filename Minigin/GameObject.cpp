@@ -6,11 +6,7 @@
 dae::GameObject::~GameObject()
 {
 	m_pComponents.clear();
-	for (const auto* child : m_pChildren)
-	{
-		delete child;
-		child = nullptr;
-	}
+	m_pChildren.clear();
 }
 void dae::GameObject::Update(float deltaTime) const
 {
@@ -18,7 +14,7 @@ void dae::GameObject::Update(float deltaTime) const
 	{
 		pComponent->Update(deltaTime);
 	}
-	for (const auto* child : m_pChildren)
+	for (const auto& child : m_pChildren)
 	{
 		child->Update(deltaTime);
 	}
@@ -77,7 +73,7 @@ const glm::vec3& dae::GameObject::GetWorldPosition()
 void dae::GameObject::SetPositionDirty()
 {
 	m_PositionIsDirty = true;
-	for (const auto child : m_pChildren)
+	for (const auto& child : m_pChildren)
 	{
 		child->SetPositionDirty();
 	}
@@ -108,10 +104,14 @@ void dae::GameObject::SetParent(std::shared_ptr<GameObject> parent, bool keepWor
 
 void dae::GameObject::AddChild(GameObject* child)
 {
-	m_pChildren.push_back(child); 
+	m_pChildren.push_back(std::unique_ptr<GameObject>(child));
 }
 
 void dae::GameObject::RemoveChild(GameObject* child)
 {
-	std::erase(m_pChildren, child);
+	std::erase_if(m_pChildren, [child](const auto& pChild) 
+		{
+			return pChild.get() == child;
+		}
+	);
 }

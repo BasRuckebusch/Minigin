@@ -56,7 +56,7 @@ namespace dae
 		bool m_IsDestroyed{ false };
 
 		std::shared_ptr<GameObject> m_pParent;
-		std::vector<GameObject*> m_pChildren;
+		std::vector<std::unique_ptr<GameObject>> m_pChildren;
 
 		void UpdateWorldPosition();
 

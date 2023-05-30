@@ -4,40 +4,33 @@
 #include <iostream>
 #include "Command.h"
 
-
-
-bool IsPressed(const XINPUT_GAMEPAD& gamepad, int button)
-{
-	return ((gamepad.wButtons & button) != 0);
-}
-
 bool dae::InputManager::ProcessInput()
 {
 	ZeroMemory(&m_CurrentState, sizeof(XINPUT_STATE));
 	XInputGetState(0, &m_CurrentState);
 
 	glm::vec2 direction{ 0.f, 0.f };
-	if (IsPressed(m_CurrentState.Gamepad, XINPUT_GAMEPAD_DPAD_UP) || m_CurrentState.Gamepad.sThumbLY > m_DeadZone)
+	if (IsPressed(XINPUT_GAMEPAD_DPAD_UP) || m_CurrentState.Gamepad.sThumbLY > m_DeadZone)
 	{
 		direction.y--;
 	}
-	if (IsPressed(m_CurrentState.Gamepad, XINPUT_GAMEPAD_DPAD_DOWN) || m_CurrentState.Gamepad.sThumbLY < -m_DeadZone)
+	if (IsPressed(XINPUT_GAMEPAD_DPAD_DOWN) || m_CurrentState.Gamepad.sThumbLY < -m_DeadZone)
 	{
 		direction.y++;
 	}
-	if (IsPressed(m_CurrentState.Gamepad, XINPUT_GAMEPAD_DPAD_LEFT) || m_CurrentState.Gamepad.sThumbLX < -m_DeadZone)
+	if (IsPressed(XINPUT_GAMEPAD_DPAD_LEFT) || m_CurrentState.Gamepad.sThumbLX < -m_DeadZone)
 	{
 		direction.x--;
 	}
-	if (IsPressed(m_CurrentState.Gamepad, XINPUT_GAMEPAD_DPAD_RIGHT) || m_CurrentState.Gamepad.sThumbLX > m_DeadZone)
+	if (IsPressed(XINPUT_GAMEPAD_DPAD_RIGHT) || m_CurrentState.Gamepad.sThumbLX > m_DeadZone)
 	{
 		direction.x++;
 	}
-
-	MoveCommand move{ direction };
+	
 	if (m_pPlayers[0] != nullptr)
 	{
-		move.Execute(*m_pPlayers[0]);
+		MoveCommand move{m_pPlayers[0], direction };
+		move.Execute();
 	}
 
 	direction = { 0.f, 0.f };
@@ -70,13 +63,18 @@ bool dae::InputManager::ProcessInput()
 		ImGui_ImplSDL2_ProcessEvent(&e);
 	}
 
-	MoveCommand move2{ direction };
 	if (m_pPlayers[1] != nullptr)
 	{
-		move2.Execute(*m_pPlayers[1]);
+		MoveCommand move{ m_pPlayers[1], direction };
+		move.Execute();
 	}
 
 	return true;
+}
+
+bool dae::InputManager::IsPressed(int button) const
+{
+	return ((m_CurrentState.Gamepad.wButtons & button) != 0);
 }
 
 void dae::InputManager::AddPlayer(GameObject* player)
