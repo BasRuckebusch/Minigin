@@ -4,98 +4,94 @@
 #include <iostream>
 #include "Command.h"
 
-bool dae::InputManager::ProcessInput()
+class dae::InputManager::impl
 {
-	ZeroMemory(&m_CurrentState, sizeof(XINPUT_STATE));
-	XInputGetState(0, &m_CurrentState);
+	public:
+		bool ProcessInput()
+		{
+			ZeroMemory(&m_CurrentState, sizeof(XINPUT_STATE));
+			XInputGetState(0, &m_CurrentState);
 
-	if (IsPressed(XINPUT_GAMEPAD_DPAD_LEFT))
-	{
-		MoveLeftRight move{ m_pPlayers[0], false };
-		move.Execute();
-	}
-	if (IsPressed(XINPUT_GAMEPAD_DPAD_RIGHT))
-	{
-		MoveLeftRight move{ m_pPlayers[0], true };
-		move.Execute();
-	}
-	if (IsPressed(XINPUT_GAMEPAD_DPAD_UP))
-	{
-		MoveUpDown move{ m_pPlayers[0], false };
-		move.Execute();
-	}
-	if (IsPressed(XINPUT_GAMEPAD_DPAD_DOWN))
-	{
-		MoveUpDown move{ m_pPlayers[0], true };
-		move.Execute();
-	}
+			for (auto i = m_KeyMap.begin(); i != m_KeyMap.end(); ++i)
+			{
+				WORD k = i->first;
+				if (IsPressed(k)) m_KeyMap[k]->Execute();
+			}
 
-	//	glm::vec2 direction{ 0.f, 0.f };
-	//	if (IsPressed(XINPUT_GAMEPAD_DPAD_UP) || m_CurrentState.Gamepad.sThumbLY > m_DeadZone)
-	//	{
-	//		direction.y--;
-	//	}
-	//	if (IsPressed(XINPUT_GAMEPAD_DPAD_DOWN) || m_CurrentState.Gamepad.sThumbLY < -m_DeadZone)
-	//	{
-	//		direction.y++;
-	//	}
-	//	if (IsPressed(XINPUT_GAMEPAD_DPAD_LEFT) || m_CurrentState.Gamepad.sThumbLX < -m_DeadZone)
-	//	{
-	//		direction.x--;
-	//	}
-	//	if (IsPressed(XINPUT_GAMEPAD_DPAD_RIGHT) || m_CurrentState.Gamepad.sThumbLX > m_DeadZone)
-	//	{
-	//		direction.x++;
-	//	}
-	//	
-	//	if (m_pPlayers[0] != nullptr)
-	//	{
-	//		MoveCommand move{m_pPlayers[0], direction };
-	//		move.Execute();
-	//	}
-	//	
-	//	direction = { 0.f, 0.f };
-	//	SDL_Event e;
-	//	while (SDL_PollEvent(&e)) {
-	//		if (e.type == SDL_QUIT) {
-	//			return false;
-	//		}
-	//		if (e.type == SDL_KEYDOWN) {
-	//			switch (e.key.keysym.sym)
-	//			{
-	//			case SDLK_w:
-	//				direction.y--;
-	//				break;
-	//			case SDLK_s:
-	//				direction.y++;
-	//				break;
-	//			case SDLK_a:
-	//				direction.x--;
-	//				break;
-	//			case SDLK_d:
-	//				direction.x++;
-	//				break;
-	//			}
-	//		}
-	//		if (e.type == SDL_MOUSEBUTTONDOWN) {
-	//			
-	//		}
-	//		//process event for IMGUI
-	//		ImGui_ImplSDL2_ProcessEvent(&e);
-	//	}
-	//	
-	//	if (m_pPlayers[1] != nullptr)
-	//	{
-	//		MoveCommand move{ m_pPlayers[1], direction };
-	//		move.Execute();
-	//	}
+			SDL_Event e;
+			while (SDL_PollEvent(&e)) {
+				if (e.type == SDL_QUIT) {
+					return false;
+				}
+				if (e.type == SDL_KEYDOWN) {
+					WORD key = static_cast<WORD>(e.key.keysym.sym);
+					m_PressedKeys.insert(key);
+				}
+				if (e.type == SDL_KEYUP)
+				{
+					WORD key = static_cast<WORD>(e.key.keysym.sym);
+					m_PressedKeys.erase(key);
+				}
+				if (e.type == SDL_MOUSEBUTTONDOWN) {
 
-	return true;
+				}
+				//process event for IMGUI
+				ImGui_ImplSDL2_ProcessEvent(&e);
+			}
+
+			for (const auto& key : m_PressedKeys)
+			{
+				Command* Command = m_KeyMap[key];
+				if (Command)
+					Command->Execute();
+			}
+
+			return true;
+		}
+
+		bool IsPressed(WORD button)
+		{
+			return (m_CurrentState.Gamepad.wButtons & button) != 0;
+		}
+
+		void BindCommand(WORD button, Command* command)
+		{
+			m_KeyMap[button] = command;
+		}
+	private:
+		XINPUT_STATE m_CurrentState{};
+
+		std::map<WORD, Command*> m_KeyMap;
+		std::unordered_set<WORD> m_PressedKeys;
+};
+
+dae::InputManager::InputManager()
+	: pimpl{ std::make_unique<impl>() }
+{
 }
 
-bool dae::InputManager::IsPressed(int button) const
+dae::InputManager::~InputManager()
 {
-	return ((m_CurrentState.Gamepad.wButtons & button) != 0);
+	for (auto command : m_KeyMap)
+	{
+		delete command.second;
+		command.second = nullptr;
+	}
+}
+
+bool dae::InputManager::ProcessInput()
+{
+	return pimpl->ProcessInput();
+}
+
+bool dae::InputManager::IsPressed(WORD button) const
+{
+	return pimpl->IsPressed(button);
+}
+
+void dae::InputManager::BindCommand(WORD button, Command* command)
+{
+	pimpl->BindCommand(button, command);
 }
 
 void dae::InputManager::AddPlayer(GameObject* player)

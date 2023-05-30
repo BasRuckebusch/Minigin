@@ -1,5 +1,7 @@
 ﻿#include "MoveComponent.h"
 
+#include <iostream>
+
 dae::MoveComponent::MoveComponent(GameObject* parent) :
 	Component(parent)
 {
@@ -26,16 +28,37 @@ void dae::MoveComponent::Render() const
 
 void dae::MoveComponent::MoveLeftRight(bool MoveRight)
 {
+	//	if (MoveRight)
+	//		m_XPos += m_Speed * m_DeltaTime;
+	//	else
+	//		m_XPos -= m_Speed * m_DeltaTime;
 	if (MoveRight)
+	{
 		m_XPos += m_Speed * m_DeltaTime;
+		std::cout << "move right\n";
+	}
 	else
+	{
 		m_XPos -= m_Speed * m_DeltaTime;
+		std::cout << "move left\n";
+	}
 }
 
 void dae::MoveComponent::MoveUpDown(bool MoveDown)
 {
+	//	if (MoveDown)
+	//		m_YPos += m_Speed * m_DeltaTime;
+	//	else
+	//		m_YPos -= m_Speed * m_DeltaTime;
+
 	if (MoveDown)
+	{
 		m_YPos += m_Speed * m_DeltaTime;
+		std::cout << "move down\n";
+	}
 	else
+	{
 		m_YPos -= m_Speed * m_DeltaTime;
+		std::cout << "move up\n";
+	}
 }

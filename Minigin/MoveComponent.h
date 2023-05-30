@@ -31,4 +31,3 @@ namespace dae
 		float m_DeltaTime{};
 	};
 }
-
