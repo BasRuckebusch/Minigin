@@ -17,7 +17,7 @@ namespace dae
 	class InputManager final : public Singleton<InputManager>
 	{
 	public:
-		~InputManager() override;
+		//~InputManager() override;
 
 		bool ProcessInput();
 		bool IsPressed(int button) const;
