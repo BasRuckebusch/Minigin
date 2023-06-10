@@ -18,9 +18,16 @@ namespace dae
 		void Render() const override;
 
 		void SetDirection(glm::vec2 direction) { m_Direction = direction; }
+
+		void MoveLeftRight(bool MoveRight);
+		void MoveUpDown(bool MoveDown);
+
 	private:
 		glm::vec2 m_Direction{};
+
 		float m_Speed = 50;
+		float m_XPos;
+		float m_YPos;
+		float m_DeltaTime{};
 	};
 }
-
