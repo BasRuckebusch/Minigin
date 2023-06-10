@@ -18,6 +18,7 @@
 #include "TextComponent.h"
 #include "FPSComponent.h"
 #include "InputManager.h"
+#include "LevelReader.h"
 #include "MoveCommand.h"
 #include "MoveComponent.h"
 #include "SDLSoundSystem.h"
@@ -32,6 +33,11 @@ void load()
 
 	auto& scene = SceneManager::GetInstance().CreateScene("Demo");
 	const auto font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
+
+	std::string file{ ResourceManager::GetInstance().LoadSound("level.bmp") };
+	std::cout << file;
+	glm::vec2 worldPos = { 0, 0 };
+	LevelReader reader{ file, &scene, worldPos};
 
 	auto go = std::make_shared<GameObject>();
 	//	go->AddComponent<TextureComponent>("background.tga");
