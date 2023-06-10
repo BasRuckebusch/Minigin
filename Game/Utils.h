@@ -8,6 +8,7 @@
 #include "InputManager.h"
 #include "MoveCommand.h"
 #include "MoveComponent.h"
+#include "Renderer.h"
 #include "Scene.h"
 #include "TextureComponent.h"
 
@@ -130,8 +131,12 @@ int LoadLevelFromBMP(std::string& filename, dae::Scene* scene, glm::vec2& worldP
                 player->SetPosition((worldPos.x + x * 16), (worldPos.y + (infoHeader.height - 1 - y) * 16));
                 player->AddComponent<dae::TextureComponent>("player.tga");
                 player->AddComponent<dae::MoveComponent>();
-                player->AddComponent<dae::CameraComponent>();
+                auto camera = player->AddComponent<dae::CameraComponent>();
                 scene->Add(player);
+
+                auto& renderer = dae::Renderer::GetInstance();
+
+                camera->SetBoundaries({ worldPos.x, infoHeader.width * 16 / renderer.GetCameraScale() - 16 * 5 / renderer.GetCameraScale() });
 
                 dae::InputManager::GetInstance().BindCommand(SDLK_a, new dae::MoveLeftRight(player.get(), false));
                 dae::InputManager::GetInstance().BindCommand(SDLK_d, new dae::MoveLeftRight(player.get(), true));

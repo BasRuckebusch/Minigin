@@ -17,12 +17,15 @@ namespace dae
 		void Update(float deltaTime) override;
 		void Render() const override;
 
+		void SetBoundaries(const glm::vec2& boundaries) { m_XBoundaries = boundaries; }
+
 	private:
 		int m_Width{};
 		int m_Height{};
+		glm::vec2 m_XBoundaries{};
 		//Rectf m_Boundaries;
 
 		glm::vec2 Track(const glm::vec3& target) const;
-		void Clamp(glm::vec2& bottomLeftPos) const;
+		void Clamp() const;
 	};
 }

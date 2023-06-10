@@ -32,6 +32,12 @@ void load()
 	auto& scene = SceneManager::GetInstance().CreateScene("Demo");
 	const auto font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
 
+	// Camera and background
+	auto& renderer = Renderer::GetInstance();
+	renderer.SetBackgroundColor(SDL_Color(57, 132, 0));
+	renderer.SetCameraPosition(glm::vec2(0, -32));
+	renderer.SetCameraScale(2.f);
+
 	// Load scene from file
 	std::string file{ ResourceManager::GetInstance().GetFullFilePath("level.bmp") };
 	glm::vec2 worldPos = { 0, 0 };
@@ -53,11 +59,7 @@ void load()
 
 	ServiceLocator::GetSoundSystem().Play(titleID, 50.f);
 
-	// Camera and background
-	auto& renderer = Renderer::GetInstance();
-	renderer.SetBackgroundColor(SDL_Color(57, 132, 0));
-	renderer.SetCameraPosition(glm::vec2(0, -32));
-	renderer.SetCameraScale(2.f);
+	
 }
 
 int main(int, char* []) {
