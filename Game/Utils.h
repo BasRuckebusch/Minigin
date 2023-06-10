@@ -3,6 +3,7 @@
 #include <fstream>
 #include <cstdint>
 
+#include "CameraComponent.h"
 #include "GameObject.h"
 #include "InputManager.h"
 #include "MoveCommand.h"
@@ -116,6 +117,7 @@ int LoadLevelFromBMP(std::string& filename, dae::Scene* scene, glm::vec2& worldP
             }
             else if (red == 0 && green == 0 && blue == 0)
             {
+                // Black = Wall
                 auto go = std::make_shared<dae::GameObject>();
                 go->AddComponent<dae::TextureComponent>("wall.tga");
                 go->SetPosition((worldPos.x + x * 16), (worldPos.y + (infoHeader.height - 1 - y) * 16));
@@ -123,10 +125,12 @@ int LoadLevelFromBMP(std::string& filename, dae::Scene* scene, glm::vec2& worldP
             }
             else if (red == 0 && green == 255 && blue == 0)
             {
+                // Green = Player
                 const auto player = std::make_shared<dae::GameObject>();
                 player->SetPosition((worldPos.x + x * 16), (worldPos.y + (infoHeader.height - 1 - y) * 16));
                 player->AddComponent<dae::TextureComponent>("player.tga");
                 player->AddComponent<dae::MoveComponent>();
+                player->AddComponent<dae::CameraComponent>();
                 scene->Add(player);
 
                 dae::InputManager::GetInstance().BindCommand(SDLK_a, new dae::MoveLeftRight(player.get(), false));

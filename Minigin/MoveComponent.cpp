@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include "Renderer.h"
+
 dae::MoveComponent::MoveComponent(GameObject* parent) :
 	Component(parent)
 {
@@ -14,7 +16,6 @@ void dae::MoveComponent::Update(float deltaTime)
 {
 	m_DeltaTime = deltaTime;
 	GetParent()->SetLocalPosition({ m_XPos, m_YPos , 0});
-
 
 	//	auto pos = GetParent()->GetLocalPosition();
 	//	pos.x += m_Direction.x * m_Speed * deltaTime;

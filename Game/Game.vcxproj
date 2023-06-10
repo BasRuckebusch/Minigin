@@ -196,11 +196,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Minigin\MoveComponent.cpp" />
+    <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="MoveCommand.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Minigin\MoveComponent.h" />
+    <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="MoveCommand.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>

@@ -32,12 +32,13 @@ void load()
 	auto& scene = SceneManager::GetInstance().CreateScene("Demo");
 	const auto font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
 
+	// Load scene from file
 	std::string file{ ResourceManager::GetInstance().GetFullFilePath("level.bmp") };
 	glm::vec2 worldPos = { 0, 0 };
 	LoadLevelFromBMP(file, &scene, worldPos);
 
+	// FPS counter
 	auto go = std::make_shared<GameObject>();
-
 	const auto fpsfont = ResourceManager::GetInstance().LoadFont("Lingua.otf", 16);
 	go = std::make_shared<GameObject>();
 	go->AddComponent<TextureComponent>();
@@ -46,10 +47,17 @@ void load()
 	go->SetPosition(0, -16);
 	scene.Add(go);
 
+	// Sound
 	const std::string title = ResourceManager::GetInstance().GetFullFilePath("TitleScreen.mp3");
 	const auto titleID = ServiceLocator::GetSoundSystem().AddSound(title.c_str());
 
 	ServiceLocator::GetSoundSystem().Play(titleID, 50.f);
+
+	// Camera and background
+	auto& renderer = Renderer::GetInstance();
+	renderer.SetBackgroundColor(SDL_Color(57, 132, 0));
+	renderer.SetCameraPosition(glm::vec2(0, -32));
+	renderer.SetCameraScale(2.f);
 }
 
 int main(int, char* []) {
