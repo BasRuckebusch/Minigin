@@ -17,7 +17,7 @@
 #include "ResourceManager.h"
 #include "TextComponent.h"
 #include "FPSComponent.h"
-#include "LevelReader.h"
+#include "Utils.h"
 #include "Renderer.h"
 #include "SDLSoundSystem.h"
 #include "ServiceLocator.h"
@@ -34,7 +34,7 @@ void load()
 
 	std::string file{ ResourceManager::GetInstance().GetFullFilePath("level.bmp") };
 	glm::vec2 worldPos = { 0, 0 };
-	LevelReader reader{ file, &scene, worldPos};
+	LoadLevelFromBMP(file, &scene, worldPos);
 
 	auto go = std::make_shared<GameObject>();
 

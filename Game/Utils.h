@@ -1,7 +1,7 @@
+#pragma once
 #include <iostream>
 #include <fstream>
 #include <cstdint>
-#include "LevelReader.h"
 
 #include "GameObject.h"
 #include "InputManager.h"
@@ -41,13 +41,13 @@ struct BitmapInfoHeader
 
 #pragma pack(pop) // Restore default struct padding
 
-dae::LevelReader::LevelReader(std::string& filename, Scene* scene, glm::vec2& worldPos)
+int LoadLevelFromBMP(std::string& filename, dae::Scene* scene, glm::vec2& worldPos)
 {
 
     std::ifstream file(filename, std::ios_base::binary);
     if (!file.is_open()) {
         std::cout << "Failed to open the bitmap file." << std::endl;
-        return;
+        return 1;
     }
 
     BitmapFileHeader fileHeader;
@@ -63,7 +63,7 @@ dae::LevelReader::LevelReader(std::string& filename, Scene* scene, glm::vec2& wo
     if (fileHeader.signature != 0x4D42) {
         std::cout << "The file is not a valid bitmap." << std::endl;
         file.close();
-        return;
+        return 1;
     }
 
     // Calculate the number of bytes per pixel
@@ -83,19 +83,19 @@ dae::LevelReader::LevelReader(std::string& filename, Scene* scene, glm::vec2& wo
         std::cout << "Failed to read the pixel data." << std::endl;
         delete[] pixelData;
         file.close();
-        return;
+        return 1;
     }
 
-   //   // Open the output file for writing
-   //   std::ofstream outputFile("output.txt");
-   //   if (!outputFile.is_open()) {
-   //       std::cout << "Failed to create the output file." << std::endl;
-   //       delete[] pixelData;
-   //       file.close();
-   //       return;
-   //   }
+    //   // Open the output file for writing
+    //   std::ofstream outputFile("output.txt");
+    //   if (!outputFile.is_open()) {
+    //       std::cout << "Failed to create the output file." << std::endl;
+    //       delete[] pixelData;
+    //       file.close();
+    //       return;
+    //   }
 
-    // Print the color of each pixel
+     // Print the color of each pixel
     for (int y = infoHeader.height - 1; y >= 0; --y) { // Loop in reverse order
         for (int x = 0; x < infoHeader.width; ++x) {
             uint8_t* pixel = pixelData + y * rowSize + x * bytesPerPixel;
@@ -109,33 +109,33 @@ dae::LevelReader::LevelReader(std::string& filename, Scene* scene, glm::vec2& wo
             //    << "G = " << static_cast<int>(green) << ", "
             //    << "B = " << static_cast<int>(blue) << std::endl;
 
-            if (red == 255 && green == 255 && blue == 255) 
+            if (red == 255 && green == 255 && blue == 255)
             {
             }
-            else if (red == 0 && green == 0 && blue == 0) 
+            else if (red == 0 && green == 0 && blue == 0)
             {
-                auto go = std::make_shared<GameObject>();
-                go->AddComponent<TextureComponent>("wall.tga");
+                auto go = std::make_shared<dae::GameObject>();
+                go->AddComponent<dae::TextureComponent>("wall.tga");
                 go->SetPosition((worldPos.x + x * 16), (worldPos.y + (infoHeader.height - 1 - y) * 16));
                 scene->Add(go);
             }
-            else if (red == 0 && green == 255 && blue == 0) 
+            else if (red == 0 && green == 255 && blue == 0)
             {
-                const auto player = std::make_shared<GameObject>();
+                const auto player = std::make_shared<dae::GameObject>();
                 player->SetPosition((worldPos.x + x * 16), (worldPos.y + (infoHeader.height - 1 - y) * 16));
-                player->AddComponent<TextureComponent>("player.tga");
-                player->AddComponent<MoveComponent>();
+                player->AddComponent<dae::TextureComponent>("player.tga");
+                player->AddComponent<dae::MoveComponent>();
                 scene->Add(player);
 
-                InputManager::GetInstance().BindCommand(SDLK_a, new MoveLeftRight(player.get(), false));
-                InputManager::GetInstance().BindCommand(SDLK_d, new MoveLeftRight(player.get(), true));
-                InputManager::GetInstance().BindCommand(SDLK_w, new MoveUpDown(player.get(), false));
-                InputManager::GetInstance().BindCommand(SDLK_s, new MoveUpDown(player.get(), true));
+                dae::InputManager::GetInstance().BindCommand(SDLK_a, new dae::MoveLeftRight(player.get(), false));
+                dae::InputManager::GetInstance().BindCommand(SDLK_d, new dae::MoveLeftRight(player.get(), true));
+                dae::InputManager::GetInstance().BindCommand(SDLK_w, new dae::MoveUpDown(player.get(), false));
+                dae::InputManager::GetInstance().BindCommand(SDLK_s, new dae::MoveUpDown(player.get(), true));
             }
             else if (red == 255 && green == 0 && blue == 0) {
-                
+
             }
-            else 
+            else
             {
             }
         }
@@ -146,4 +146,5 @@ dae::LevelReader::LevelReader(std::string& filename, Scene* scene, glm::vec2& wo
     file.close();
     //outputFile.close();
 
+    return 0;
 }

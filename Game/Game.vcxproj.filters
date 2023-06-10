@@ -24,9 +24,6 @@
     <ClCompile Include="..\Minigin\MoveComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LevelReader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MoveCommand.h">
@@ -35,7 +32,7 @@
     <ClInclude Include="..\Minigin\MoveComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LevelReader.h">
+    <ClInclude Include="Utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

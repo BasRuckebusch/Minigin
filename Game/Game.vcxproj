@@ -197,13 +197,12 @@
   <ItemGroup>
     <ClCompile Include="..\Minigin\MoveComponent.cpp" />
     <ClCompile Include="Game.cpp" />
-    <ClCompile Include="LevelReader.cpp" />
     <ClCompile Include="MoveCommand.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Minigin\MoveComponent.h" />
-    <ClInclude Include="LevelReader.h" />
     <ClInclude Include="MoveCommand.h" />
+    <ClInclude Include="Utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
