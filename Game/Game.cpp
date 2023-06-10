@@ -17,10 +17,8 @@
 #include "ResourceManager.h"
 #include "TextComponent.h"
 #include "FPSComponent.h"
-#include "InputManager.h"
 #include "LevelReader.h"
-#include "MoveCommand.h"
-#include "MoveComponent.h"
+#include "Renderer.h"
 #include "SDLSoundSystem.h"
 #include "ServiceLocator.h"
 
@@ -34,66 +32,24 @@ void load()
 	auto& scene = SceneManager::GetInstance().CreateScene("Demo");
 	const auto font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
 
-	std::string file{ ResourceManager::GetInstance().LoadSound("level.bmp") };
-	std::cout << file;
+	std::string file{ ResourceManager::GetInstance().GetFullFilePath("level.bmp") };
 	glm::vec2 worldPos = { 0, 0 };
 	LevelReader reader{ file, &scene, worldPos};
 
 	auto go = std::make_shared<GameObject>();
-	//	go->AddComponent<TextureComponent>("background.tga");
-	//	scene.Add(go);
-	//	
-	//	go = std::make_shared<GameObject>();
-	//	go->AddComponent<TextureComponent>("logo.tga");
-	//	go->SetPosition(216, 180);
-	//	scene.Add(go);
-	//	
-	//	go = std::make_shared<GameObject>();
-	//	go->AddComponent<TextureComponent>();
-	//	go->AddComponent<TextComponent>("Programming 4 Assignment", font);
-	//	go->SetPosition(80, 20);
-	//	scene.Add(go);
 
 	const auto fpsfont = ResourceManager::GetInstance().LoadFont("Lingua.otf", 16);
 	go = std::make_shared<GameObject>();
 	go->AddComponent<TextureComponent>();
 	go->AddComponent<TextComponent>("0", fpsfont, SDL_Color(0, 255, 0));
 	go->AddComponent<FPSComponent>();
-	go->SetPosition(0, 5);
+	go->SetPosition(0, -16);
 	scene.Add(go);
 
-	const auto player = std::make_shared<GameObject>();
-	player->SetLocalPosition(glm::vec3(256, 280, 0));
-	player->AddComponent<TextureComponent>("player.tga");
-	player->AddComponent<MoveComponent>();
-	scene.Add(player);
-
-	InputManager::GetInstance().AddPlayer(player.get());
-
-	const auto player2 = std::make_shared<GameObject>();
-	player2->SetLocalPosition(glm::vec3(256, 300, 0));
-	player2->AddComponent<TextureComponent>("enemy.tga");
-	player2->AddComponent<MoveComponent>();
-	scene.Add(player2);
-
-	InputManager::GetInstance().AddPlayer(player2.get());
-
-
-	const std::string title = ResourceManager::GetInstance().LoadSound("TitleScreen.mp3");
+	const std::string title = ResourceManager::GetInstance().GetFullFilePath("TitleScreen.mp3");
 	const auto titleID = ServiceLocator::GetSoundSystem().AddSound(title.c_str());
 
 	ServiceLocator::GetSoundSystem().Play(titleID, 50.f);
-
-	InputManager::GetInstance().BindCommand(SDL_SCANCODE_LEFT, new MoveLeftRight(player.get(), false));
-	InputManager::GetInstance().BindCommand(SDL_SCANCODE_RIGHT, new MoveLeftRight(player.get(), true));
-	InputManager::GetInstance().BindCommand(SDL_SCANCODE_UP, new MoveUpDown(player.get(), false));
-	InputManager::GetInstance().BindCommand(SDL_SCANCODE_DOWN, new MoveUpDown(player.get(), true));
-
-	InputManager::GetInstance().BindCommand(SDLK_a, new MoveLeftRight(player2.get(), false));
-	InputManager::GetInstance().BindCommand(SDLK_d, new MoveLeftRight(player2.get(), true));
-	InputManager::GetInstance().BindCommand(SDLK_w, new MoveUpDown(player2.get(), false));
-	InputManager::GetInstance().BindCommand(SDLK_s, new MoveUpDown(player2.get(), true));
-
 }
 
 int main(int, char* []) {

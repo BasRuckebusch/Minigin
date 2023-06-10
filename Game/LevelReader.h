@@ -6,7 +6,7 @@ namespace dae
 {
 	class Scene;
 
-	class LevelReader
+	class LevelReader final
 	{
 	public:
 		LevelReader(std::string& file, Scene* scene, glm::vec2& worldPos);

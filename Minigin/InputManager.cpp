@@ -93,8 +93,3 @@ void dae::InputManager::BindCommand(WORD button, Command* command)
 {
 	pimpl->BindCommand(button, command);
 }
-
-void dae::InputManager::AddPlayer(GameObject* player)
-{
-	m_pPlayers.emplace_back(player);
-}

@@ -4,6 +4,9 @@
 #include "LevelReader.h"
 
 #include "GameObject.h"
+#include "InputManager.h"
+#include "MoveCommand.h"
+#include "MoveComponent.h"
 #include "Scene.h"
 #include "TextureComponent.h"
 
@@ -106,20 +109,34 @@ dae::LevelReader::LevelReader(std::string& filename, Scene* scene, glm::vec2& wo
             //    << "G = " << static_cast<int>(green) << ", "
             //    << "B = " << static_cast<int>(blue) << std::endl;
 
-            if (red == 255 && green == 255 && blue == 255) {
+            if (red == 255 && green == 255 && blue == 255) 
+            {
             }
-            else if (red == 0 && green == 0 && blue == 0) {
-
+            else if (red == 0 && green == 0 && blue == 0) 
+            {
                 auto go = std::make_shared<GameObject>();
                 go->AddComponent<TextureComponent>("wall.tga");
                 go->SetPosition((worldPos.x + x * 16), (worldPos.y + (infoHeader.height - 1 - y) * 16));
                 scene->Add(go);
             }
-            else if (red == 0 && green == 255 && blue == 0) {
+            else if (red == 0 && green == 255 && blue == 0) 
+            {
+                const auto player = std::make_shared<GameObject>();
+                player->SetPosition((worldPos.x + x * 16), (worldPos.y + (infoHeader.height - 1 - y) * 16));
+                player->AddComponent<TextureComponent>("player.tga");
+                player->AddComponent<MoveComponent>();
+                scene->Add(player);
+
+                InputManager::GetInstance().BindCommand(SDLK_a, new MoveLeftRight(player.get(), false));
+                InputManager::GetInstance().BindCommand(SDLK_d, new MoveLeftRight(player.get(), true));
+                InputManager::GetInstance().BindCommand(SDLK_w, new MoveUpDown(player.get(), false));
+                InputManager::GetInstance().BindCommand(SDLK_s, new MoveUpDown(player.get(), true));
             }
             else if (red == 255 && green == 0 && blue == 0) {
+                
             }
-            else {
+            else 
+            {
             }
         }
     }

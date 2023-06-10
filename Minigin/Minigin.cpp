@@ -124,7 +124,6 @@ void dae::Minigin::Run(const std::function<void()>& load)
 			const auto sleepTime = t1 + std::chrono::milliseconds(m_MsPerFrame) - std::chrono::high_resolution_clock::now();
 			std::this_thread::sleep_for(sleepTime);
 		}
-		
 	}
 
 }
