@@ -44,6 +44,8 @@ struct BitmapInfoHeader
 int LoadLevelFromBMP(std::string& filename, dae::Scene* scene, glm::vec2& worldPos)
 {
 
+    scene->RemoveAll();
+
     std::ifstream file(filename, std::ios_base::binary);
     if (!file.is_open()) {
         std::cout << "Failed to open the bitmap file." << std::endl;
