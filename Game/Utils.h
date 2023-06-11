@@ -10,6 +10,7 @@
 #include "GameObject.h"
 #include "InputManager.h"
 #include "CustomCommand.h"
+#include "EndComponent.h"
 #include "EnemyComponent.h"
 #include "MoveComponent.h"
 #include "Renderer.h"
@@ -110,6 +111,7 @@ inline int LoadLevelFromBMP(const std::string& filename, dae::Scene* scene, cons
 
 			if (red == 255 && green == 255 && blue == 255)
 			{
+				//White = Nothing
 			}
 			else if (red == 0 && green == 0 && blue == 0)
 			{
@@ -177,6 +179,19 @@ inline int LoadLevelFromBMP(const std::string& filename, dae::Scene* scene, cons
 					collisions.AddWall(go);
 					collisions.AddBrick(go);
 				}
+			}
+			else if (red == 255 && green == 255 && blue == 0)
+			{
+				// Yellow = End
+
+				auto go = std::make_shared<dae::GameObject>();
+				go->AddComponent<dae::TextureComponent>("end.tga");
+				go->SetPosition((worldPos.x + x * tileSize), (worldPos.y + (infoHeader.height - 1 - y) * tileSize));
+				go->AddComponent<dae::CollisionComponent>(go->GetWorldPosition(), tileSize, tileSize);
+				std::vector<std::string> levelNames{ "level.bmp", "level2.bmp", "level3.bmp" };
+				go->AddComponent<dae::EndComponent>(scene, levelNames);
+				scene->Add(go);
+
 			}
 		}
 	}

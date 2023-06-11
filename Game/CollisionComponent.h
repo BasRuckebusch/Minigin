@@ -20,7 +20,7 @@ namespace dae
 		void Render() const override;
 		
 
-		SDL_Rect GetRect() { return m_Rect; }
+		SDL_Rect GetRect() const { return m_Rect; }
 		void SetPosition(const glm::vec2& pos) 
 		{
 			m_Rect.x = static_cast<int>(pos.x + m_Offset.x);

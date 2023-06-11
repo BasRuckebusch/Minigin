@@ -39,6 +39,7 @@ namespace dae
 
 		void AddEnemy(std::shared_ptr<GameObject> object);
 		void RemoveEnemy(std::shared_ptr<GameObject> object);
+		int GetAmountEnemies() const { return static_cast<int>(m_pEnemies.size()); }
 
 		void RemoveAll();
 
