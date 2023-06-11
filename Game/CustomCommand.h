@@ -57,5 +57,15 @@ namespace dae
 		int m_Id{};
 		std::vector<std::string> m_LevelNames{};
 	};
+
+	class LevelLoad final : public Command
+	{
+	public:
+		explicit LevelLoad(Scene* pScene, const std::string& levelName) : m_pScene(pScene), m_LevelName(levelName) {}
+		void Execute() override;
+	private:
+		Scene* m_pScene;
+		std::string m_LevelName{};
+	};
 }
 

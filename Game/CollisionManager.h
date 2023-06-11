@@ -20,6 +20,7 @@ namespace dae
 
 		std::vector<std::shared_ptr<GameObject>> AllBricksInRect(const SDL_Rect& rect);
 		std::vector<std::shared_ptr<dae::GameObject>> AllPlayersInRect(const SDL_Rect& rect);
+		std::vector<std::shared_ptr<dae::GameObject>> AllEnemiesInRect(const SDL_Rect& rect);
 		//std::vector<std::shared_ptr<GameObject>> AllBombsInRect(const SDL_Rect& rect, int tileSize);
 
 		void AddWall(std::shared_ptr<GameObject> object);
@@ -36,12 +37,16 @@ namespace dae
 		void RemovePlayer(std::shared_ptr<GameObject> object);
 		std::vector<std::shared_ptr<GameObject>> GetPlayers() { return m_pPlayers; };
 
+		void AddEnemy(std::shared_ptr<GameObject> object);
+		void RemoveEnemy(std::shared_ptr<GameObject> object);
+
 		void RemoveAll();
 
 	private:
 		std::vector<std::shared_ptr<GameObject>> m_pWalls{};
 		std::vector<std::shared_ptr<GameObject>> m_pBricks{};
 		std::vector<std::shared_ptr<GameObject>> m_pPlayers{};
+		std::vector<std::shared_ptr<GameObject>> m_pEnemies{};
 		std::vector<std::shared_ptr<GameObject>> m_pBombs{};
 	};
 }

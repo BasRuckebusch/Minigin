@@ -224,7 +224,6 @@ xcopy $(SolutionDir)3rdParty\SDL2_mixer\lib$(PlatformTarget)*.dll $(OutputPath) 
     <ClInclude Include="Command.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="Font.h" />
-    <ClInclude Include="FPSComponent.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Minigin.h" />
@@ -254,7 +253,6 @@ xcopy $(SolutionDir)3rdParty\SDL2_mixer\lib$(PlatformTarget)*.dll $(OutputPath) 
     <ClCompile Include="Command.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="Font.cpp" />
-    <ClCompile Include="FPSComponent.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="Main.cpp" />

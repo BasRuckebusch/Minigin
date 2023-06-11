@@ -73,6 +73,25 @@ std::vector<std::shared_ptr<dae::GameObject>> dae::CollisionManager::AllPlayersI
 	return result;
 }
 
+std::vector<std::shared_ptr<dae::GameObject>> dae::CollisionManager::AllEnemiesInRect(const SDL_Rect& rect)
+{
+	std::vector<std::shared_ptr<GameObject>> result{};
+
+	for (auto& pEnemy : m_pEnemies)
+	{
+		if (pEnemy.get()->HasComponent<CollisionComponent>())
+		{
+			const auto collider = pEnemy.get()->GetComponent<CollisionComponent>();
+			if (collider->DoesCollide(rect))
+			{
+				result.push_back(pEnemy);
+			}
+		}
+	}
+
+	return result;
+}
+
 //	std::vector<std::shared_ptr<dae::GameObject>> dae::CollisionManager::AllBombsInRect(const SDL_Rect& rect, int tileSize)
 //	{
 //		std::vector<std::shared_ptr<GameObject>> result{};
@@ -130,10 +149,21 @@ void dae::CollisionManager::RemovePlayer(std::shared_ptr<GameObject> object)
 	std::erase(m_pPlayers, object);
 }
 
+void dae::CollisionManager::AddEnemy(std::shared_ptr<GameObject> object)
+{
+	m_pEnemies.emplace_back(std::move(object));
+}
+
+void dae::CollisionManager::RemoveEnemy(std::shared_ptr<GameObject> object)
+{
+	std::erase(m_pEnemies, object);
+}
+
 void dae::CollisionManager::RemoveAll()
 {
 	m_pWalls.clear();
 	m_pPlayers.clear();
+	m_pEnemies.clear();
 	m_pBricks.clear();
 	m_pBombs.clear();
 }

@@ -33,3 +33,8 @@ void dae::NextLevel::Execute()
 	}
 	LoadLevel(m_LevelNames[m_Id], m_pScene);
 }
+
+void dae::LevelLoad::Execute()
+{
+	LoadLevel(m_LevelName, m_pScene);
+}
