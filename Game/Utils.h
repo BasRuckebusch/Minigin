@@ -4,6 +4,8 @@
 #include <cstdint>
 
 #include "CameraComponent.h"
+#include "CollisionManager.h"
+#include "CollisionComponent.h"
 #include "GameObject.h"
 #include "InputManager.h"
 #include "MoveCommand.h"
@@ -43,13 +45,15 @@ struct BitmapInfoHeader
 
 #pragma pack(pop) // Restore default struct padding
 
-int LoadLevelFromBMP(std::string& filename, dae::Scene* scene, glm::vec2& worldPos)
+int LoadLevelFromBMP(const std::string& filename, dae::Scene* scene, const glm::vec2& worldPos, int tileSize)
 {
 
-    scene->RemoveAll();
+    std::srand(static_cast<unsigned>(std::time(nullptr)));
+
+    //scene->RemoveAll();
 
     std::ifstream file(filename, std::ios_base::binary);
-    if (!file.is_open()) {
+    if (!file) {
         std::cout << "Failed to open the bitmap file." << std::endl;
         return 1;
     }
@@ -77,41 +81,29 @@ int LoadLevelFromBMP(std::string& filename, dae::Scene* scene, glm::vec2& worldP
     int rowSize = ((infoHeader.width * bytesPerPixel + 3) & (~3));
 
     // Allocate memory for the pixel data
-    uint8_t* pixelData = new uint8_t[rowSize * infoHeader.height];
+    std::unique_ptr<uint8_t[]> pixelData(new uint8_t[rowSize * infoHeader.height]);
 
     // Read the pixel data
-    file.read(reinterpret_cast<char*>(pixelData), rowSize * infoHeader.height);
+    file.read(reinterpret_cast<char*>(pixelData.get()), rowSize * infoHeader.height);
+
 
     // Check if the pixel data was read successfully
-    if (!file.is_open()) {
+    if (!file) {
         std::cout << "Failed to read the pixel data." << std::endl;
-        delete[] pixelData;
         file.close();
         return 1;
     }
 
-    //   // Open the output file for writing
-    //   std::ofstream outputFile("output.txt");
-    //   if (!outputFile.is_open()) {
-    //       std::cout << "Failed to create the output file." << std::endl;
-    //       delete[] pixelData;
-    //       file.close();
-    //       return;
-    //   }
+    auto& collisions = dae::CollisionManager::GetInstance();
 
-     // Print the color of each pixel
+	// Check the color of each pixel
     for (int y = infoHeader.height - 1; y >= 0; --y) { // Loop in reverse order
         for (int x = 0; x < infoHeader.width; ++x) {
-            uint8_t* pixel = pixelData + y * rowSize + x * bytesPerPixel;
+            uint8_t* pixel = pixelData.get() + y * rowSize + x * bytesPerPixel;
 
             uint8_t blue = pixel[0];
             uint8_t green = pixel[1];
             uint8_t red = pixel[2];
-
-            //std::cout << "Pixel at (" << x << ", " << y << "): "
-            //    << "R = " << static_cast<int>(red) << ", "
-            //    << "G = " << static_cast<int>(green) << ", "
-            //    << "B = " << static_cast<int>(blue) << std::endl;
 
             if (red == 255 && green == 255 && blue == 255)
             {
@@ -121,30 +113,51 @@ int LoadLevelFromBMP(std::string& filename, dae::Scene* scene, glm::vec2& worldP
                 // Black = Wall
                 auto go = std::make_shared<dae::GameObject>();
                 go->AddComponent<dae::TextureComponent>("wall.tga");
-                go->SetPosition((worldPos.x + x * 16), (worldPos.y + (infoHeader.height - 1 - y) * 16));
+                go->SetPosition((worldPos.x + x * tileSize), (worldPos.y + (infoHeader.height - 1 - y) * tileSize));
+                go->AddComponent<dae::CollisionComponent>(go->GetWorldPosition(), tileSize, tileSize);
                 scene->Add(go);
+
+                collisions.AddWall(go);
             }
             else if (red == 0 && green == 255 && blue == 0)
             {
                 // Green = Player
                 const auto player = std::make_shared<dae::GameObject>();
-                player->SetPosition((worldPos.x + x * 16), (worldPos.y + (infoHeader.height - 1 - y) * 16));
+                player->SetPosition((worldPos.x + x * tileSize), (worldPos.y + (infoHeader.height - 1 - y) * tileSize));
                 player->AddComponent<dae::TextureComponent>("player.tga");
                 player->AddComponent<dae::MoveComponent>();
                 auto camera = player->AddComponent<dae::CameraComponent>();
+                auto pos = player->GetWorldPosition();
+                player->AddComponent<dae::CollisionComponent>(pos, tileSize, tileSize);
                 scene->Add(player);
+
+
+                collisions.AddPlayer(player);
 
                 auto& renderer = dae::Renderer::GetInstance();
 
-                camera->SetBoundaries({ worldPos.x, infoHeader.width * 16 / renderer.GetCameraScale() - 16 * 5 / renderer.GetCameraScale() });
+                camera->SetBoundaries({ worldPos.x, infoHeader.width * tileSize / renderer.GetCameraScale() - tileSize * 5 / renderer.GetCameraScale() });
 
-                dae::InputManager::GetInstance().BindCommand(SDLK_a, new dae::MoveLeftRight(player.get(), false));
-                dae::InputManager::GetInstance().BindCommand(SDLK_d, new dae::MoveLeftRight(player.get(), true));
-                dae::InputManager::GetInstance().BindCommand(SDLK_w, new dae::MoveUpDown(player.get(), false));
-                dae::InputManager::GetInstance().BindCommand(SDLK_s, new dae::MoveUpDown(player.get(), true));
+                dae::InputManager::GetInstance().BindCommand(SDLK_a, std::make_unique<dae::MoveLeftRight>(player.get(), false));
+                dae::InputManager::GetInstance().BindCommand(SDLK_d, std::make_unique<dae::MoveLeftRight>(player.get(), true));
+                dae::InputManager::GetInstance().BindCommand(SDLK_w, std::make_unique<dae::MoveUpDown>(player.get(), false));
+                dae::InputManager::GetInstance().BindCommand(SDLK_s, std::make_unique<dae::MoveUpDown>(player.get(), true));
             }
-            else if (red == 255 && green == 0 && blue == 0) {
+            else if (red == 255 && green == 0 && blue == 0) 
+            {
 
+            }
+            else if (red == 0 && green == 0 && blue == 255) 
+            {
+                // Blue = Breakable Wall
+
+                if (const int r = rand() % 11; r != 0)
+                {
+                    //auto go = std::make_shared<dae::GameObject>();
+                    //go->AddComponent<dae::TextureComponent>("brick.tga");
+                    //go->SetPosition((worldPos.x + x * tileSize), (worldPos.y + (infoHeader.height - 1 - y) * tileSize));
+                    //scene->Add(go);
+                }
             }
             else
             {
@@ -153,9 +166,7 @@ int LoadLevelFromBMP(std::string& filename, dae::Scene* scene, glm::vec2& worldP
     }
 
     // Clean up
-    delete[] pixelData;
     file.close();
-    //outputFile.close();
 
     return 0;
 }

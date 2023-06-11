@@ -1,7 +1,4 @@
 #include "CameraComponent.h"
-
-#include <iostream>
-
 #include "Renderer.h"
 
 dae::CameraComponent::CameraComponent(GameObject* parent) :

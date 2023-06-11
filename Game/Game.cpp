@@ -1,26 +1,22 @@
 #include <SDL.h>
-
 #if _DEBUG
 // ReSharper disable once CppUnusedIncludeDirective
-//#include <vld.h>
+#include <vld.h>
 #endif
-#include <iostream>
-
 #include "Minigin.h"
 
-
+#include "FPSComponent.h"
 #include "GameObject.h"
+#include "Renderer.h"
+#include "ResourceManager.h"
 #include "Scene.h"
 #include "SceneManager.h"
-#include "SoundSystem.h"
-#include "TextureComponent.h"
-#include "ResourceManager.h"
-#include "TextComponent.h"
-#include "FPSComponent.h"
-#include "Utils.h"
-#include "Renderer.h"
 #include "SDLSoundSystem.h"
 #include "ServiceLocator.h"
+#include "SoundSystem.h"
+#include "TextComponent.h"
+#include "TextureComponent.h"
+#include "Utils.h"
 
 using namespace dae;
 
@@ -39,9 +35,11 @@ void load()
 	renderer.SetCameraScale(2.f);
 
 	// Load scene from file
+	int tileSize{ 16 };
+
 	std::string file{ ResourceManager::GetInstance().GetFullFilePath("level.bmp") };
 	glm::vec2 worldPos = { 0, 0 };
-	LoadLevelFromBMP(file, &scene, worldPos);
+	LoadLevelFromBMP(file, &scene, worldPos, tileSize);
 
 	// FPS counter
 	auto go = std::make_shared<GameObject>();
