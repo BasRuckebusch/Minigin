@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 #include "Component.h"
 
 namespace dae
@@ -8,7 +9,7 @@ namespace dae
 	class BomberManComponent final : public Component
 	{
 	public:
-		BomberManComponent(GameObject* parent, int tileSize);
+		BomberManComponent(GameObject* parent, Scene* scene, int tileSize);
 		~BomberManComponent() override = default;
 
 		BomberManComponent(const BomberManComponent& other) = delete;
@@ -19,9 +20,21 @@ namespace dae
 		void Update(float deltaTime) override;
 		void Render() const override;
 
-		void PlaceBomb(Scene* scene);
+		void PlaceBomb();
+		void GiveBomb();
+		void Die();
+		void SetLevelName(const std::string& levelName) { m_LevelName = levelName; }
 
 	private:
-		int m_TileSize{16};
+		int m_TileSize{ 16 };
+		Scene* m_pScene{};
+		std::string m_LevelName{};
+		bool m_Dead{ false };
+		float m_BombTimer{ 0.7f };
+		float m_BombElapsed{ m_BombTimer };
+		int m_Bombs{0};
+		int m_MaxBombs{1};
+		float m_Fuse{2.f};
+		int m_Range{1};
 	};
 }

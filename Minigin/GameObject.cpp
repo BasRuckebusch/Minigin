@@ -10,13 +10,20 @@ dae::GameObject::~GameObject()
 }
 void dae::GameObject::Update(float deltaTime) const
 {
-	for (const auto& pComponent : m_pComponents)
+	if (!m_pComponents.empty())
 	{
-		pComponent->Update(deltaTime);
-	}
-	for (const auto& child : m_pChildren)
-	{
-		child->Update(deltaTime);
+		for (const auto& pComponent : m_pComponents)
+		{
+			if (pComponent)
+			{
+				pComponent->Update(deltaTime);
+			}
+
+		}
+		for (const auto& child : m_pChildren)
+		{
+			child->Update(deltaTime);
+		}
 	}
 }
 

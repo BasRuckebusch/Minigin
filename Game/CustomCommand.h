@@ -41,11 +41,10 @@ namespace dae
 	class PlaceBomb final : public Command
 	{
 	public:
-		explicit PlaceBomb(GameObject* pGameObject, Scene* pScene) : m_pGameObject(pGameObject), m_pScene(pScene) {}
+		explicit PlaceBomb(GameObject* pGameObject) : m_pGameObject(pGameObject) {}
 		void Execute() override;
 	private:
 		GameObject* m_pGameObject;
-		Scene* m_pScene;
 	};
 
 	class NextLevel final : public Command
