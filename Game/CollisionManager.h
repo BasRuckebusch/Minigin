@@ -18,8 +18,13 @@ namespace dae
 		bool CheckPointInWall(const glm::vec2& point);
 		bool CheckRectCollide(const SDL_Rect& col);
 
+		std::vector<std::shared_ptr<GameObject>> AllBricksInRect(const SDL_Rect& rect);
+
 		void AddWall(std::shared_ptr<GameObject> object);
 		void RemoveWall(std::shared_ptr<GameObject> object);
+
+		void AddBrick(std::shared_ptr<GameObject> object);
+		void RemoveBrick(std::shared_ptr<GameObject> object);
 
 		void AddPlayer(std::shared_ptr<GameObject> object);
 		void RemovePlayer(std::shared_ptr<GameObject> object);
@@ -28,6 +33,7 @@ namespace dae
 
 	private:
 		std::vector<std::shared_ptr<GameObject>> m_pWalls{};
+		std::vector<std::shared_ptr<GameObject>> m_pBricks{};
 		std::vector<std::shared_ptr<GameObject>> m_pPlayers{};
 	};
 }

@@ -1,7 +1,6 @@
 #include "InputManager.h"
 #include <SDL.h>
 #include <backends/imgui_impl_sdl2.h>
-#include <iostream>
 #include "Command.h"
 
 class dae::InputManager::impl

@@ -196,18 +196,20 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Minigin\MoveComponent.cpp" />
+    <ClCompile Include="BomberManComponent.cpp" />
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="CollisionComponent.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="Game.cpp" />
-    <ClCompile Include="MoveCommand.cpp" />
+    <ClCompile Include="CustomCommand.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Minigin\MoveComponent.h" />
+    <ClInclude Include="BomberManComponent.h" />
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="CollisionComponent.h" />
     <ClInclude Include="CollisionManager.h" />
-    <ClInclude Include="MoveCommand.h" />
+    <ClInclude Include="CustomCommand.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -4,6 +4,8 @@
 
 namespace dae
 {
+	class Scene;
+
 	class MoveCommand final : public Command
 	{
 	public:
@@ -32,6 +34,16 @@ namespace dae
 	private:
 		GameObject* m_pGameObject;
 		bool m_MoveDown;
+	};
+
+	class PlaceBomb final : public Command
+	{
+	public:
+		explicit PlaceBomb(GameObject* pGameObject, Scene* pScene) : m_pGameObject(pGameObject), m_pScene(pScene) {}
+		void Execute() override;
+	private:
+		GameObject* m_pGameObject;
+		Scene* m_pScene;
 	};
 }
 

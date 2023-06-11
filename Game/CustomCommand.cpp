@@ -1,4 +1,6 @@
-#include "MoveCommand.h"
+#include "CustomCommand.h"
+
+#include "BomberManComponent.h"
 #include "GameObject.h"
 #include "MoveComponent.h"
 
@@ -16,4 +18,9 @@ void dae::MoveLeftRight::Execute()
 void dae::MoveUpDown::Execute()
 {
 	m_pGameObject->GetComponent<MoveComponent>()->MoveUpDown(m_MoveDown);
+}
+
+void dae::PlaceBomb::Execute()
+{
+	m_pGameObject->GetComponent<BomberManComponent>()->PlaceBomb(m_pScene);
 }
