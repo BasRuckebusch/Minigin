@@ -37,7 +37,7 @@ void load()
 	// Load scene from file
 	int tileSize{ 16 };
 
-	std::string file{ ResourceManager::GetInstance().GetFullFilePath("level.bmp") };
+	std::string file{ ResourceManager::GetInstance().GetFullFilePath("bombtest.bmp") };
 	glm::vec2 worldPos = { 0, 0 };
 	LoadLevelFromBMP(file, &scene, worldPos, tileSize);
 

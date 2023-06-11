@@ -1,4 +1,3 @@
-#include <SDL_rect.h>
 #include "Component.h"
 
 namespace dae

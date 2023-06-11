@@ -1,5 +1,7 @@
 #include "BomberManComponent.h"
 #include <iostream>
+
+#include "BombComponent.h"
 #include "Scene.h"
 #include "TextureComponent.h"
 
@@ -26,6 +28,7 @@ void dae::BomberManComponent::PlaceBomb(Scene* scene)
 	auto go = std::make_shared<dae::GameObject>();
 	go->AddComponent<dae::TextureComponent>("bomb.tga");
 	go->SetPosition(tilePos.x, tilePos.y);
+	go->AddComponent<dae::BombComponent>(16, 1.f, 1);
 	scene->Add(go);
 	//std::cout << tilePos.x << " - " << tilePos.y << "\n";
 }

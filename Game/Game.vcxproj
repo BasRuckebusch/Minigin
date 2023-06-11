@@ -196,6 +196,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Minigin\MoveComponent.cpp" />
+    <ClCompile Include="BombComponent.cpp" />
     <ClCompile Include="BomberManComponent.cpp" />
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="CollisionComponent.cpp" />
@@ -205,6 +206,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Minigin\MoveComponent.h" />
+    <ClInclude Include="BombComponent.h" />
     <ClInclude Include="BomberManComponent.h" />
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="CollisionComponent.h" />

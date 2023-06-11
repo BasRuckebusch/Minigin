@@ -164,6 +164,7 @@ int LoadLevelFromBMP(const std::string& filename, dae::Scene* scene, const glm::
 					scene->Add(go);
 
 					collisions.AddWall(go);
+					collisions.AddBrick(go);
 				}
 			}
 		}
