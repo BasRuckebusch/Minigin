@@ -70,13 +70,13 @@ void dae::BombComponent::Explode()
 		auto enemies = collisions.AllEnemiesInRect(xRect);
 		for (auto go : enemies)
 		{
-			collisions.RemoveBrick(go);
+			collisions.RemoveEnemy(go);
 			go.get()->Destroy();
 		}
 		enemies = collisions.AllPlayersInRect(yRect);
 		for (auto go : enemies)
 		{
-			collisions.RemoveBrick(go);
+			collisions.RemoveEnemy(go);
 			go.get()->Destroy();
 		}
 

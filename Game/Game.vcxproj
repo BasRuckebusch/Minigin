@@ -202,6 +202,7 @@
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="CollisionComponent.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
+    <ClCompile Include="EndComponent.cpp" />
     <ClCompile Include="EnemyComponent.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="CustomCommand.cpp" />
@@ -215,6 +216,7 @@
     <ClInclude Include="CollisionComponent.h" />
     <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="CustomCommand.h" />
+    <ClInclude Include="EndComponent.h" />
     <ClInclude Include="EnemyComponent.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>

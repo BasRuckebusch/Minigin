@@ -50,7 +50,8 @@ namespace dae
 	class NextLevel final : public Command
 	{
 	public:
-		explicit NextLevel(Scene* pScene, const std::vector<std::string>& levelNames ) : m_pScene(pScene), m_LevelNames(levelNames){}
+		explicit NextLevel(Scene* pScene, std::vector<std::string> levelNames ) : m_pScene(pScene), m_LevelNames(
+			std::move(levelNames)){}
 		void Execute() override;
 	private:
 		Scene* m_pScene;
