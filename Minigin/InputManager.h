@@ -23,12 +23,12 @@ namespace dae
 
 		bool ProcessInput();
 		bool IsPressed(WORD button) const;
-		void BindCommand(WORD button, Command* command);
+		void BindCommand(WORD button, std::unique_ptr<Command> command);
 	private:
 		XINPUT_STATE m_CurrentState{};
 		int m_DeadZone = 7000;
 
-		std::map<WORD, Command*> m_KeyMap;
+		std::map<WORD, std::unique_ptr<Command>> m_KeyMap;
 		std::unordered_set<WORD> m_PressedKeys;
 
 		class impl;

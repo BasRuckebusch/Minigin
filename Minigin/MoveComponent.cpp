@@ -1,6 +1,9 @@
-﻿#include "MoveComponent.h"
+﻿#pragma once
+#include "MoveComponent.h"
+#include "Renderer.h"
+#include "CollisionComponent.h"
+#include "CollisionManager.h"
 
-#include <iostream>
 
 dae::MoveComponent::MoveComponent(GameObject* parent) :
 	Component(parent)
@@ -15,11 +18,11 @@ void dae::MoveComponent::Update(float deltaTime)
 	m_DeltaTime = deltaTime;
 	GetParent()->SetLocalPosition({ m_XPos, m_YPos , 0});
 
+	if (GetParent()->HasComponent<CollisionComponent>())
+	{
+		GetParent()->GetComponent<CollisionComponent>()->SetPosition({ m_XPos, m_YPos });
+	}
 
-	//	auto pos = GetParent()->GetLocalPosition();
-	//	pos.x += m_Direction.x * m_Speed * deltaTime;
-	//	pos.y += m_Direction.y * m_Speed * deltaTime;;
-	//	GetParent()->SetLocalPosition(pos);
 }
 
 void dae::MoveComponent::Render() const
@@ -28,33 +31,95 @@ void dae::MoveComponent::Render() const
 
 void dae::MoveComponent::MoveLeftRight(bool MoveRight)
 {
-	//	if (MoveRight)
-	//		m_XPos += m_Speed * m_DeltaTime;
-	//	else
-	//		m_XPos -= m_Speed * m_DeltaTime;
-	if (MoveRight)
+	if (GetParent()->HasComponent<CollisionComponent>())
 	{
-		m_XPos += m_Speed * m_DeltaTime;
+		auto col = GetParent()->GetComponent<CollisionComponent>();
+		auto& collisions = dae::CollisionManager::GetInstance();
+
+		if (MoveRight)
+		{
+			float newx = m_XPos + m_Speed * m_DeltaTime;
+			glm::vec2 newpos{ newx, m_YPos };
+
+			auto rect = col->GetRect();
+			rect.x = static_cast<int>(newx);
+
+			if (!collisions.CheckRectCollide(rect))
+			{
+				m_XPos = newx;
+			}
+		}
+		else
+		{
+			float newx = m_XPos - m_Speed * m_DeltaTime;
+			glm::vec2 newpos{ newx, m_YPos };
+
+			auto rect = col->GetRect();
+			rect.x = static_cast<int>(newx);
+
+			if (!collisions.CheckRectCollide(rect))
+			{
+				m_XPos = newx;
+			}
+		}
 	}
 	else
 	{
-		m_XPos -= m_Speed * m_DeltaTime;
+		if (MoveRight)
+		{
+			m_XPos += m_Speed * m_DeltaTime;
+		}
+		else
+		{
+			m_XPos -= m_Speed * m_DeltaTime;
+		}
 	}
 }
 
 void dae::MoveComponent::MoveUpDown(bool MoveDown)
 {
-	//	if (MoveDown)
-	//		m_YPos += m_Speed * m_DeltaTime;
-	//	else
-	//		m_YPos -= m_Speed * m_DeltaTime;
-
-	if (MoveDown)
+	if (GetParent()->HasComponent<CollisionComponent>())
 	{
-		m_YPos += m_Speed * m_DeltaTime;
+		auto col = GetParent()->GetComponent<CollisionComponent>();
+		auto& collisions = dae::CollisionManager::GetInstance();
+
+		if (MoveDown)
+		{
+			float newy = m_YPos + m_Speed * m_DeltaTime;
+			//glm::vec2 newpos{ m_XPos, newy };
+
+			auto rect = col->GetRect();
+			rect.y = static_cast<int>(newy);
+
+			if (!collisions.CheckRectCollide(rect))
+			{
+				m_YPos = newy;
+			}
+		}
+		else
+		{
+			float newy = m_YPos - m_Speed * m_DeltaTime;
+			glm::vec2 newpos{ m_XPos, newy };
+
+			auto rect = col->GetRect();
+			rect.y = static_cast<int>(newy);
+
+			if (!collisions.CheckRectCollide(rect))
+			{
+				m_YPos = newy;
+			}
+		}
 	}
 	else
 	{
-		m_YPos -= m_Speed * m_DeltaTime;
+		if (MoveDown)
+		{
+			m_YPos += m_Speed * m_DeltaTime;
+		}
+		else
+		{
+			m_YPos -= m_Speed * m_DeltaTime;
+		}
 	}
+	
 }
