@@ -1,6 +1,4 @@
-#pragma once
 #include "EnemyComponent.h"
-
 #include "BomberManComponent.h"
 #include "Renderer.h"
 #include "CollisionComponent.h"
