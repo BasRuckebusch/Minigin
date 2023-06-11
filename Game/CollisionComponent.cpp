@@ -20,8 +20,6 @@ void dae::CollisionComponent::Update(float)
 
 void dae::CollisionComponent::Render() const
 {
-	auto renderer = dae::Renderer::GetInstance().GetSDLRenderer();
-	SDL_SetRenderDrawColor(renderer, Uint8{ 255 }, Uint8{ 0 }, Uint8{ 0 }, Uint8{ 255 });
 }
 
 bool dae::CollisionComponent::DoesCollide(const SDL_Rect& other) const

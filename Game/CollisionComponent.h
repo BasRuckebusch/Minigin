@@ -1,6 +1,5 @@
 #pragma once
 #include <SDL_rect.h>
-
 #include "Component.h"
 
 namespace dae
@@ -24,8 +23,13 @@ namespace dae
 		SDL_Rect GetRect() { return m_Rect; }
 		void SetPosition(const glm::vec2& pos) 
 		{
-			m_Rect.x = static_cast<int>(pos.x);
-			m_Rect.y = static_cast<int>(pos.y);
+			m_Rect.x = static_cast<int>(pos.x + m_Offset.x);
+			m_Rect.y = static_cast<int>(pos.y + m_Offset.y);
+		}
+		void SetOffset(const glm::vec2& offset)
+		{
+			m_Offset.x = offset.x;
+			m_Offset.y = offset.y;
 		}
 
 		//bool DoesCollide(const CollisionComponent* other) const;
@@ -34,5 +38,6 @@ namespace dae
 		
 	private:
 		SDL_Rect m_Rect{};
+		glm::vec2 m_Offset{};
 	};
 }

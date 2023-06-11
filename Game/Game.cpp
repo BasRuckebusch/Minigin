@@ -28,36 +28,17 @@ void load()
 	auto& scene = SceneManager::GetInstance().CreateScene("Demo");
 	const auto font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
 
-	// Camera and background
-	auto& renderer = Renderer::GetInstance();
-	renderer.SetBackgroundColor(SDL_Color(57, 132, 0));
-	renderer.SetCameraPosition(glm::vec2(0, -32));
-	renderer.SetCameraScale(2.f);
+	// Level loading
 
-	// Load scene from file
-	int tileSize{ 16 };
-
-	std::string file{ ResourceManager::GetInstance().GetFullFilePath("level.bmp") };
-	glm::vec2 worldPos = { 0, 0 };
-	LoadLevelFromBMP(file, &scene, worldPos, tileSize);
-
-	// FPS counter
-	auto go = std::make_shared<GameObject>();
-	const auto fpsfont = ResourceManager::GetInstance().LoadFont("Lingua.otf", 16);
-	go = std::make_shared<GameObject>();
-	go->AddComponent<TextureComponent>();
-	go->AddComponent<TextComponent>("0", fpsfont, SDL_Color(0, 255, 0));
-	go->AddComponent<FPSComponent>();
-	go->SetPosition(0, -16);
-	scene.Add(go);
+	std::vector<std::string> levelNames{ "level.bmp", "bombtest.bmp" };
+	LoadLevel(levelNames[0], &scene);
+	dae::InputManager::GetInstance().BindCommand(SDL_SCANCODE_F1, std::make_unique<dae::NextLevel>(&scene, levelNames));
 
 	// Sound
 	const std::string title = ResourceManager::GetInstance().GetFullFilePath("TitleScreen.mp3");
 	const auto titleID = ServiceLocator::GetSoundSystem().AddSound(title.c_str());
 
 	ServiceLocator::GetSoundSystem().Play(titleID, 50.f);
-
-	
 }
 
 int main(int, char* []) {

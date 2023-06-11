@@ -1,9 +1,13 @@
 #pragma once
 #include <Command.h>
+#include <string>
+#include <vector>
 #include <glm/vec2.hpp>
 
 namespace dae
 {
+	class Scene;
+
 	class MoveCommand final : public Command
 	{
 	public:
@@ -32,6 +36,27 @@ namespace dae
 	private:
 		GameObject* m_pGameObject;
 		bool m_MoveDown;
+	};
+
+	class PlaceBomb final : public Command
+	{
+	public:
+		explicit PlaceBomb(GameObject* pGameObject, Scene* pScene) : m_pGameObject(pGameObject), m_pScene(pScene) {}
+		void Execute() override;
+	private:
+		GameObject* m_pGameObject;
+		Scene* m_pScene;
+	};
+
+	class NextLevel final : public Command
+	{
+	public:
+		explicit NextLevel(Scene* pScene, const std::vector<std::string>& levelNames ) : m_pScene(pScene), m_LevelNames(levelNames){}
+		void Execute() override;
+	private:
+		Scene* m_pScene;
+		int m_Id{};
+		std::vector<std::string> m_LevelNames{};
 	};
 }
 

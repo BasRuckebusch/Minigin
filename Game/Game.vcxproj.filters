@@ -18,7 +18,7 @@
     <ClCompile Include="Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MoveCommand.cpp">
+    <ClCompile Include="CustomCommand.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Minigin\MoveComponent.cpp">
@@ -33,9 +33,15 @@
     <ClCompile Include="CollisionComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="BomberManComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BombComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="MoveCommand.h">
+    <ClInclude Include="CustomCommand.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Minigin\MoveComponent.h">
@@ -51,6 +57,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CollisionComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BomberManComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BombComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

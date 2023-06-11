@@ -36,13 +36,16 @@ void dae::MoveComponent::MoveLeftRight(bool MoveRight)
 		auto col = GetParent()->GetComponent<CollisionComponent>();
 		auto& collisions = dae::CollisionManager::GetInstance();
 
+		const int buffer{ 1 }; // used to avoid inconsistencies caused by int conversion
+
 		if (MoveRight)
 		{
-			float newx = m_XPos + m_Speed * m_DeltaTime;
-			glm::vec2 newpos{ newx, m_YPos };
+
+			float speedtime = m_Speed * m_DeltaTime;
+			float newx = m_XPos + speedtime;
 
 			auto rect = col->GetRect();
-			rect.x = static_cast<int>(newx);
+			rect.x = static_cast<int>(rect.x + buffer + speedtime);
 
 			if (!collisions.CheckRectCollide(rect))
 			{
@@ -51,11 +54,11 @@ void dae::MoveComponent::MoveLeftRight(bool MoveRight)
 		}
 		else
 		{
-			float newx = m_XPos - m_Speed * m_DeltaTime;
-			glm::vec2 newpos{ newx, m_YPos };
+			float speedtime = m_Speed * m_DeltaTime;
+			float newx = m_XPos - speedtime;
 
 			auto rect = col->GetRect();
-			rect.x = static_cast<int>(newx);
+			rect.x = static_cast<int>(rect.x - buffer - speedtime);
 
 			if (!collisions.CheckRectCollide(rect))
 			{
@@ -83,13 +86,15 @@ void dae::MoveComponent::MoveUpDown(bool MoveDown)
 		auto col = GetParent()->GetComponent<CollisionComponent>();
 		auto& collisions = dae::CollisionManager::GetInstance();
 
+		const int buffer{ 1 }; // used to avoid inconsistencies caused by int conversion
+
 		if (MoveDown)
 		{
-			float newy = m_YPos + m_Speed * m_DeltaTime;
-			//glm::vec2 newpos{ m_XPos, newy };
+			float speedtime = m_Speed * m_DeltaTime;
+			float newy = m_YPos + speedtime;
 
 			auto rect = col->GetRect();
-			rect.y = static_cast<int>(newy);
+			rect.y = static_cast<int>(rect.y + buffer + speedtime);
 
 			if (!collisions.CheckRectCollide(rect))
 			{
@@ -98,11 +103,11 @@ void dae::MoveComponent::MoveUpDown(bool MoveDown)
 		}
 		else
 		{
-			float newy = m_YPos - m_Speed * m_DeltaTime;
-			glm::vec2 newpos{ m_XPos, newy };
+			float speedtime = m_Speed * m_DeltaTime;
+			float newy = m_YPos - speedtime;
 
 			auto rect = col->GetRect();
-			rect.y = static_cast<int>(newy);
+			rect.y = static_cast<int>(rect.y - buffer - speedtime);
 
 			if (!collisions.CheckRectCollide(rect))
 			{
