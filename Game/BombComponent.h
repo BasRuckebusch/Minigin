@@ -19,9 +19,12 @@ namespace dae
 		void Update(float deltaTime) override;
 		void Render() const override;
 
+		void Explode();
+
 	private:
 		int m_TileSize{ 16 };
 		int m_Range{ 1 };
 		float m_FuseTime{ 3 };
+		bool m_HasExploded{ false };
 	};
 }

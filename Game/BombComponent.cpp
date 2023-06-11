@@ -18,16 +18,27 @@ void dae::BombComponent::Update(float deltaTime)
 	m_FuseTime -= deltaTime;
 	if (m_FuseTime < 0)
 	{
+		Explode();
+		GetParent()->Destroy();
+	}
+}
+
+void dae::BombComponent::Render() const
+{
+}
+
+void dae::BombComponent::Explode()
+{
+	if (!m_HasExploded)
+	{
 		GetParent()->RemoveComponent<TextureComponent>();
 		auto& collisions = dae::CollisionManager::GetInstance();
 
-		int lenght = m_Range * m_TileSize;
-		auto& pos =  GetParent()->GetWorldPosition();
-		SDL_Rect xRect{ static_cast<int>(pos.x) - lenght, static_cast<int>(pos.y), lenght * 3, m_TileSize };
-		SDL_Rect yRect{ static_cast<int>(pos.x), static_cast<int>(pos.y) - lenght, m_TileSize, lenght * 3 };
-
-		std::cout << xRect.x << " - " << xRect.y << " - " << xRect.w << " - " << xRect.h << "\n";
-		std::cout << yRect.x << " - " << yRect.y << " - " << yRect.w << " - " << yRect.h << "\n";
+		int offset = m_Range * m_TileSize;
+		int lenght = (m_Range * 2 + 1) * m_TileSize;
+		auto& pos = GetParent()->GetWorldPosition();
+		SDL_Rect xRect{ static_cast<int>(pos.x) - offset, static_cast<int>(pos.y), lenght, m_TileSize };
+		SDL_Rect yRect{ static_cast<int>(pos.x), static_cast<int>(pos.y) - offset, m_TileSize, lenght };
 
 		auto bricks = collisions.AllBricksInRect(xRect);
 		for (auto go : bricks)
@@ -44,13 +55,17 @@ void dae::BombComponent::Update(float deltaTime)
 			go.get()->Destroy();
 		}
 
-	}
-	if (m_FuseTime < -0.2)
-	{
-		GetParent()->Destroy();
-	}
-}
+		//	auto bombs = collisions.AllBombsInRect(xRect, m_TileSize);
+		//	for (auto go : bombs)
+		//	{
+		//		go.get()->GetComponent<BombComponent>()->Explode();
+		//	}
+		//	bombs = collisions.AllBombsInRect(yRect, m_TileSize);
+		//	for (auto go : bombs)
+		//	{
+		//		go.get()->GetComponent<BombComponent>()->Explode();
+		//	}
 
-void dae::BombComponent::Render() const
-{
+		m_HasExploded = true;
+	}
 }

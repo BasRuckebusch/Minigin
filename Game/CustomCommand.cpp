@@ -1,6 +1,5 @@
 #include "CustomCommand.h"
-
-#include "BomberManComponent.h"
+#include "Utils.h"
 #include "GameObject.h"
 #include "MoveComponent.h"
 
@@ -23,4 +22,14 @@ void dae::MoveUpDown::Execute()
 void dae::PlaceBomb::Execute()
 {
 	m_pGameObject->GetComponent<BomberManComponent>()->PlaceBomb(m_pScene);
+}
+
+void dae::NextLevel::Execute()
+{
+	m_Id++;
+	if (m_Id == static_cast<int>(m_LevelNames.size()))
+	{
+		m_Id = 0;
+	}
+	LoadLevel(m_LevelNames[m_Id], m_pScene);
 }

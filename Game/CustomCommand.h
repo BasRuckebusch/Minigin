@@ -1,5 +1,7 @@
 #pragma once
 #include <Command.h>
+#include <string>
+#include <vector>
 #include <glm/vec2.hpp>
 
 namespace dae
@@ -44,6 +46,17 @@ namespace dae
 	private:
 		GameObject* m_pGameObject;
 		Scene* m_pScene;
+	};
+
+	class NextLevel final : public Command
+	{
+	public:
+		explicit NextLevel(Scene* pScene, const std::vector<std::string>& levelNames ) : m_pScene(pScene), m_LevelNames(levelNames){}
+		void Execute() override;
+	private:
+		Scene* m_pScene;
+		int m_Id{};
+		std::vector<std::string> m_LevelNames{};
 	};
 }
 

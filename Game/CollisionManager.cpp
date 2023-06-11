@@ -43,7 +43,7 @@ std::vector<std::shared_ptr<dae::GameObject>> dae::CollisionManager::AllBricksIn
 	{
 		if (pBrick.get()->HasComponent<CollisionComponent>())
 		{
-			auto collider = pBrick.get()->GetComponent<CollisionComponent>();
+			const auto collider = pBrick.get()->GetComponent<CollisionComponent>();
 			if (collider->DoesCollide(rect))
 			{
 				result.push_back(pBrick);
@@ -53,6 +53,23 @@ std::vector<std::shared_ptr<dae::GameObject>> dae::CollisionManager::AllBricksIn
 
 	return result;
 }
+
+//	std::vector<std::shared_ptr<dae::GameObject>> dae::CollisionManager::AllBombsInRect(const SDL_Rect& rect, int tileSize)
+//	{
+//		std::vector<std::shared_ptr<GameObject>> result{};
+//	
+//		for (auto& pBomb : m_pBombs)
+//		{
+//			//	const auto pos = pBomb.get()->GetWorldPosition();
+//			//	SDL_Rect bRect{ static_cast<int>(pos.x), static_cast<int>(pos.y), tileSize, tileSize };
+//			//	if (SDL_HasIntersection(&bRect, &rect))
+//			//	{
+//			//		result.push_back(pBomb);
+//			//	}
+//		}
+//	
+//		return result;
+//	}
 
 void dae::CollisionManager::AddWall(std::shared_ptr<GameObject> object)
 {
@@ -74,6 +91,16 @@ void dae::CollisionManager::RemoveBrick(std::shared_ptr<GameObject> object)
 	std::erase(m_pBricks, object);
 }
 
+void dae::CollisionManager::AddBomb(std::shared_ptr<GameObject> object)
+{
+	m_pBombs.emplace_back(std::move(object));
+}
+
+void dae::CollisionManager::RemoveBomb(std::shared_ptr<GameObject> object)
+{
+	std::erase(m_pBombs, object);
+}
+
 void dae::CollisionManager::AddPlayer(std::shared_ptr<GameObject> object)
 {
 	m_pPlayers.emplace_back(std::move(object));
@@ -88,4 +115,6 @@ void dae::CollisionManager::RemoveAll()
 {
 	m_pWalls.clear();
 	m_pPlayers.clear();
+	m_pBricks.clear();
+	m_pBombs.clear();
 }

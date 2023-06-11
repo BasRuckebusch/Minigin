@@ -14,6 +14,9 @@
 #include "Renderer.h"
 #include "Scene.h"
 #include "TextureComponent.h"
+#include "ResourceManager.h"
+#include "FPSComponent.h"
+#include "TextComponent.h"
 
 //https://stackoverflow.com/questions/9296059/read-pixel-value-in-bmp-file
 
@@ -46,12 +49,12 @@ struct BitmapInfoHeader
 
 #pragma pack(pop) // Restore default struct padding
 
-int LoadLevelFromBMP(const std::string& filename, dae::Scene* scene, const glm::vec2& worldPos, int tileSize)
+inline int LoadLevelFromBMP(const std::string& filename, dae::Scene* scene, const glm::vec2& worldPos, int tileSize)
 {
 
 	std::srand(static_cast<unsigned>(std::time(nullptr)));
 
-	//scene->RemoveAll();
+	scene->RemoveAll();
 
 	std::ifstream file(filename, std::ios_base::binary);
 	if (!file) {
@@ -174,4 +177,34 @@ int LoadLevelFromBMP(const std::string& filename, dae::Scene* scene, const glm::
 	file.close();
 
 	return 0;
+}
+
+inline void LoadLevel(const std::string& levelName, dae::Scene* scene)
+{
+
+	// Camera and background
+	auto& renderer = dae::Renderer::GetInstance();
+	renderer.SetBackgroundColor(SDL_Color(57, 132, 0));
+	renderer.SetCameraPosition(glm::vec2(0, -32));
+	renderer.SetCameraScale(2.f);
+
+	auto& collisions = dae::CollisionManager::GetInstance();
+	collisions.RemoveAll();
+
+	// Load scene from file
+	int tileSize{ 16 };
+
+	std::string file{dae::ResourceManager::GetInstance().GetFullFilePath(levelName) };
+	glm::vec2 worldPos = { 0, 0 };
+	LoadLevelFromBMP(file, scene, worldPos, tileSize);
+
+	// FPS counter
+	auto go = std::make_shared<dae::GameObject>();
+	const auto fpsfont = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 16);
+	go = std::make_shared<dae::GameObject>();
+	go->AddComponent<dae::TextureComponent>();
+	go->AddComponent<dae::TextComponent>("0", fpsfont, SDL_Color(0, 255, 0));
+	go->AddComponent<dae::FPSComponent>();
+	go->SetPosition(0, -16);
+	scene->Add(go);
 }
