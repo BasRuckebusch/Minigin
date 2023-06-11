@@ -1,7 +1,7 @@
 #include <SDL.h>
 #if _DEBUG
 // ReSharper disable once CppUnusedIncludeDirective
-#include <vld.h>
+//#include <vld.h>
 #endif
 #include "Minigin.h"
 
