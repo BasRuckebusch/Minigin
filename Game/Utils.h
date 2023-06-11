@@ -58,8 +58,8 @@ int LoadLevelFromBMP(const std::string& filename, dae::Scene* scene, const glm::
         return 1;
     }
 
-    BitmapFileHeader fileHeader;
-    BitmapInfoHeader infoHeader;
+    BitmapFileHeader fileHeader{};
+    BitmapInfoHeader infoHeader{};
 
     // Read the file header
     file.read(reinterpret_cast<char*>(&fileHeader), sizeof(fileHeader));
@@ -81,10 +81,10 @@ int LoadLevelFromBMP(const std::string& filename, dae::Scene* scene, const glm::
     int rowSize = ((infoHeader.width * bytesPerPixel + 3) & (~3));
 
     // Allocate memory for the pixel data
-    std::unique_ptr<uint8_t[]> pixelData(new uint8_t[rowSize * infoHeader.height]);
+    const std::unique_ptr<uint8_t[]> pixelData(new uint8_t[rowSize * infoHeader.height]);
 
     // Read the pixel data
-    file.read(reinterpret_cast<char*>(pixelData.get()), rowSize * infoHeader.height);
+    file.read(reinterpret_cast<char*>(pixelData.get()), static_cast<std::streamsize>(rowSize) * infoHeader.height);
 
 
     // Check if the pixel data was read successfully
@@ -126,8 +126,8 @@ int LoadLevelFromBMP(const std::string& filename, dae::Scene* scene, const glm::
                 player->SetPosition((worldPos.x + x * tileSize), (worldPos.y + (infoHeader.height - 1 - y) * tileSize));
                 player->AddComponent<dae::TextureComponent>("player.tga");
                 player->AddComponent<dae::MoveComponent>();
-                auto camera = player->AddComponent<dae::CameraComponent>();
-                auto pos = player->GetWorldPosition();
+                const auto camera = player->AddComponent<dae::CameraComponent>();
+                auto& pos = player->GetWorldPosition();
                 player->AddComponent<dae::CollisionComponent>(pos, tileSize, tileSize);
                 scene->Add(player);
 
@@ -153,14 +153,11 @@ int LoadLevelFromBMP(const std::string& filename, dae::Scene* scene, const glm::
 
                 if (const int r = rand() % 11; r != 0)
                 {
-                    //auto go = std::make_shared<dae::GameObject>();
-                    //go->AddComponent<dae::TextureComponent>("brick.tga");
-                    //go->SetPosition((worldPos.x + x * tileSize), (worldPos.y + (infoHeader.height - 1 - y) * tileSize));
-                    //scene->Add(go);
+                    auto go = std::make_shared<dae::GameObject>();
+                    go->AddComponent<dae::TextureComponent>("brick.tga");
+                    go->SetPosition((worldPos.x + x * tileSize), (worldPos.y + (infoHeader.height - 1 - y) * tileSize));
+                    scene->Add(go);
                 }
-            }
-            else
-            {
             }
         }
     }
