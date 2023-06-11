@@ -188,7 +188,7 @@ inline int LoadLevelFromBMP(const std::string& filename, dae::Scene* scene, cons
 				go->AddComponent<dae::TextureComponent>("end.tga");
 				go->SetPosition((worldPos.x + x * tileSize), (worldPos.y + (infoHeader.height - 1 - y) * tileSize));
 				go->AddComponent<dae::CollisionComponent>(go->GetWorldPosition(), tileSize, tileSize);
-				std::vector<std::string> levelNames{ "level.bmp", "level2.bmp", "level3.bmp" };
+				std::vector<std::string> levelNames{ "level.bmp", "level5.bmp", "level2.bmp", "level3.bmp" };
 				go->AddComponent<dae::EndComponent>(scene, levelNames);
 				scene->Add(go);
 
