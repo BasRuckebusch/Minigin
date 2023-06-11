@@ -19,6 +19,7 @@ namespace dae
 		bool CheckRectCollide(const SDL_Rect& col);
 
 		std::vector<std::shared_ptr<GameObject>> AllBricksInRect(const SDL_Rect& rect);
+		std::vector<std::shared_ptr<dae::GameObject>> AllPlayersInRect(const SDL_Rect& rect);
 		//std::vector<std::shared_ptr<GameObject>> AllBombsInRect(const SDL_Rect& rect, int tileSize);
 
 		void AddWall(std::shared_ptr<GameObject> object);
@@ -29,9 +30,11 @@ namespace dae
 
 		void AddBomb(std::shared_ptr<GameObject> object);
 		void RemoveBomb(std::shared_ptr<GameObject> object);
+		int GetAmountBombs() const { return static_cast<int>(m_pBombs.size()); }
 
 		void AddPlayer(std::shared_ptr<GameObject> object);
 		void RemovePlayer(std::shared_ptr<GameObject> object);
+		std::vector<std::shared_ptr<GameObject>> GetPlayers() { return m_pPlayers; };
 
 		void RemoveAll();
 

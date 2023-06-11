@@ -1,15 +1,13 @@
 #include "BombComponent.h"
-
-#include <iostream>
 #include <TextureComponent.h>
-
 #include "CollisionManager.h"
+#include "BomberManComponent.h"
 
-dae::BombComponent::BombComponent(GameObject* parent, int tileSize, float fusetime, int range) :
+dae::BombComponent::BombComponent(dae::GameObject* parent,  int tileSize, float fusetime, int range) :
 	Component(parent),
 	m_TileSize(tileSize),
-	m_FuseTime(fusetime),
-	m_Range(range)
+	m_Range(range),
+	m_FuseTime(fusetime)
 {
 }
 
@@ -53,6 +51,25 @@ void dae::BombComponent::Explode()
 			collisions.RemoveWall(go);
 			collisions.RemoveBrick(go);
 			go.get()->Destroy();
+		}
+
+		auto players = collisions.AllPlayersInRect(xRect);
+		for (auto go : players)
+		{
+			collisions.RemovePlayer(go);
+			go.get()->GetComponent<BomberManComponent>()->Die();
+		}
+		players = collisions.AllPlayersInRect(yRect);
+		for (auto go : players)
+		{
+			collisions.RemovePlayer(go);
+			go.get()->GetComponent<BomberManComponent>()->Die();
+		}
+
+		players = collisions.GetPlayers();
+		for (auto go : players)
+		{
+			go.get()->GetComponent<BomberManComponent>()->GiveBomb();
 		}
 
 		//	auto bombs = collisions.AllBombsInRect(xRect, m_TileSize);

@@ -1,4 +1,6 @@
-#include <SDL_rect.h>
+#pragma once
+#include <string>
+
 #include "Component.h"
 
 namespace dae

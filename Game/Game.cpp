@@ -1,21 +1,14 @@
 #include <SDL.h>
 #if _DEBUG
 // ReSharper disable once CppUnusedIncludeDirective
-//#include <vld.h>
 #endif
 #include "Minigin.h"
 
-#include "FPSComponent.h"
-#include "GameObject.h"
-#include "Renderer.h"
 #include "ResourceManager.h"
-#include "Scene.h"
 #include "SceneManager.h"
 #include "SDLSoundSystem.h"
 #include "ServiceLocator.h"
 #include "SoundSystem.h"
-#include "TextComponent.h"
-#include "TextureComponent.h"
 #include "Utils.h"
 
 using namespace dae;

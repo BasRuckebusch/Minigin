@@ -21,7 +21,7 @@ void dae::MoveUpDown::Execute()
 
 void dae::PlaceBomb::Execute()
 {
-	m_pGameObject->GetComponent<BomberManComponent>()->PlaceBomb(m_pScene);
+	m_pGameObject->GetComponent<BomberManComponent>()->PlaceBomb();
 }
 
 void dae::NextLevel::Execute()

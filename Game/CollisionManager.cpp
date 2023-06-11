@@ -54,6 +54,25 @@ std::vector<std::shared_ptr<dae::GameObject>> dae::CollisionManager::AllBricksIn
 	return result;
 }
 
+std::vector<std::shared_ptr<dae::GameObject>> dae::CollisionManager::AllPlayersInRect(const SDL_Rect& rect)
+{
+	std::vector<std::shared_ptr<GameObject>> result{};
+
+	for (auto& pPlayer : m_pPlayers)
+	{
+		if (pPlayer.get()->HasComponent<CollisionComponent>())
+		{
+			const auto collider = pPlayer.get()->GetComponent<CollisionComponent>();
+			if (collider->DoesCollide(rect))
+			{
+				result.push_back(pPlayer);
+			}
+		}
+	}
+
+	return result;
+}
+
 //	std::vector<std::shared_ptr<dae::GameObject>> dae::CollisionManager::AllBombsInRect(const SDL_Rect& rect, int tileSize)
 //	{
 //		std::vector<std::shared_ptr<GameObject>> result{};

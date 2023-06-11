@@ -54,8 +54,6 @@ inline int LoadLevelFromBMP(const std::string& filename, dae::Scene* scene, cons
 
 	std::srand(static_cast<unsigned>(std::time(nullptr)));
 
-	scene->RemoveAll();
-
 	std::ifstream file(filename, std::ios_base::binary);
 	if (!file) {
 		std::cout << "Failed to open the bitmap file." << std::endl;
@@ -134,9 +132,9 @@ inline int LoadLevelFromBMP(const std::string& filename, dae::Scene* scene, cons
 				glm::vec2 offset{4,4};
 				const auto colcomp = player->AddComponent<dae::CollisionComponent>(player->GetWorldPosition(), static_cast<int>(tileSize - offset.x * 2), static_cast<int>(tileSize - offset.y * 2));
 				colcomp->SetOffset(offset);
-				player->AddComponent<dae::BomberManComponent>(tileSize);
+				const auto bcomp = player->AddComponent<dae::BomberManComponent>(scene, tileSize);
+				bcomp->SetLevelName("level.bmp");
 				scene->Add(player);
-
 
 				collisions.AddPlayer(player);
 
@@ -144,11 +142,12 @@ inline int LoadLevelFromBMP(const std::string& filename, dae::Scene* scene, cons
 
 				camera->SetBoundaries({ worldPos.x, infoHeader.width * tileSize / renderer.GetCameraScale() - tileSize * 5 / renderer.GetCameraScale() });
 
+
 				dae::InputManager::GetInstance().BindCommand(SDLK_a, std::make_unique<dae::MoveLeftRight>(player.get(), false));
 				dae::InputManager::GetInstance().BindCommand(SDLK_d, std::make_unique<dae::MoveLeftRight>(player.get(), true));
 				dae::InputManager::GetInstance().BindCommand(SDLK_w, std::make_unique<dae::MoveUpDown>(player.get(), false));
 				dae::InputManager::GetInstance().BindCommand(SDLK_s, std::make_unique<dae::MoveUpDown>(player.get(), true));
-				dae::InputManager::GetInstance().BindCommand(SDLK_e, std::make_unique<dae::PlaceBomb>(player.get(), scene));
+				dae::InputManager::GetInstance().BindCommand(SDLK_e, std::make_unique<dae::PlaceBomb>(player.get()));
 			}
 			else if (red == 255 && green == 0 && blue == 0) 
 			{
@@ -181,22 +180,28 @@ inline int LoadLevelFromBMP(const std::string& filename, dae::Scene* scene, cons
 
 inline void LoadLevel(const std::string& levelName, dae::Scene* scene)
 {
+	const auto objects = scene->GetAll();
+	for (const auto& gameObject : objects)
+	{
+		gameObject->Destroy();
+	}
 
 	// Camera and background
 	auto& renderer = dae::Renderer::GetInstance();
 	renderer.SetBackgroundColor(SDL_Color(57, 132, 0));
 	renderer.SetCameraPosition(glm::vec2(0, -32));
 	renderer.SetCameraScale(2.f);
-
+	
 	auto& collisions = dae::CollisionManager::GetInstance();
 	collisions.RemoveAll();
-
+	
 	// Load scene from file
 	int tileSize{ 16 };
-
+	
 	std::string file{dae::ResourceManager::GetInstance().GetFullFilePath(levelName) };
 	glm::vec2 worldPos = { 0, 0 };
 	LoadLevelFromBMP(file, scene, worldPos, tileSize);
+
 
 	// FPS counter
 	auto go = std::make_shared<dae::GameObject>();
