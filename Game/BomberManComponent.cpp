@@ -4,6 +4,7 @@
 #include "Scene.h"
 #include "TextureComponent.h"
 #include <Utils.h>
+#include "CustomCommand.h"
 
 
 dae::BomberManComponent::BomberManComponent(GameObject* parent, Scene* scene, int tileSize) :
@@ -53,9 +54,12 @@ void dae::BomberManComponent::Die()
 	{
 		if (m_pScene != nullptr)
 		{
-			LoadLevel(m_LevelName, m_pScene);
+			//LoadLevel(m_LevelName, m_pScene);
+			auto load = LevelLoad(m_pScene, m_LevelName);
+			load.Execute();
+			m_Dead = true;
 		}
-		m_Dead = true;
+		
 	}
 	
 }

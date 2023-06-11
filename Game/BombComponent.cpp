@@ -1,3 +1,4 @@
+#pragma once
 #include "BombComponent.h"
 #include <TextureComponent.h>
 #include "CollisionManager.h"
@@ -64,6 +65,19 @@ void dae::BombComponent::Explode()
 		{
 			collisions.RemovePlayer(go);
 			go.get()->GetComponent<BomberManComponent>()->Die();
+		}
+
+		auto enemies = collisions.AllEnemiesInRect(xRect);
+		for (auto go : enemies)
+		{
+			collisions.RemoveBrick(go);
+			go.get()->Destroy();
+		}
+		enemies = collisions.AllPlayersInRect(yRect);
+		for (auto go : enemies)
+		{
+			collisions.RemoveBrick(go);
+			go.get()->Destroy();
 		}
 
 		players = collisions.GetPlayers();

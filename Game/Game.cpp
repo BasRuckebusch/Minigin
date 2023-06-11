@@ -23,7 +23,7 @@ void load()
 
 	// Level loading
 
-	std::vector<std::string> levelNames{ "level.bmp", "bombtest.bmp" };
+	std::vector<std::string> levelNames{ "level.bmp", "bombtest.bmp", "enemytest2.bmp", "enemytest.bmp" };
 	LoadLevel(levelNames[0], &scene);
 	dae::InputManager::GetInstance().BindCommand(SDL_SCANCODE_F1, std::make_unique<dae::NextLevel>(&scene, levelNames));
 

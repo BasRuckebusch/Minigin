@@ -10,6 +10,7 @@
 #include "GameObject.h"
 #include "InputManager.h"
 #include "CustomCommand.h"
+#include "EnemyComponent.h"
 #include "MoveComponent.h"
 #include "Renderer.h"
 #include "Scene.h"
@@ -151,6 +152,14 @@ inline int LoadLevelFromBMP(const std::string& filename, dae::Scene* scene, cons
 			}
 			else if (red == 255 && green == 0 && blue == 0) 
 			{
+				//Red = Enemy
+				const auto enemy = std::make_shared<dae::GameObject>();
+				enemy->SetPosition((worldPos.x + x * tileSize), (worldPos.y + (infoHeader.height - 1 - y) * tileSize));
+				enemy->AddComponent<dae::TextureComponent>("enemy.tga");
+				enemy->AddComponent<dae::EnemyComponent>();
+				enemy->AddComponent<dae::CollisionComponent>(enemy->GetWorldPosition(), tileSize, tileSize);
+				scene->Add(enemy);
+				collisions.AddEnemy(enemy);
 
 			}
 			else if (red == 0 && green == 0 && blue == 255) 
