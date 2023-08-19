@@ -3,91 +3,98 @@
 #include <backends/imgui_impl_sdl2.h>
 #include "Command.h"
 
-class dae::InputManager::impl
-{
-public:
-    bool ProcessInput()
-    {
-        ZeroMemory(&m_CurrentState, sizeof(XINPUT_STATE));
-        XInputGetState(0, &m_CurrentState);
-
-        for (auto i = m_KeyMap.begin(); i != m_KeyMap.end(); ++i)
-        {
-            WORD k = i->first;
-            if (IsPressed(k))
-                m_KeyMap[k]->Execute();
-        }
-
-        SDL_Event e;
-        while (SDL_PollEvent(&e))
-        {
-            if (e.type == SDL_QUIT)
-            {
-                return false;
-            }
-            if (e.type == SDL_KEYDOWN)
-            {
-                WORD key = static_cast<WORD>(e.key.keysym.sym);
-                m_PressedKeys.insert(key);
-            }
-            if (e.type == SDL_KEYUP)
-            {
-                WORD key = static_cast<WORD>(e.key.keysym.sym);
-                m_PressedKeys.erase(key);
-            }
-            if (e.type == SDL_MOUSEBUTTONDOWN)
-            {
-            }
-            // Process event for IMGUI
-            ImGui_ImplSDL2_ProcessEvent(&e);
-        }
-
-        for (const auto& key : m_PressedKeys)
-        {
-            auto command = m_KeyMap[key].get();
-            if (command)
-                command->Execute();
-        }
-
-        return true;
-    }
-
-    bool IsPressed(WORD button)
-    {
-        return (m_CurrentState.Gamepad.wButtons & button) != 0;
-    }
-
-    void BindCommand(WORD button, std::unique_ptr<Command> command)
-    {
-        m_KeyMap[button] = std::move(command);
-    }
-
-private:
-    XINPUT_STATE m_CurrentState{};
-    std::map<WORD, std::unique_ptr<Command>> m_KeyMap;
-    std::unordered_set<WORD> m_PressedKeys;
-};
 
 dae::InputManager::InputManager()
-    : pimpl{ std::make_unique<impl>() }
 {
+	m_pControllers.push_back(std::make_unique<Gamepad>(0));
+	m_pKeyboard = std::make_unique<Keyboard>();
 }
 
 dae::InputManager::~InputManager()
+= default;
+
+bool dae::InputManager::ProcessInput() const
 {
+	for (const auto& m_pController : m_pControllers)
+	{
+		m_pController->Update();
+		for (const auto& entry : m_ControllerMap)
+		{
+			const auto& button = entry.first;
+			const auto& commandPair = entry.second;
+			const auto& command = commandPair.first;
+			const auto& eventState = commandPair.second;
+
+			switch (eventState)
+			{
+			case EventState::keyPressed: 
+				if (m_pController->IsPressed(button))
+					command->Execute();
+				break;
+			case EventState::keyUp:
+				if (m_pController->IsUp(button))
+					command->Execute();
+				break;
+			case EventState::keyDown:
+				if (m_pController->IsDown(button))
+					command->Execute();
+				break;
+			}
+		}
+	}
+
+	if (m_pKeyboard)
+	{
+		m_pKeyboard->Update();
+		for (const auto& entry : m_KeyMap)
+		{
+			const auto& keyCode = entry.first;
+			const auto& commandPair = entry.second;
+			const auto& command = commandPair.first;
+			const auto& eventState = commandPair.second;
+
+			switch (eventState)
+			{
+			case EventState::keyPressed:
+				if (m_pKeyboard->IsPressed(keyCode))
+					command->Execute();
+				break;
+			case EventState::keyUp:
+				if (m_pKeyboard->IsUp(keyCode))
+					command->Execute();
+				break;
+			case EventState::keyDown:
+				if (m_pKeyboard->IsDown(keyCode))
+					command->Execute();
+				break;
+			}
+		}
+	}
+
+	SDL_Event e;
+	while (SDL_PollEvent(&e))
+	{
+		if (e.type == SDL_QUIT)
+		{
+			return false;
+		}
+		// Process event for IMGUI
+		ImGui_ImplSDL2_ProcessEvent(&e);
+	}
+	return true;
+
 }
 
-bool dae::InputManager::ProcessInput()
+void dae::InputManager::BindCommand(ControllerButton button, std::unique_ptr<Command> command, EventState inputType)
 {
-    return pimpl->ProcessInput();
+	// Create a pair of command and input type
+	std::pair commandPair(std::move(command), inputType);
+	// Insert the entry into the m_ControllerMap
+	m_ControllerMap[button] = std::move(commandPair);
 }
 
-bool dae::InputManager::IsPressed(WORD button) const
+void dae::InputManager::BindCommand(SDL_Keycode key, std::unique_ptr<Command> command, EventState inputType)
 {
-    return pimpl->IsPressed(button);
-}
-
-void dae::InputManager::BindCommand(WORD button, std::unique_ptr<Command> command)
-{
-    pimpl->BindCommand(button, std::move(command));
+	std::pair commandPair(std::move(command), inputType);
+	m_KeyMap[key] = std::move(commandPair);
 }

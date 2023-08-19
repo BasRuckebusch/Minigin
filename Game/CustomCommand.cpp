@@ -1,27 +1,18 @@
 #include "CustomCommand.h"
+
 #include "Utils.h"
 #include "GameObject.h"
 #include "MoveComponent.h"
 
 
-void dae::MoveCommand::Execute()
+void dae::Move::Execute()
 {
-	m_pGameObject->GetComponent<MoveComponent>()->SetDirection(m_Direction);
-}
-
-void dae::MoveLeftRight::Execute()
-{
-	m_pGameObject->GetComponent<MoveComponent>()->MoveLeftRight(m_MoveRight);
-}
-
-void dae::MoveUpDown::Execute()
-{
-	m_pGameObject->GetComponent<MoveComponent>()->MoveUpDown(m_MoveDown);
+	m_pGameObject->GetComponent<MoveComponent>()->Move(m_Direction);
 }
 
 void dae::PlaceBomb::Execute()
 {
-	m_pGameObject->GetComponent<BomberManComponent>()->PlaceBomb();
+	//m_pGameObject->GetComponent<BomberManComponent>()->PlaceBomb();
 }
 
 void dae::NextLevel::Execute()
@@ -31,10 +22,10 @@ void dae::NextLevel::Execute()
 	{
 		m_Id = 0;
 	}
-	LoadLevel(m_LevelNames[m_Id], m_pScene);
+	//LoadLevel(m_LevelNames[m_Id], m_pScene);
 }
 
 void dae::LevelLoad::Execute()
 {
-	LoadLevel(m_LevelName, m_pScene);
+	//LoadLevel(m_LevelName, m_pScene);
 }

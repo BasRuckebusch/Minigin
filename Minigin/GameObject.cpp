@@ -48,6 +48,11 @@ void dae::GameObject::SetPosition(float x, float y)
 	SetLocalPosition(glm::vec3(x,y,0));
 }
 
+void dae::GameObject::SetPosition(const glm::vec2& pos)
+{
+	SetLocalPosition(glm::vec3(pos.x, pos.y, 0));
+}
+
 void dae::GameObject::SetLocalPosition(const glm::vec3& pos)
 {
 	m_LocalPosition = pos;

@@ -112,7 +112,7 @@ void dae::Minigin::Run(const std::function<void()>& load)
 		// Calculate delta time
 		const float deltaTime = std::chrono::duration<float>(t2 - t1).count();
 
-		// Update current time
+		// ProcessInput current time
 		t1 = t2;
 
 		doContinue = input.ProcessInput();
