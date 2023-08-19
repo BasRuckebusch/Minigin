@@ -24,20 +24,10 @@ namespace dae
 		void RenderTexture(const Texture2D& texture, float x, float y) const;
 		void RenderTexture(const Texture2D& texture, float x, float y, float width, float height) const;
 
-		void SetCameraPosition(const glm::vec2& position);
-
-		void SetCameraScale(const float scale);
-
 		SDL_Renderer* GetSDLRenderer() const;
 
 		const SDL_Color& GetBackgroundColor() const { return m_clearColor; }
 		void SetBackgroundColor(const SDL_Color& color) { m_clearColor = color; }
-		SDL_Window* GetWindow() const { return m_window; }
-		glm::vec2 GetCameraPosition() const { return m_cameraPosition; }
-		float GetCameraScale() const { return m_cameraScale; }
-	private:
-		glm::vec2 m_cameraPosition{};
-		float m_cameraScale{};
 	};
 }
 

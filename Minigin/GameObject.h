@@ -21,6 +21,7 @@ namespace dae
 		bool IsDestroyed() const { return m_IsDestroyed; }
 
 		void SetPosition(float x, float y);
+		void SetPosition(const glm::vec2& pos);
 		//const Transform* GetTransform() const { return &m_Transform; }
 		void SetLocalPosition(const glm::vec3& pos);
 		const glm::vec3& GetWorldPosition();
@@ -37,6 +38,8 @@ namespace dae
 
 		template<typename Component>
 		Component* GetComponent() const;
+		template <typename Component>
+		std::vector<Component*> GetComponents();
 		template <class Component, class ... Arguments>
 		Component* AddComponent(Arguments&& ... args);
 		template <class Component>
@@ -75,6 +78,19 @@ namespace dae
 			}
 		}
 		return nullptr;
+	}
+	template<typename Component>
+	std::vector<Component*> GameObject::GetComponents()
+	{
+		std::vector<Component*> pComps{};
+		for (const auto& pComponent : m_pComponents)
+		{
+			if (Component* pComp = dynamic_cast<Component*>(pComponent.get()))
+			{
+				pComps.push_back(pComp);
+			}
+		}
+		return pComps;
 	}
 	template<typename Component, typename...Arguments>
 	Component* GameObject::AddComponent(Arguments&&... args)

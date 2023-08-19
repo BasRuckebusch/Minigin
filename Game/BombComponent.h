@@ -1,6 +1,4 @@
-#pragma once
-#include <string>
-
+#pragma 
 #include "Component.h"
 
 namespace dae

@@ -1,19 +1,21 @@
 #pragma once
-#include "Singleton.h"
-#include <vector>
-#include <map>
 #include <memory>
-#include <unordered_set>
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#include <XInput.h>
-#pragma comment(lib,"XInput.lib")
-#pragma comment(lib,"Xinput9_1_0.lib")
+#include <map>
+#include <vector>
+
+#include "Gamepad.h"
+#include "Keyboard.h"
+#include "Command.h"
+#include "Singleton.h"
 
 namespace dae
 {
-	class Command;
-	class GameObject;
+	enum class EventState
+	{
+		keyPressed,
+		keyUp,
+		keyDown
+	};
 
 	class InputManager final : public Singleton<InputManager>
 	{
@@ -21,18 +23,15 @@ namespace dae
 		InputManager();
 		~InputManager() override;
 
-		bool ProcessInput();
-		bool IsPressed(WORD button) const;
-		void BindCommand(WORD button, std::unique_ptr<Command> command);
+		bool ProcessInput() const;
+		void BindCommand(ControllerButton button, std::unique_ptr<Command> command, EventState inputType);
+		void BindCommand(SDL_Keycode key, std::unique_ptr<Command> command, EventState inputType);
+
 	private:
-		XINPUT_STATE m_CurrentState{};
-		int m_DeadZone = 7000;
-
-		std::map<WORD, std::unique_ptr<Command>> m_KeyMap;
-		std::unordered_set<WORD> m_PressedKeys;
-
-		class impl;
-		std::unique_ptr<impl> pimpl;
+		EventState m_EventState{};
+		std::vector< std::unique_ptr<Gamepad>> m_pControllers;
+		std::map<ControllerButton, std::pair<std::unique_ptr<Command>, EventState>> m_ControllerMap;
+		std::unique_ptr<Keyboard> m_pKeyboard;
+		std::map<SDL_Keycode, std::pair<std::unique_ptr<Command>, EventState>> m_KeyMap;
 	};
-
 }
