@@ -49,9 +49,12 @@ void load()
 	auto& scene = SceneManager::GetInstance().CreateScene("Demo");
 	const auto font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
 
-	const std::string file{ dae::ResourceManager::GetInstance().GetFullFilePath("level1.bmp") };
-	const glm::vec2 worldPos = { 208, 16 };
+	const std::string file{ResourceManager::GetInstance().GetFullFilePath("level1.bmp") };
+	const glm::vec2 worldPos = { 16, 16 };
 	LoadLevelFromBMP(file, &scene, worldPos, 16);
+
+	const std::string file2{ResourceManager::GetInstance().GetFullFilePath("ingredients1.bmp") };
+	LoadIngredientsFromBMP(file2, &scene, worldPos, 8);
 
 	auto go = std::make_shared<GameObject>();
 
@@ -89,7 +92,7 @@ void load()
 	//ServiceLocator::GetSoundSystem().Play(titleID, 50.f);
 
 	const auto player = std::make_shared<GameObject>();
-	player->SetLocalPosition(glm::vec3(256, 62, 0));
+	player->SetLocalPosition(glm::vec3(104, 62, 0));
 	player->AddComponent<TextureComponent>("player.tga");
 	player->AddComponent<MoveComponent>();
 	player->AddComponent<PeterComponent>();

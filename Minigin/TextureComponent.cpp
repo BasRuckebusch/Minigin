@@ -20,12 +20,12 @@ dae::TextureComponent::TextureComponent(GameObject* parent) :
 	m_Texture = ResourceManager::GetInstance().LoadTexture("missing.tga");
 }
 
-void dae::TextureComponent::Update([[maybe_unused]] float deltaTime) {  }
+void dae::TextureComponent::Update(float) {  }
 
 void dae::TextureComponent::Render() const
 {
 	const auto& pos = GetParent()->GetWorldPosition();
-	Renderer::GetInstance().RenderTexture(*m_Texture, pos.x, pos.y);
+	Renderer::GetInstance().RenderTexture(*m_Texture, pos.x + m_Offset.x, pos.y + m_Offset.y);
 }
 
 void dae::TextureComponent::SetTexture(const std::string& filename)
@@ -47,4 +47,10 @@ void dae::TextureComponent::SetTexture(TTF_Font* font, const char* text, SDL_Col
 	}
 	SDL_FreeSurface(surf);
 	m_Texture = std::make_shared<Texture2D>(texture);
+}
+
+void dae::TextureComponent::SetOffset(const glm::vec2& offset)
+{
+	m_Offset.x = offset.x;
+	m_Offset.y = offset.y;
 }

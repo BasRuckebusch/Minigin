@@ -27,7 +27,10 @@ namespace dae
 
 		void SetTexture(const std::string& filename);
 		void SetTexture(TTF_Font* font, const char* text, SDL_Color color);
+
+		void SetOffset(const glm::vec2& offset);
 	private:
 		std::shared_ptr<Texture2D> m_Texture{};
+		glm::vec2 m_Offset{};
 	};
 }
