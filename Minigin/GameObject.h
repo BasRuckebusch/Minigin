@@ -92,11 +92,16 @@ namespace dae
 		}
 		return pComps;
 	}
-	template<typename Component, typename...Arguments>
-	Component* GameObject::AddComponent(Arguments&&... args)
+	template<typename ComponentType, typename... Arguments>
+	ComponentType* GameObject::AddComponent(Arguments&&... args)
 	{
-		std::unique_ptr<Component> pComponent = std::make_unique<Component>(this, std::forward<Arguments>(args)...);
-		Component* rawPtr = pComponent.get();
+		static_assert(std::is_base_of<Component, ComponentType>::value,
+			"ComponentType must be derived from Component");
+
+		std::unique_ptr<ComponentType> pComponent =
+			std::make_unique<ComponentType>(this, std::forward<Arguments>(args)...);
+
+		ComponentType* rawPtr = pComponent.get();
 		m_pComponents.push_back(std::move(pComponent));
 		return rawPtr;
 	}

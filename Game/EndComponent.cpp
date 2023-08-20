@@ -1,5 +1,4 @@
 #include "EndComponent.h"
-#include "BomberManComponent.h"
 #include "BoxColliderComponent.h"
 #include "CollisionManager.h"
 #include "CustomCommand.h"

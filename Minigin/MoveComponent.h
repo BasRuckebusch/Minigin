@@ -22,7 +22,7 @@ namespace dae
 	private:
 		glm::vec2 m_Direction{};
 
-		float m_Speed {50};
+		float m_Speed {25};
 		float m_XPos;
 		float m_YPos;
 		float m_DeltaTime{};

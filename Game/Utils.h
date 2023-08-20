@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <cstdint>
+#include <sstream>
 
 #include "CollisionManager.h"
 #include "GameObject.h"
@@ -14,6 +15,10 @@
 #include "ResourceManager.h"
 #include "CustomCommand.h"
 #include "PeterComponent.h"
+#include "ScoreComponent.h"
+#include "ScoreUIComponent.h"
+#include "TextComponent.h"
+#include "FPSComponent.h"
 
 
 //https://stackoverflow.com/questions/9296059/read-pixel-value-in-bmp-file
@@ -221,9 +226,6 @@ inline int LoadLevelFromBMP(const std::string& filename, dae::Scene* scene, cons
 		return 1;
 	}
 
-	std::cout << infoHeader.width << std::endl;
-	std::cout << infoHeader.height << std::endl;
-
 	uint8_t prevBlue{};
 
 	// Check the color of each pixel
@@ -284,8 +286,7 @@ inline int LoadLevelFromBMP(const std::string& filename, dae::Scene* scene, cons
 }
 
 //Ingredience
-
-inline void AddIngredient(dae::Scene* scene, const glm::vec2& position, int type, int tileSize)
+inline void AddIngredient(dae::Scene* scene, const glm::vec2& position, int type, int tileSize, std::shared_ptr<dae::GameObject > scoreGo)
 {
 	const auto go = std::make_shared<dae::GameObject>();
 	go->SetPosition(position);
@@ -297,13 +298,16 @@ inline void AddIngredient(dae::Scene* scene, const glm::vec2& position, int type
 		const auto col = go->AddComponent<dae::BoxColliderComponent>(position, tileSize, tileSize);
 		col->SetOffset({ tileSize * (i - 1), 0 });
 	}
-	go->AddComponent<dae::IngredientComponent>();
+	const auto ingredient = go->AddComponent<dae::IngredientComponent>();
+	ingredient->SetScoreComponent(scoreGo->GetComponent<dae::ScoreComponent>());
 	scene->Add(go);
+	
+	// ^- ScoreComponent 
 
 	dae::CollisionManager::GetInstance().AddIngredient(go);
 }
 
-inline int LoadIngredientsFromBMP(const std::string& filename, dae::Scene* scene, const glm::vec2& worldPos, int tileSize)
+inline int LoadIngredientsFromBMP(const std::string& filename, dae::Scene* scene, const glm::vec2& worldPos, int tileSize, std::shared_ptr<dae::GameObject > scoreGo)
 {
 	std::ifstream file(filename, std::ios_base::binary);
 	if (!file) {
@@ -347,8 +351,6 @@ inline int LoadIngredientsFromBMP(const std::string& filename, dae::Scene* scene
 		return 1;
 	}
 
-	std::cout << infoHeader.width << std::endl;
-	std::cout << infoHeader.height << std::endl;
 
 	// Check the color of each pixel
 	for (int y = infoHeader.height - 1; y >= 0; --y) { // Loop in reverse order
@@ -363,40 +365,22 @@ inline int LoadIngredientsFromBMP(const std::string& filename, dae::Scene* scene
 
 			//Bun Bottom
 			if (red == 255 && blue == 0 && green == 255)
-			{
-				std::cout << "Bun Bottom\n";
-				AddIngredient(scene, pos, 1, tileSize);
-			}
+				AddIngredient(scene, pos, 1, tileSize, scoreGo);
 			//Lettuce
 			if (red == 0 && blue == 0 && green == 255)
-			{
-				std::cout << "Lettuce\n";
-				AddIngredient(scene, pos, 5, tileSize);
-			}
+				AddIngredient(scene, pos, 5, tileSize, scoreGo);
 			//Cheese
 			if (red == 0 && blue == 255 && green == 255)
-			{
-				std::cout << "Cheese\n";
-				AddIngredient(scene, pos, 2, tileSize);
-			}
+				AddIngredient(scene, pos, 2, tileSize, scoreGo);
 			//Burger
 			if (red == 255 && blue == 0 && green == 0)
-			{
-				std::cout << "Burger\n";
-				AddIngredient(scene, pos, 3, tileSize);
-			}
+				AddIngredient(scene, pos, 3, tileSize, scoreGo);
 			//Tomato
 			if (red == 0 && blue == 255 && green == 0)
-			{
-				std::cout << "Tomato\n";
-				AddIngredient(scene, pos, 4, tileSize);
-			}
+				AddIngredient(scene, pos, 4, tileSize, scoreGo);
 			//Bun Top
 			if (red == 255 && blue == 255 && green == 0)
-			{
-				std::cout << "Bun Top\n";
-				AddIngredient(scene, pos, 0, tileSize);
-			}
+				AddIngredient(scene, pos, 0, tileSize, scoreGo);
 		}
 	}
 
@@ -406,9 +390,51 @@ inline int LoadIngredientsFromBMP(const std::string& filename, dae::Scene* scene
 	return 0;
 }
 
+inline void SaveHighScore(dae::Scene* scene)
+{
+	const auto objects = scene->GetAll();
+	for (const auto& gameObject : objects)
+	{
+		if (gameObject->HasComponent<dae::ScoreComponent>())
+		{
+			std::vector<int> highScores;
+			int highScore = gameObject->GetComponent<dae::ScoreComponent>()->GetScore();
+			highScores.push_back(highScore);
+
+			// Read existing highscores
+			std::string filePath = "high_scores.txt";
+			std::ifstream inFile(filePath);
+			int score{};
+			while (inFile >> score)
+			{
+				highScores.push_back(score);
+			}
+			inFile.close();
+
+			std::ranges::sort(highScores, std::greater<int>());
+
+			std::ofstream outFile(filePath);
+
+			if (outFile.is_open())
+			{
+				for (int i : highScores)
+				{
+					outFile << i << "\n";
+				}
+				outFile.close();
+			}
+			else
+			{
+				std::cerr << "Failed to open file." << std::endl;
+			}
+		}
+	}
+}
+
 inline void LoadLevel(const std::string& levelName, dae::Scene* scene)
 {
 	const auto objects = scene->GetAll();
+	SaveHighScore(scene);
 	for (const auto& gameObject : objects)
 	{
 		gameObject->Destroy();
@@ -416,6 +442,21 @@ inline void LoadLevel(const std::string& levelName, dae::Scene* scene)
 
 	auto& collisions = dae::CollisionManager::GetInstance();
 	collisions.RemoveAll();
+
+	const auto font = dae::ResourceManager::GetInstance().LoadFont("hobo.otf", 12);
+
+	const auto scoreGO = std::make_shared<dae::GameObject>();
+	const auto score = scoreGO->AddComponent<dae::ScoreComponent>();
+	scene->Add(scoreGO);
+
+	auto go = std::make_shared<dae::GameObject>();
+	go->AddComponent<dae::TextureComponent>();
+	go->AddComponent<dae::TextComponent>("Points: 0", font, SDL_Color(255, 255, 255));
+	const auto ui = go->AddComponent<dae::ScoreUIComponent>();
+	go->SetPosition(0, 4);
+	scene->Add(go);
+
+	score->AddObserver(ui);
 
 	// Load scene from file
 	int tileSize{ 16 };
@@ -429,7 +470,7 @@ inline void LoadLevel(const std::string& levelName, dae::Scene* scene)
 	std::string ingredientfile{ dae::ResourceManager::GetInstance().GetFullFilePath(ingredient) };
 	
 	LoadLevelFromBMP(levelfile, scene, worldPos, tileSize);
-	LoadIngredientsFromBMP(ingredientfile, scene, worldPos, halfTileSize);
+	LoadIngredientsFromBMP(ingredientfile, scene, worldPos, halfTileSize, scoreGO);
 
 	const auto player = std::make_shared<dae::GameObject>();
 	player->SetLocalPosition(glm::vec3(104, 62, 0));
@@ -449,7 +490,6 @@ inline void LoadLevel(const std::string& levelName, dae::Scene* scene)
 	input.BindCommand(SDLK_d, std::make_unique<dae::Move>(player.get(), glm::vec2{ 1.f, 0.f }), dae::EventState::keyPressed);
 	input.BindCommand(SDLK_w, std::make_unique<dae::Move>(player.get(), glm::vec2{ 0.f, -1.f }), dae::EventState::keyPressed);
 	input.BindCommand(SDLK_s, std::make_unique<dae::Move>(player.get(), glm::vec2{ 0.f, 1.f }), dae::EventState::keyPressed);
-
 }
 
 //inline void LoadLevel(const std::string& levelName, dae::Scene* scene)

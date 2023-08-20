@@ -2,6 +2,7 @@
 
 #include "BoxColliderComponent.h"
 #include "CollisionManager.h"
+#include "ScoreComponent.h"
 #include "TextureComponent.h"
 
 dae::IngredientComponent::IngredientComponent(GameObject* parent) :
@@ -64,6 +65,8 @@ void dae::IngredientComponent::StopFalling()
 	{
 		i = 0;
 	}
+	if (m_pScore)
+		m_pScore->ChangeScore(50);
 }
 
 void dae::IngredientComponent::HitPart(int partHit)
@@ -77,6 +80,11 @@ void dae::IngredientComponent::HitPart(int partHit)
 	}
 	if (AllGreaterThan(m_PartsHit, 0))
 		Fall();
+}
+
+void dae::IngredientComponent::SetScoreComponent(ScoreComponent* score)
+{
+	m_pScore = score;
 }
 
 bool dae::IngredientComponent::AllGreaterThan(const std::vector<int>& numbers, int n)
