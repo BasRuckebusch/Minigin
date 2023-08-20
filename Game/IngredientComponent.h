@@ -32,5 +32,6 @@ namespace dae
 		std::vector<int> m_PartsHit{ 0,0,0,0 };
 		float m_XPos{};
 		float m_YPos{};
+		float m_FallSpeed{30};
 	};
 }

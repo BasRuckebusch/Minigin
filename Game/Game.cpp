@@ -46,17 +46,34 @@ void load()
 	std::unique_ptr<SoundSystem> ss = std::make_unique<SDLSoundSystem>();
 	ServiceLocator::RegisterSoundSystem(std::move(ss));
 
-	auto& scene = SceneManager::GetInstance().CreateScene("Demo");
+	auto& scene = SceneManager::GetInstance().CreateScene("Level1");
+	//auto& scene2 = SceneManager::GetInstance().CreateScene("Level2");
+	//auto& scene3 = SceneManager::GetInstance().CreateScene("Level3");
 	const auto font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
 
-	const std::string file{ResourceManager::GetInstance().GetFullFilePath("level1.bmp") };
-	//const std::string file{ResourceManager::GetInstance().GetFullFilePath("level2.bmp") };
-	//const std::string file{ResourceManager::GetInstance().GetFullFilePath("level3.bmp") };
-	const glm::vec2 worldPos = { 16, 16 };
-	LoadLevelFromBMP(file, &scene, worldPos, 16);
+	std::vector<std::string> levelNames{ "level1.bmp", "level2.bmp", "level3.bmp" };
+	LoadLevel(levelNames[0], &scene);
+	auto& input = InputManager::GetInstance();
+	input.BindCommand(SDLK_F1, std::make_unique<NextLevel>(&scene, levelNames), EventState::keyUp);
 
-	const std::string file2{ResourceManager::GetInstance().GetFullFilePath("ingredients1.bmp") };
-	LoadIngredientsFromBMP(file2, &scene, worldPos, 8);
+	//	const int tileSize{ 16 };
+	//	const int halfTileSize{ static_cast<int>(tileSize * .5f) };
+	//	const glm::vec2 worldPos = { tileSize, tileSize };
+	//	
+	//	const std::string file1{ResourceManager::GetInstance().GetFullFilePath("level1.bmp") };
+	//	LoadLevelFromBMP(file1, &scene1, worldPos, tileSize);
+	//	//const std::string file2{ResourceManager::GetInstance().GetFullFilePath("level2.bmp") };
+	//	//LoadLevelFromBMP(file2, &scene2, worldPos,tileSize);
+	//	//const std::string file3{ResourceManager::GetInstance().GetFullFilePath("level3.bmp") };
+	//	//LoadLevelFromBMP(file3, &scene3, worldPos,tileSize);
+	//	
+	//	const std::string ingredient1{ResourceManager::GetInstance().GetFullFilePath("ingredients1.bmp") };
+	//	LoadIngredientsFromBMP(ingredient1, &scene1, worldPos, halfTileSize);
+	//	//const std::string ingredient2{ResourceManager::GetInstance().GetFullFilePath("ingredients2.bmp") };
+	//	//LoadIngredientsFromBMP(ingredient2, &scene2, worldPos, halfTileSize);
+	//	//const std::string ingredient3{ResourceManager::GetInstance().GetFullFilePath("ingredients3.bmp") };
+	//	//LoadIngredientsFromBMP(ingredient3, &scene3, worldPos, halfTileSize);
+
 
 	auto go = std::make_shared<GameObject>();
 
@@ -74,13 +91,13 @@ void load()
 	//	go->SetPosition(80, 20);
 	//	scene.Add(go);
 
-	const auto fpsfont = ResourceManager::GetInstance().LoadFont("Lingua.otf", 16);
-	go = std::make_shared<GameObject>();
-	go->AddComponent<TextureComponent>();
-	go->AddComponent<TextComponent>("0", fpsfont, SDL_Color(0, 255, 0));
-	go->AddComponent<FPSComponent>();
-	go->SetPosition(0, 5);
-	scene.Add(go);
+	//	const auto fpsfont = ResourceManager::GetInstance().LoadFont("Lingua.otf", 16);
+	//	go = std::make_shared<GameObject>();
+	//	go->AddComponent<TextureComponent>();
+	//	go->AddComponent<TextComponent>("0", fpsfont, SDL_Color(0, 255, 0));
+	//	go->AddComponent<FPSComponent>();
+	//	go->SetPosition(0, 5);
+	//	scene1.Add(go);
 
 	//const auto player2 = std::make_shared<GameObject>();
 	//player2->SetLocalPosition(glm::vec3(256, 300, 0));
@@ -93,28 +110,24 @@ void load()
 
 	//ServiceLocator::GetSoundSystem().Play(titleID, 50.f);
 
-	const auto player = std::make_shared<GameObject>();
-	player->SetLocalPosition(glm::vec3(104, 62, 0));
-	player->AddComponent<TextureComponent>("player.tga");
-	player->AddComponent<MoveComponent>();
-	player->AddComponent<PeterComponent>();
-	//const auto coll = player->AddComponent<BoxColliderComponent>(player->GetWorldPosition(), 2, 5);
-	//coll->SetOffset({ 2,14 });
-	//const auto colr = player->AddComponent<BoxColliderComponent>(player->GetWorldPosition(), 2,5);
-	//colr->SetOffset({12,14});
-	scene.Add(player);
-
-	auto& input = InputManager::GetInstance();
-
-	input.BindCommand(ControllerButton::Left, std::make_unique<Move>(player.get(), glm::vec2{ -1.f, 0.f }), EventState::keyPressed);
-	input.BindCommand(ControllerButton::Right, std::make_unique<Move>(player.get(), glm::vec2{ 1.f, 0.f }), EventState::keyPressed);
-	input.BindCommand(ControllerButton::Up, std::make_unique<Move>(player.get(), glm::vec2{ 0.f, -1.f }), EventState::keyPressed);
-	input.BindCommand(ControllerButton::Down, std::make_unique<Move>(player.get(), glm::vec2{ 0.f, 1.f }), EventState::keyPressed);
-
-	input.BindCommand(SDLK_a, std::make_unique<Move>(player.get(), glm::vec2{ -1.f, 0.f }), EventState::keyPressed);
-	input.BindCommand(SDLK_d, std::make_unique<Move>(player.get(), glm::vec2{ 1.f, 0.f }), EventState::keyPressed);
-	input.BindCommand(SDLK_w, std::make_unique<Move>(player.get(), glm::vec2{ 0.f, -1.f }), EventState::keyPressed);
-	input.BindCommand(SDLK_s, std::make_unique<Move>(player.get(), glm::vec2{ 0.f, 1.f }), EventState::keyPressed);
+	//	const auto player = std::make_shared<GameObject>();
+	//	player->SetLocalPosition(glm::vec3(104, 62, 0));
+	//	player->AddComponent<TextureComponent>("player.tga");
+	//	player->AddComponent<MoveComponent>();
+	//	player->AddComponent<PeterComponent>();
+	//	scene.Add(player);
+	//	
+	//	//auto& input = InputManager::GetInstance();
+	//	
+	//	input.BindCommand(ControllerButton::Left, std::make_unique<Move>(player.get(), glm::vec2{ -1.f, 0.f }), EventState::keyPressed);
+	//	input.BindCommand(ControllerButton::Right, std::make_unique<Move>(player.get(), glm::vec2{ 1.f, 0.f }), EventState::keyPressed);
+	//	input.BindCommand(ControllerButton::Up, std::make_unique<Move>(player.get(), glm::vec2{ 0.f, -1.f }), EventState::keyPressed);
+	//	input.BindCommand(ControllerButton::Down, std::make_unique<Move>(player.get(), glm::vec2{ 0.f, 1.f }), EventState::keyPressed);
+	//	
+	//	input.BindCommand(SDLK_a, std::make_unique<Move>(player.get(), glm::vec2{ -1.f, 0.f }), EventState::keyPressed);
+	//	input.BindCommand(SDLK_d, std::make_unique<Move>(player.get(), glm::vec2{ 1.f, 0.f }), EventState::keyPressed);
+	//	input.BindCommand(SDLK_w, std::make_unique<Move>(player.get(), glm::vec2{ 0.f, -1.f }), EventState::keyPressed);
+	//	input.BindCommand(SDLK_s, std::make_unique<Move>(player.get(), glm::vec2{ 0.f, 1.f }), EventState::keyPressed);
 }
 
 int main(int, char* []) {

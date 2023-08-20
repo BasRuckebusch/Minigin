@@ -28,6 +28,9 @@ namespace dae
 		void AddStopper(std::shared_ptr<GameObject> object);
 		void RemoveStopper(std::shared_ptr<GameObject> object);
 
+		void AddPot(std::shared_ptr<GameObject> object);
+		void RemovePot(std::shared_ptr<GameObject> object);
+
 
 		//void AddEnemy(std::shared_ptr<GameObject> object);
 		//void RemoveEnemy(std::shared_ptr<GameObject> object);
@@ -39,5 +42,6 @@ namespace dae
 		std::vector<std::shared_ptr<GameObject>> m_pLadders{};
 		std::vector<std::shared_ptr<GameObject>> m_pIngredients{};
 		std::vector<std::shared_ptr<GameObject>> m_pStoppers{};
+		std::vector<std::shared_ptr<GameObject>> m_pPots{};
 	};
 }

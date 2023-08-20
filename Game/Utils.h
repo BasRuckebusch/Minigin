@@ -7,10 +7,13 @@
 #include "GameObject.h"
 #include "IngredientComponent.h"
 #include "InputManager.h"
+#include "MoveComponent.h"
 #include "Renderer.h"
 #include "Scene.h"
 #include "TextureComponent.h"
 #include "ResourceManager.h"
+#include "CustomCommand.h"
+#include "PeterComponent.h"
 
 
 //https://stackoverflow.com/questions/9296059/read-pixel-value-in-bmp-file
@@ -154,6 +157,13 @@ inline void AddPot(dae::Scene* scene, const glm::vec2& position, int type)
 	else if (type == 1)
 	{
 		go->AddComponent<dae::TextureComponent>("LevelObjects/PotMiddle.tga");
+
+		const auto pot = std::make_shared<dae::GameObject>();
+		pot->SetPosition(position);
+		const auto col = pot->AddComponent<dae::BoxColliderComponent>(position, 8, 8);
+		col->SetOffset({ 0, 8 });
+
+		dae::CollisionManager::GetInstance().AddPot(pot);
 	}
 	else if (type == 2)
 	{
@@ -295,7 +305,6 @@ inline void AddIngredient(dae::Scene* scene, const glm::vec2& position, int type
 
 inline int LoadIngredientsFromBMP(const std::string& filename, dae::Scene* scene, const glm::vec2& worldPos, int tileSize)
 {
-
 	std::ifstream file(filename, std::ios_base::binary);
 	if (!file) {
 		std::cout << "Failed to open the bitmap file." << std::endl;
@@ -364,11 +373,23 @@ inline int LoadIngredientsFromBMP(const std::string& filename, dae::Scene* scene
 				std::cout << "Lettuce\n";
 				AddIngredient(scene, pos, 5, tileSize);
 			}
+			//Cheese
+			if (red == 0 && blue == 255 && green == 255)
+			{
+				std::cout << "Cheese\n";
+				AddIngredient(scene, pos, 2, tileSize);
+			}
 			//Burger
 			if (red == 255 && blue == 0 && green == 0)
 			{
 				std::cout << "Burger\n";
 				AddIngredient(scene, pos, 3, tileSize);
+			}
+			//Tomato
+			if (red == 0 && blue == 255 && green == 0)
+			{
+				std::cout << "Tomato\n";
+				AddIngredient(scene, pos, 4, tileSize);
 			}
 			//Bun Top
 			if (red == 255 && blue == 255 && green == 0)
@@ -383,6 +404,52 @@ inline int LoadIngredientsFromBMP(const std::string& filename, dae::Scene* scene
 	file.close();
 
 	return 0;
+}
+
+inline void LoadLevel(const std::string& levelName, dae::Scene* scene)
+{
+	const auto objects = scene->GetAll();
+	for (const auto& gameObject : objects)
+	{
+		gameObject->Destroy();
+	}
+
+	auto& collisions = dae::CollisionManager::GetInstance();
+	collisions.RemoveAll();
+
+	// Load scene from file
+	int tileSize{ 16 };
+	int halfTileSize{ tileSize /2 };
+
+	std::string level = "LevelMaps/" + levelName;
+	std::string ingredient = "IngredientMaps/" + levelName;
+	glm::vec2 worldPos = { tileSize, tileSize };
+
+	std::string levelfile{ dae::ResourceManager::GetInstance().GetFullFilePath(level) };
+	std::string ingredientfile{ dae::ResourceManager::GetInstance().GetFullFilePath(ingredient) };
+	
+	LoadLevelFromBMP(levelfile, scene, worldPos, tileSize);
+	LoadIngredientsFromBMP(ingredientfile, scene, worldPos, halfTileSize);
+
+	const auto player = std::make_shared<dae::GameObject>();
+	player->SetLocalPosition(glm::vec3(104, 62, 0));
+	player->AddComponent<dae::TextureComponent>("player.tga");
+	player->AddComponent<dae::MoveComponent>();
+	player->AddComponent<dae::PeterComponent>();
+	scene->Add(player);
+
+	auto& input = dae::InputManager::GetInstance();
+
+	input.BindCommand(dae::ControllerButton::Left, std::make_unique<dae::Move>(player.get(), glm::vec2{ -1.f, 0.f }), dae::EventState::keyPressed);
+	input.BindCommand(dae::ControllerButton::Right, std::make_unique<dae::Move>(player.get(), glm::vec2{ 1.f, 0.f }), dae::EventState::keyPressed);
+	input.BindCommand(dae::ControllerButton::Up, std::make_unique<dae::Move>(player.get(), glm::vec2{ 0.f, -1.f }), dae::EventState::keyPressed);
+	input.BindCommand(dae::ControllerButton::Down, std::make_unique<dae::Move>(player.get(), glm::vec2{ 0.f, 1.f }), dae::EventState::keyPressed);
+
+	input.BindCommand(SDLK_a, std::make_unique<dae::Move>(player.get(), glm::vec2{ -1.f, 0.f }), dae::EventState::keyPressed);
+	input.BindCommand(SDLK_d, std::make_unique<dae::Move>(player.get(), glm::vec2{ 1.f, 0.f }), dae::EventState::keyPressed);
+	input.BindCommand(SDLK_w, std::make_unique<dae::Move>(player.get(), glm::vec2{ 0.f, -1.f }), dae::EventState::keyPressed);
+	input.BindCommand(SDLK_s, std::make_unique<dae::Move>(player.get(), glm::vec2{ 0.f, 1.f }), dae::EventState::keyPressed);
+
 }
 
 //inline void LoadLevel(const std::string& levelName, dae::Scene* scene)

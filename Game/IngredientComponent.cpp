@@ -16,7 +16,7 @@ void dae::IngredientComponent::Update(float deltaTime)
 {
 	if (m_IsFalling)
 	{
-		m_YPos +=  20 * deltaTime;
+		m_YPos += m_FallSpeed * deltaTime;
 		GetParent()->SetLocalPosition({ m_XPos, m_YPos, 0 });
 
 		const std::vector<BoxColliderComponent*> colliders = GetParent()->GetComponents<BoxColliderComponent>();

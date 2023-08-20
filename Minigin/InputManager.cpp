@@ -15,9 +15,8 @@ dae::InputManager::~InputManager()
 
 bool dae::InputManager::ProcessInput() const
 {
-	for (const auto& m_pController : m_pControllers)
+	for (const auto& controller : m_pControllers)
 	{
-		m_pController->Update();
 		for (const auto& entry : m_ControllerMap)
 		{
 			const auto& button = entry.first;
@@ -28,24 +27,24 @@ bool dae::InputManager::ProcessInput() const
 			switch (eventState)
 			{
 			case EventState::keyPressed: 
-				if (m_pController->IsPressed(button))
+				if (controller->IsPressed(button))
 					command->Execute();
 				break;
 			case EventState::keyUp:
-				if (m_pController->IsUp(button))
+				if (controller->IsUp(button))
 					command->Execute();
 				break;
 			case EventState::keyDown:
-				if (m_pController->IsDown(button))
+				if (controller->IsDown(button))
 					command->Execute();
 				break;
 			}
 		}
+		controller->Update();
 	}
 
 	if (m_pKeyboard)
 	{
-		m_pKeyboard->Update();
 		for (const auto& entry : m_KeyMap)
 		{
 			const auto& keyCode = entry.first;
@@ -69,6 +68,7 @@ bool dae::InputManager::ProcessInput() const
 				break;
 			}
 		}
+		m_pKeyboard->Update();
 	}
 
 	SDL_Event e;

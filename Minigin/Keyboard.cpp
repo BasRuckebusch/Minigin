@@ -12,7 +12,7 @@ public:
 
 	void Update();
 
-	bool IsDown(SDL_Keycode key) const;
+	static bool IsDown(SDL_Keycode key);
 	bool IsUp(SDL_Keycode key) const;
 	bool IsPressed(SDL_Keycode key) const;
 
@@ -62,7 +62,7 @@ void Keyboard::impl::Update()
 	m_CurrentState = SDL_GetKeyboardState(nullptr);
 }
 
-bool Keyboard::impl::IsDown(SDL_Keycode key) const
+bool Keyboard::impl::IsDown(SDL_Keycode key)
 {
 	const Uint8* scancodeState = SDL_GetKeyboardState(nullptr);
 	const SDL_Scancode scancode = SDL_GetScancodeFromKey(key);
@@ -72,7 +72,7 @@ bool Keyboard::impl::IsDown(SDL_Keycode key) const
 bool Keyboard::impl::IsUp(SDL_Keycode key) const
 {
 	const SDL_Scancode scancode = SDL_GetScancodeFromKey(key);
-	return m_PreviousState[scancode] && !IsDown(key);
+	return m_PreviousState[scancode] && !m_CurrentState[scancode];
 }
 
 bool Keyboard::impl::IsPressed(SDL_Keycode key) const
