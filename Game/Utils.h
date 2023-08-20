@@ -5,6 +5,7 @@
 
 #include "CollisionManager.h"
 #include "GameObject.h"
+#include "IngredientComponent.h"
 #include "InputManager.h"
 #include "Renderer.h"
 #include "Scene.h"
@@ -41,6 +42,8 @@ struct BitmapInfoHeader
 	uint32_t colorsImportant;
 };
 #pragma pack(pop) // Restore default struct padding
+
+//Level Objects
 
 inline void AddLadder(dae::Scene* scene, const glm::vec2& position, int type)
 {
@@ -125,10 +128,18 @@ inline void AddLadder(dae::Scene* scene, const glm::vec2& position, int type, bo
 	if (type != 1)
 	{
 		go->AddComponent<dae::BoxColliderComponent>(position, 16, 2);
+
+		const auto stopper = std::make_shared<dae::GameObject>();
+		const auto col = stopper->AddComponent<dae::BoxColliderComponent>(position, 8, 8);
+		col->SetOffset({ 0, 8 });
+		stopper->SetPosition(position);
+		scene->Add(stopper);
+		dae::CollisionManager::GetInstance().AddStopper(stopper);
 	}
 
 	go->SetPosition(position);
 	scene->Add(go);
+
 	dae::CollisionManager::GetInstance().AddLadder(go);
 }
 
@@ -153,19 +164,6 @@ inline void AddPot(dae::Scene* scene, const glm::vec2& position, int type)
 		go->AddComponent<dae::TextureComponent>("LevelObjects/PotRight.tga");
 	}
 
-	scene->Add(go);
-}
-
-inline void AddIngredient(dae::Scene* scene, const glm::vec2& position, int type, int tileSize)
-{
-	const auto go = std::make_shared<dae::GameObject>();
-	go->SetPosition(position);
-	for (int i = 1; i <= 4; ++i)
-	{
-		std::string texturePath = "Ingredients/ingredient" + std::to_string(i + (type*4)) + ".tga";
-		const auto tex = go->AddComponent<dae::TextureComponent>(texturePath.c_str());
-		tex->SetOffset({ tileSize * (i - 1), 0 });
-	}
 	scene->Add(go);
 }
 
@@ -273,6 +271,26 @@ inline int LoadLevelFromBMP(const std::string& filename, dae::Scene* scene, cons
 	file.close();
 
 	return 0;
+}
+
+//Ingredience
+
+inline void AddIngredient(dae::Scene* scene, const glm::vec2& position, int type, int tileSize)
+{
+	const auto go = std::make_shared<dae::GameObject>();
+	go->SetPosition(position);
+	for (int i = 1; i <= 4; ++i)
+	{
+		std::string texturePath = "Ingredients/ingredient" + std::to_string(i + (type * 4)) + ".tga";
+		const auto tex = go->AddComponent<dae::TextureComponent>(texturePath.c_str());
+		tex->SetOffset({ tileSize * (i - 1), 0 });
+		const auto col = go->AddComponent<dae::BoxColliderComponent>(position, tileSize, tileSize);
+		col->SetOffset({ tileSize * (i - 1), 0 });
+	}
+	go->AddComponent<dae::IngredientComponent>();
+	scene->Add(go);
+
+	dae::CollisionManager::GetInstance().AddIngredient(go);
 }
 
 inline int LoadIngredientsFromBMP(const std::string& filename, dae::Scene* scene, const glm::vec2& worldPos, int tileSize)

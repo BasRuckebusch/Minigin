@@ -26,6 +26,9 @@ dae::PeterComponent::PeterComponent(dae::GameObject* parent) :
 
 void dae::PeterComponent::Update(float)
 {
+	const auto& collisions = CollisionManager::GetInstance();
+	collisions.CollideWithIngredients(m_LeftCollider->GetRect());
+	collisions.CollideWithIngredients(m_RightCollider->GetRect());
 }
 
 void dae::PeterComponent::Render() const

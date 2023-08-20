@@ -1,7 +1,7 @@
 #include <SDL.h>
 #if _DEBUG
 // ReSharper disable once CppUnusedIncludeDirective
-#include <vld.h>
+//#include <vld.h>
 #endif
 #include "CustomCommand.h"
 #include "FPSComponent.h"
@@ -50,6 +50,8 @@ void load()
 	const auto font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
 
 	const std::string file{ResourceManager::GetInstance().GetFullFilePath("level1.bmp") };
+	//const std::string file{ResourceManager::GetInstance().GetFullFilePath("level2.bmp") };
+	//const std::string file{ResourceManager::GetInstance().GetFullFilePath("level3.bmp") };
 	const glm::vec2 worldPos = { 16, 16 };
 	LoadLevelFromBMP(file, &scene, worldPos, 16);
 
