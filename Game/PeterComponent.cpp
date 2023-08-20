@@ -8,10 +8,10 @@
 dae::PeterComponent::PeterComponent(dae::GameObject* parent) :
 	Component(parent)
 {
-	m_LeftCollider = GetParent()->AddComponent<BoxColliderComponent>(GetParent()->GetWorldPosition(), 4, 5);
-	m_LeftCollider->SetOffset({ 0,14 });
-	m_RightCollider = GetParent()->AddComponent<BoxColliderComponent>(GetParent()->GetWorldPosition(), 4, 5);
-	m_RightCollider->SetOffset({ 10,14 });
+	m_LeftCollider = GetParent()->AddComponent<BoxColliderComponent>(GetParent()->GetWorldPosition(), 5, 5);
+	m_LeftCollider->SetOffset({ -1,14 });
+	m_RightCollider = GetParent()->AddComponent<BoxColliderComponent>(GetParent()->GetWorldPosition(), 5, 5);
+	m_RightCollider->SetOffset({ 11,14 });
 
 	m_DownCollider = GetParent()->AddComponent<BoxColliderComponent>(GetParent()->GetWorldPosition(), 2, 5);
 	m_DownCollider->SetOffset({ 7,15 });
@@ -26,6 +26,9 @@ dae::PeterComponent::PeterComponent(dae::GameObject* parent) :
 
 void dae::PeterComponent::Update(float)
 {
+	const auto& collisions = CollisionManager::GetInstance();
+	collisions.CollideWithIngredients(m_LeftCollider->GetRect());
+	collisions.CollideWithIngredients(m_RightCollider->GetRect());
 }
 
 void dae::PeterComponent::Render() const

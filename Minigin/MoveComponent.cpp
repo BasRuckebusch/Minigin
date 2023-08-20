@@ -39,14 +39,16 @@ void dae::MoveComponent::Move(glm::vec2 direction)
 	{
 		const auto& peter = GetParent()->GetComponent<PeterComponent>();
 
+		if (direction.y > 0 && peter->CanMoveDown())
+			m_YPos += direction.y * m_Speed * m_DeltaTime;
+		else if (direction.y < 0 && peter->CanMoveUp())
+			m_YPos += direction.y * m_Speed * m_DeltaTime;
+
 		if (peter->CanMoveLeft() && direction.x < 0)
 			m_XPos += direction.x * m_Speed * m_DeltaTime;
 		else if (peter->CanMoveRight() && direction.x > 0)
 			m_XPos += direction.x * m_Speed * m_DeltaTime;
-		if (direction.y > 0 && peter->CanMoveDown())
-			m_YPos += direction.y * m_Speed * m_DeltaTime;
-		else if(direction.y < 0 && peter->CanMoveUp())
-			m_YPos += direction.y * m_Speed * m_DeltaTime;
+		
 	}
 	else
 	{

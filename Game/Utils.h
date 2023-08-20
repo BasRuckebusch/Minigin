@@ -5,11 +5,15 @@
 
 #include "CollisionManager.h"
 #include "GameObject.h"
+#include "IngredientComponent.h"
 #include "InputManager.h"
+#include "MoveComponent.h"
 #include "Renderer.h"
 #include "Scene.h"
 #include "TextureComponent.h"
 #include "ResourceManager.h"
+#include "CustomCommand.h"
+#include "PeterComponent.h"
 
 
 //https://stackoverflow.com/questions/9296059/read-pixel-value-in-bmp-file
@@ -41,6 +45,8 @@ struct BitmapInfoHeader
 	uint32_t colorsImportant;
 };
 #pragma pack(pop) // Restore default struct padding
+
+//Level Objects
 
 inline void AddLadder(dae::Scene* scene, const glm::vec2& position, int type)
 {
@@ -125,18 +131,54 @@ inline void AddLadder(dae::Scene* scene, const glm::vec2& position, int type, bo
 	if (type != 1)
 	{
 		go->AddComponent<dae::BoxColliderComponent>(position, 16, 2);
+
+		const auto stopper = std::make_shared<dae::GameObject>();
+		const auto col = stopper->AddComponent<dae::BoxColliderComponent>(position, 8, 8);
+		col->SetOffset({ 0, 8 });
+		stopper->SetPosition(position);
+		scene->Add(stopper);
+		dae::CollisionManager::GetInstance().AddStopper(stopper);
 	}
 
 	go->SetPosition(position);
 	scene->Add(go);
+
 	dae::CollisionManager::GetInstance().AddLadder(go);
+}
+
+inline void AddPot(dae::Scene* scene, const glm::vec2& position, int type)
+{
+	const auto go = std::make_shared<dae::GameObject>();
+	go->SetPosition(position);
+	if (type == 0)
+	{
+		go->AddComponent<dae::TextureComponent>("LevelObjects/PotLeft.tga");
+	}
+	else if (type == 1)
+	{
+		go->AddComponent<dae::TextureComponent>("LevelObjects/PotMiddle.tga");
+
+		const auto pot = std::make_shared<dae::GameObject>();
+		pot->SetPosition(position);
+		const auto col = pot->AddComponent<dae::BoxColliderComponent>(position, 8, 8);
+		col->SetOffset({ 0, 8 });
+
+		dae::CollisionManager::GetInstance().AddPot(pot);
+	}
+	else if (type == 2)
+	{
+		go->AddComponent<dae::TextureComponent>("LevelObjects/PotDouble.tga");
+	}
+	else if (type == 3)
+	{
+		go->AddComponent<dae::TextureComponent>("LevelObjects/PotRight.tga");
+	}
+
+	scene->Add(go);
 }
 
 inline int LoadLevelFromBMP(const std::string& filename, dae::Scene* scene, const glm::vec2& worldPos, int tileSize)
 {
-
-	std::srand(static_cast<unsigned>(std::time(nullptr)));
-
 	std::ifstream file(filename, std::ios_base::binary);
 	if (!file) {
 		std::cout << "Failed to open the bitmap file." << std::endl;
@@ -193,132 +235,45 @@ inline int LoadLevelFromBMP(const std::string& filename, dae::Scene* scene, cons
 			uint8_t green = pixel[1];
 			uint8_t red = pixel[2];
 
-			std::cout << red << ",  " << green << ",  " << blue << std::endl;
+			glm::vec2 pos{ (worldPos.x + x * tileSize), (worldPos.y + (infoHeader.height - 1 - y) * tileSize) };
 
 			//Ladders
 			if (red == 255)
 			{
-				glm::vec2 pos{ (worldPos.x + x * tileSize), (worldPos.y + (infoHeader.height - 1 - y) * tileSize) };
 				if (blue == 0)
-				{
-					AddLadder(scene, pos , 0);
-				}
+					AddLadder(scene, pos, 0);
 				if (blue == 85)
-				{
 					AddLadder(scene, pos, 1);
-				}
 				if (blue == 170)
-				{
 					AddLadder(scene, pos, 2);
-				}
 			}
-			//Double Ladders
+			// Double Ladders
 			bool right{};
 			if (prevBlue == 255)
-			{
 				right = true;
-			}
 			if (blue == 255)
 			{
-				glm::vec2 pos{ (worldPos.x + x * tileSize), (worldPos.y + (infoHeader.height - 1 - y) * tileSize) };
 				if (red == 0)
-				{
 					AddLadder(scene, pos, 0, right);
-				}
 				if (red == 85)
-				{
 					AddLadder(scene, pos, 1, right);
-				}
 				if (red == 170)
-				{
 					AddLadder(scene, pos, 2, right);
-				}
+			}
+
+			// Plates
+			if (blue == 0 && red == 0)
+			{
+				if (green == 128)
+					AddPot(scene, pos, 0);
+				if (green == 255)
+					AddPot(scene, pos, 1);
+				if (green == 187)
+					AddPot(scene, pos, 2);
+				if (green == 64)
+					AddPot(scene, pos, 3);
 			}
 			prevBlue = blue;
-			//if (red == 255 && green == 255 && blue == 255)
-			//{
-			//	//White = Nothing
-			//}
-			//else if (red == 0 && green == 0 && blue == 0)
-			//{
-			//	// Black = Wall
-			//	auto go = std::make_shared<dae::GameObject>();
-			//	go->AddComponent<dae::TextureComponent>("wall.tga");
-			//	go->SetPosition((worldPos.x + x * tileSize), (worldPos.y + (infoHeader.height - 1 - y) * tileSize));
-			//	go->AddComponent<dae::BoxColliderComponent>(go->GetWorldPosition(), tileSize, tileSize);
-			//	scene->Add(go);
-			//
-			//	collisions.AddWall(go);
-			//}
-			//else if (red == 0 && green == 255 && blue == 0)
-			//{
-			//	// Green = Player
-			//	const auto player = std::make_shared<dae::GameObject>();
-			//	player->SetPosition((worldPos.x + x * tileSize), (worldPos.y + (infoHeader.height - 1 - y) * tileSize));
-			//	player->AddComponent<dae::TextureComponent>("player.tga");
-			//	player->AddComponent<dae::MoveComponent>();
-			//	const auto camera = player->AddComponent<dae::CameraComponent>();
-			//	glm::vec2 offset{4,4};
-			//	const auto colcomp = player->AddComponent<dae::BoxColliderComponent>(player->GetWorldPosition(), static_cast<int>(tileSize - offset.x * 2), static_cast<int>(tileSize - offset.y * 2));
-			//	colcomp->SetOffset(offset);
-			//	const auto bcomp = player->AddComponent<dae::BomberManComponent>(scene, tileSize);
-			//	bcomp->SetLevelName("level.bmp");
-			//	scene->Add(player);
-			//
-			//	collisions.AddPlayer(player);
-			//
-			//	auto& renderer = dae::Renderer::GetInstance();
-			//
-			//	camera->SetBoundaries({ worldPos.x, infoHeader.width * tileSize / renderer.GetCameraScale() - tileSize * 5 / renderer.GetCameraScale() });
-			//
-			//
-			//	dae::InputManager::GetInstance().BindCommand(SDLK_a, std::make_unique<dae::MoveLeftRight>(player.get(), false));
-			//	dae::InputManager::GetInstance().BindCommand(SDLK_d, std::make_unique<dae::MoveLeftRight>(player.get(), true));
-			//	dae::InputManager::GetInstance().BindCommand(SDLK_w, std::make_unique<dae::MoveUpDown>(player.get(), false));
-			//	dae::InputManager::GetInstance().BindCommand(SDLK_s, std::make_unique<dae::MoveUpDown>(player.get(), true));
-			//	dae::InputManager::GetInstance().BindCommand(SDLK_e, std::make_unique<dae::PlaceBomb>(player.get()));
-			//}
-			//else if (red == 255 && green == 0 && blue == 0) 
-			//{
-			//	//Red = Enemy
-			//	const auto enemy = std::make_shared<dae::GameObject>();
-			//	enemy->SetPosition((worldPos.x + x * tileSize), (worldPos.y + (infoHeader.height - 1 - y) * tileSize));
-			//	enemy->AddComponent<dae::TextureComponent>("enemy.tga");
-			//	enemy->AddComponent<dae::EnemyComponent>();
-			//	enemy->AddComponent<dae::BoxColliderComponent>(enemy->GetWorldPosition(), tileSize, tileSize);
-			//	scene->Add(enemy);
-			//	collisions.AddEnemy(enemy);
-			//
-			//}
-			//else if (red == 0 && green == 0 && blue == 255) 
-			//{
-			//	// Blue = Breakable Wall
-			//
-			//	if (const int r = rand() % 11; r != 0)
-			//	{
-			//		auto go = std::make_shared<dae::GameObject>();
-			//		go->AddComponent<dae::TextureComponent>("brick.tga");
-			//		go->SetPosition((worldPos.x + x * tileSize), (worldPos.y + (infoHeader.height - 1 - y) * tileSize));
-			//		go->AddComponent<dae::BoxColliderComponent>(go->GetWorldPosition(), tileSize, tileSize);
-			//		scene->Add(go);
-			//
-			//		collisions.AddWall(go);
-			//		collisions.AddBrick(go);
-			//	}
-			//}
-			//else if (red == 255 && green == 255 && blue == 0)
-			//{
-			//	// Yellow = End
-			//
-			//	auto go = std::make_shared<dae::GameObject>();
-			//	go->AddComponent<dae::TextureComponent>("end.tga");
-			//	go->SetPosition((worldPos.x + x * tileSize), (worldPos.y + (infoHeader.height - 1 - y) * tileSize));
-			//	go->AddComponent<dae::BoxColliderComponent>(go->GetWorldPosition(), tileSize, tileSize);
-			//	std::vector<std::string> levelNames{ "level.bmp", "level5.bmp", "level2.bmp", "level3.bmp" };
-			//	go->AddComponent<dae::EndComponent>(scene, levelNames);
-			//	scene->Add(go);
-			//
-			//}
 		}
 	}
 
@@ -326,6 +281,175 @@ inline int LoadLevelFromBMP(const std::string& filename, dae::Scene* scene, cons
 	file.close();
 
 	return 0;
+}
+
+//Ingredience
+
+inline void AddIngredient(dae::Scene* scene, const glm::vec2& position, int type, int tileSize)
+{
+	const auto go = std::make_shared<dae::GameObject>();
+	go->SetPosition(position);
+	for (int i = 1; i <= 4; ++i)
+	{
+		std::string texturePath = "Ingredients/ingredient" + std::to_string(i + (type * 4)) + ".tga";
+		const auto tex = go->AddComponent<dae::TextureComponent>(texturePath.c_str());
+		tex->SetOffset({ tileSize * (i - 1), 0 });
+		const auto col = go->AddComponent<dae::BoxColliderComponent>(position, tileSize, tileSize);
+		col->SetOffset({ tileSize * (i - 1), 0 });
+	}
+	go->AddComponent<dae::IngredientComponent>();
+	scene->Add(go);
+
+	dae::CollisionManager::GetInstance().AddIngredient(go);
+}
+
+inline int LoadIngredientsFromBMP(const std::string& filename, dae::Scene* scene, const glm::vec2& worldPos, int tileSize)
+{
+	std::ifstream file(filename, std::ios_base::binary);
+	if (!file) {
+		std::cout << "Failed to open the bitmap file." << std::endl;
+		return 1;
+	}
+
+	BitmapFileHeader fileHeader{};
+	BitmapInfoHeader infoHeader{};
+
+	// Read the file header
+	file.read(reinterpret_cast<char*>(&fileHeader), sizeof(fileHeader));
+
+	// Read the info header
+	file.read(reinterpret_cast<char*>(&infoHeader), sizeof(infoHeader));
+
+	// Check if the file is a valid bitmap
+	if (fileHeader.signature != 0x4D42) {
+		std::cout << "The file is not a valid bitmap." << std::endl;
+		file.close();
+		return 1;
+	}
+
+	// Calculate the number of bytes per pixel
+	int bytesPerPixel = infoHeader.bitsPerPixel / 8;
+
+	// Calculate the row size in bytes (including padding)
+	int rowSize = ((infoHeader.width * bytesPerPixel + 3) & (~3));
+
+	// Allocate memory for the pixel data
+	const std::unique_ptr<uint8_t[]> pixelData(new uint8_t[rowSize * infoHeader.height]);
+
+	// Read the pixel data
+	file.read(reinterpret_cast<char*>(pixelData.get()), static_cast<std::streamsize>(rowSize) * infoHeader.height);
+
+
+	// Check if the pixel data was read successfully
+	if (!file) {
+		std::cout << "Failed to read the pixel data." << std::endl;
+		file.close();
+		return 1;
+	}
+
+	std::cout << infoHeader.width << std::endl;
+	std::cout << infoHeader.height << std::endl;
+
+	// Check the color of each pixel
+	for (int y = infoHeader.height - 1; y >= 0; --y) { // Loop in reverse order
+		for (int x = 0; x < infoHeader.width; ++x) {
+			uint8_t* pixel = pixelData.get() + y * rowSize + x * bytesPerPixel;
+
+			uint8_t blue = pixel[0];
+			uint8_t green = pixel[1];
+			uint8_t red = pixel[2];
+
+			glm::vec2 pos{ (worldPos.x + x * tileSize), (worldPos.y + (infoHeader.height - 1 - y) * tileSize) };
+
+			//Bun Bottom
+			if (red == 255 && blue == 0 && green == 255)
+			{
+				std::cout << "Bun Bottom\n";
+				AddIngredient(scene, pos, 1, tileSize);
+			}
+			//Lettuce
+			if (red == 0 && blue == 0 && green == 255)
+			{
+				std::cout << "Lettuce\n";
+				AddIngredient(scene, pos, 5, tileSize);
+			}
+			//Cheese
+			if (red == 0 && blue == 255 && green == 255)
+			{
+				std::cout << "Cheese\n";
+				AddIngredient(scene, pos, 2, tileSize);
+			}
+			//Burger
+			if (red == 255 && blue == 0 && green == 0)
+			{
+				std::cout << "Burger\n";
+				AddIngredient(scene, pos, 3, tileSize);
+			}
+			//Tomato
+			if (red == 0 && blue == 255 && green == 0)
+			{
+				std::cout << "Tomato\n";
+				AddIngredient(scene, pos, 4, tileSize);
+			}
+			//Bun Top
+			if (red == 255 && blue == 255 && green == 0)
+			{
+				std::cout << "Bun Top\n";
+				AddIngredient(scene, pos, 0, tileSize);
+			}
+		}
+	}
+
+	// Clean up
+	file.close();
+
+	return 0;
+}
+
+inline void LoadLevel(const std::string& levelName, dae::Scene* scene)
+{
+	const auto objects = scene->GetAll();
+	for (const auto& gameObject : objects)
+	{
+		gameObject->Destroy();
+	}
+
+	auto& collisions = dae::CollisionManager::GetInstance();
+	collisions.RemoveAll();
+
+	// Load scene from file
+	int tileSize{ 16 };
+	int halfTileSize{ tileSize /2 };
+
+	std::string level = "LevelMaps/" + levelName;
+	std::string ingredient = "IngredientMaps/" + levelName;
+	glm::vec2 worldPos = { tileSize, tileSize };
+
+	std::string levelfile{ dae::ResourceManager::GetInstance().GetFullFilePath(level) };
+	std::string ingredientfile{ dae::ResourceManager::GetInstance().GetFullFilePath(ingredient) };
+	
+	LoadLevelFromBMP(levelfile, scene, worldPos, tileSize);
+	LoadIngredientsFromBMP(ingredientfile, scene, worldPos, halfTileSize);
+
+	const auto player = std::make_shared<dae::GameObject>();
+	player->SetLocalPosition(glm::vec3(104, 62, 0));
+	player->AddComponent<dae::TextureComponent>("player.tga");
+	player->AddComponent<dae::MoveComponent>();
+	player->AddComponent<dae::PeterComponent>();
+	scene->Add(player);
+
+	auto& input = dae::InputManager::GetInstance();
+
+	input.BindCommand(dae::ControllerButton::Left, std::make_unique<dae::Move>(player.get(), glm::vec2{ -1.f, 0.f }), dae::EventState::keyPressed);
+	input.BindCommand(dae::ControllerButton::Right, std::make_unique<dae::Move>(player.get(), glm::vec2{ 1.f, 0.f }), dae::EventState::keyPressed);
+	input.BindCommand(dae::ControllerButton::Up, std::make_unique<dae::Move>(player.get(), glm::vec2{ 0.f, -1.f }), dae::EventState::keyPressed);
+	input.BindCommand(dae::ControllerButton::Down, std::make_unique<dae::Move>(player.get(), glm::vec2{ 0.f, 1.f }), dae::EventState::keyPressed);
+
+	input.BindCommand(SDLK_a, std::make_unique<dae::Move>(player.get(), glm::vec2{ -1.f, 0.f }), dae::EventState::keyPressed);
+	input.BindCommand(SDLK_d, std::make_unique<dae::Move>(player.get(), glm::vec2{ 1.f, 0.f }), dae::EventState::keyPressed);
+	input.BindCommand(SDLK_w, std::make_unique<dae::Move>(player.get(), glm::vec2{ 0.f, -1.f }), dae::EventState::keyPressed);
+	input.BindCommand(SDLK_s, std::make_unique<dae::Move>(player.get(), glm::vec2{ 0.f, 1.f }), dae::EventState::keyPressed);
+
 }
 
 //inline void LoadLevel(const std::string& levelName, dae::Scene* scene)

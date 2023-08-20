@@ -10,11 +10,6 @@ void dae::Move::Execute()
 	m_pGameObject->GetComponent<MoveComponent>()->Move(m_Direction);
 }
 
-void dae::PlaceBomb::Execute()
-{
-	//m_pGameObject->GetComponent<BomberManComponent>()->PlaceBomb();
-}
-
 void dae::NextLevel::Execute()
 {
 	m_Id++;
@@ -22,7 +17,7 @@ void dae::NextLevel::Execute()
 	{
 		m_Id = 0;
 	}
-	//LoadLevel(m_LevelNames[m_Id], m_pScene);
+	LoadLevel(m_LevelNames[m_Id], m_pScene);
 }
 
 void dae::LevelLoad::Execute()

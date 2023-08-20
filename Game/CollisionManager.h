@@ -15,16 +15,33 @@ namespace dae
 	{
 	public:
 		bool IsCollidingWithLadder(const SDL_Rect& col) const;
+		void CollideWithIngredients(const SDL_Rect& col) const;
+
+		void ChainFall(GameObject* parent, const SDL_Rect& col) const;
 
 		void AddLadder(std::shared_ptr<GameObject> object);
 		void RemoveLadder(std::shared_ptr<GameObject> object);
+
+		void AddIngredient(std::shared_ptr<GameObject> object);
+		void RemoveIngredient(std::shared_ptr<GameObject> object);
+
+		void AddStopper(std::shared_ptr<GameObject> object);
+		void RemoveStopper(std::shared_ptr<GameObject> object);
+
+		void AddPot(std::shared_ptr<GameObject> object);
+		void RemovePot(std::shared_ptr<GameObject> object);
+
 
 		//void AddEnemy(std::shared_ptr<GameObject> object);
 		//void RemoveEnemy(std::shared_ptr<GameObject> object);
 
 		void RemoveAll();
+		
 
 	private:
 		std::vector<std::shared_ptr<GameObject>> m_pLadders{};
+		std::vector<std::shared_ptr<GameObject>> m_pIngredients{};
+		std::vector<std::shared_ptr<GameObject>> m_pStoppers{};
+		std::vector<std::shared_ptr<GameObject>> m_pPots{};
 	};
 }

@@ -18,15 +18,6 @@ namespace dae
 		GameObject* m_pGameObject;
 	};
 
-	class PlaceBomb final : public Command
-	{
-	public:
-		explicit PlaceBomb(GameObject* pGameObject) : m_pGameObject(pGameObject) {}
-		void Execute() override;
-	private:
-		GameObject* m_pGameObject;
-	};
-
 	class NextLevel final : public Command
 	{
 	public:
@@ -49,4 +40,3 @@ namespace dae
 		std::string m_LevelName{};
 	};
 }
-
