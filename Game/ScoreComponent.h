@@ -19,7 +19,7 @@ namespace dae
 		void Render() const override;
 
 		void ChangeScore(int amount);
-		int GetScore() { return m_Score; }
+		int GetScore() const { return m_Score; }
 	private:
 		int m_Score{};
 	};

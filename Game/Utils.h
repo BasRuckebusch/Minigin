@@ -411,7 +411,7 @@ inline void SaveHighScore(dae::Scene* scene)
 			}
 			inFile.close();
 
-			std::ranges::sort(highScores, std::greater<int>());
+			std::ranges::sort(highScores, std::greater());
 
 			std::ofstream outFile(filePath);
 
@@ -459,8 +459,8 @@ inline void LoadLevel(const std::string& levelName, dae::Scene* scene)
 	score->AddObserver(ui);
 
 	// Load scene from file
-	int tileSize{ 16 };
-	int halfTileSize{ tileSize /2 };
+	constexpr int tileSize{ 16 };
+	constexpr int halfTileSize{ tileSize /2 };
 
 	std::string level = "LevelMaps/" + levelName;
 	std::string ingredient = "IngredientMaps/" + levelName;
