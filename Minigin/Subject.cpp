@@ -14,6 +14,6 @@ void dae::Subject::RemoveObserver(Observer* observer)
 
 void dae::Subject::NotifyObservers(GameObject* go, Event event)
 {
-	for (auto observer : m_pObservers)
+	for (const auto observer : m_pObservers)
 		observer->Notify(go, event);
 }

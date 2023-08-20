@@ -56,6 +56,18 @@ void load()
 	auto& input = InputManager::GetInstance();
 	input.BindCommand(SDLK_F1, std::make_unique<NextLevel>(&scene, levelNames), EventState::keyUp);
 
+	//auto& scene2 = SceneManager::GetInstance().CreateScene("Extra");
+
+	//auto go = std::make_shared<GameObject>();
+	//const auto fpsfont = ResourceManager::GetInstance().LoadFont("Lingua.otf", 16);
+	//go = std::make_shared<GameObject>();
+	//go->AddComponent<TextureComponent>();
+	//go->AddComponent<TextComponent>("0", fpsfont, SDL_Color(0, 255, 0));
+	//go->AddComponent<FPSComponent>();
+	//go->SetPosition(0, 5);
+	//scene2.Add(go);
+
+
 	//	const int tileSize{ 16 };
 	//	const int halfTileSize{ static_cast<int>(tileSize * .5f) };
 	//	const glm::vec2 worldPos = { tileSize, tileSize };
@@ -74,8 +86,7 @@ void load()
 	//	//const std::string ingredient3{ResourceManager::GetInstance().GetFullFilePath("ingredients3.bmp") };
 	//	//LoadIngredientsFromBMP(ingredient3, &scene3, worldPos, halfTileSize);
 
-
-	auto go = std::make_shared<GameObject>();
+	//auto go = std::make_shared<GameObject>();
 
 	//	go->AddComponent<TextureComponent>("background.tga");
 	//	scene.Add(go);
@@ -107,7 +118,6 @@ void load()
 
 	//const std::string title = ResourceManager::GetInstance().GetFullFilePath("TitleScreen.mp3");
 	//const auto titleID = ServiceLocator::GetSoundSystem().AddSound(title.c_str());
-
 	//ServiceLocator::GetSoundSystem().Play(titleID, 50.f);
 
 	//	const auto player = std::make_shared<GameObject>();

@@ -3,9 +3,10 @@
 
 namespace dae
 {
+	class ScoreComponent;
 	class Scene;
 
-	class IngredientComponent final : public Component
+	class IngredientComponent final : public Component 
 	{
 	public:
 		IngredientComponent(GameObject* parent);
@@ -25,6 +26,8 @@ namespace dae
 
 		bool GetFalling() const { return m_IsFalling; }
 
+		void SetScoreComponent(ScoreComponent* score);
+
 	private:
 		static bool AllGreaterThan(const std::vector<int>& numbers, int num);
 
@@ -33,5 +36,6 @@ namespace dae
 		float m_XPos{};
 		float m_YPos{};
 		float m_FallSpeed{30};
+		ScoreComponent* m_pScore{ nullptr };
 	};
 }
