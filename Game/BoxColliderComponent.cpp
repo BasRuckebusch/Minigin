@@ -20,8 +20,8 @@ void dae::BoxColliderComponent::Update(float)
 
 void dae::BoxColliderComponent::Render() const
 {
-	// SDL_SetRenderDrawColor(Renderer::GetInstance().GetSDLRenderer(), 255, 0, 0, 255);
-	// SDL_RenderDrawRect(Renderer::GetInstance().GetSDLRenderer(), &m_Rect);
+	//SDL_SetRenderDrawColor(Renderer::GetInstance().GetSDLRenderer(), 255, 0, 0, 255);
+	//SDL_RenderDrawRect(Renderer::GetInstance().GetSDLRenderer(), &m_Rect);
 }
 
 void dae::BoxColliderComponent::SetPosition(const glm::vec2& pos)

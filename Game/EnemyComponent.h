@@ -3,6 +3,8 @@
 
 namespace dae
 {
+	class BoxColliderComponent;
+
 	class EnemyComponent final : public Component
 	{
 	public:
@@ -20,15 +22,20 @@ namespace dae
 		void SetDirection(glm::vec2 direction) { m_Direction = direction; }
 		void PickNewDirection();
 
+		bool CanMoveLeft() const;
+		bool CanMoveRight() const;
 
 	private:
 		glm::ivec2 m_Direction{};
 
-		float m_Speed {50};
+		float m_Speed {15};
 		float m_XPos;
 		float m_YPos;
 		float m_DeltaTime{};
 
 		bool m_HasKilled{false};
+
+		BoxColliderComponent* m_GroundLeftCollider;
+		BoxColliderComponent* m_GroundRightCollider;
 	};
 }

@@ -1,7 +1,4 @@
 #include "CollisionManager.h"
-
-#include <iostream>
-
 #include "BoxColliderComponent.h"
 #include "GameObject.h"
 #include "IngredientComponent.h"
@@ -143,7 +140,6 @@ void dae::CollisionManager::InPot(GameObject* , const SDL_Rect& col)
 			m_FilledPots++;
 		}
 	}
-	std::cout << GetAmountPots() << std::endl;
 }
 
 void dae::CollisionManager::AddLadder(std::shared_ptr<GameObject> object)

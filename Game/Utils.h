@@ -482,7 +482,7 @@ inline void LoadLevel(const std::string& levelName, dae::Scene* scene, int gameM
 	{
 		//SP
 		const auto player = std::make_shared<dae::GameObject>();
-		player->SetLocalPosition(glm::vec3(104, 62, 0));
+		player->SetLocalPosition(glm::vec3(112, 62, 0));
 		player->AddComponent<dae::TextureComponent>("player.tga");
 		player->AddComponent<dae::MoveComponent>();
 		player->AddComponent<dae::PeterComponent>(false, scene, levelName);
@@ -512,7 +512,7 @@ inline void LoadLevel(const std::string& levelName, dae::Scene* scene, int gameM
 	{
 		//MP
 		const auto player = std::make_shared<dae::GameObject>();
-		player->SetLocalPosition(glm::vec3(88, 62, 0));
+		player->SetLocalPosition(glm::vec3(112, 62, 0));
 		player->AddComponent<dae::TextureComponent>("player.tga");
 		player->AddComponent<dae::MoveComponent>();
 		player->AddComponent<dae::PeterComponent>(false, scene, levelName);
@@ -531,7 +531,7 @@ inline void LoadLevel(const std::string& levelName, dae::Scene* scene, int gameM
 		input.BindCommand(SDLK_s, std::make_unique<dae::Move>(player.get(), glm::vec2{ 0.f, 1.f }), dae::EventState::keyPressed);
 
 		const auto player2 = std::make_shared<dae::GameObject>();
-		player2->SetLocalPosition(glm::vec3(120, 62, 0));
+		player2->SetLocalPosition(glm::vec3(96, 62, 0));
 		player2->AddComponent<dae::TextureComponent>("player2.tga");
 		player2->AddComponent<dae::MoveComponent>();
 		player2->AddComponent<dae::PeterComponent>(false, scene, levelName);
@@ -546,7 +546,7 @@ inline void LoadLevel(const std::string& levelName, dae::Scene* scene, int gameM
 	{
 		//VS
 		const auto player = std::make_shared<dae::GameObject>();
-		player->SetLocalPosition(glm::vec3(88, 62, 0));
+		player->SetLocalPosition(glm::vec3(112, 62, 0));
 		player->AddComponent<dae::TextureComponent>("player.tga");
 		player->AddComponent<dae::MoveComponent>();
 		player->AddComponent<dae::PeterComponent>(false, scene, levelName);
@@ -565,7 +565,7 @@ inline void LoadLevel(const std::string& levelName, dae::Scene* scene, int gameM
 		input.BindCommand(SDLK_s, std::make_unique<dae::Move>(player.get(), glm::vec2{ 0.f, 1.f }), dae::EventState::keyPressed);
 
 		const auto player2 = std::make_shared<dae::GameObject>();
-		player2->SetLocalPosition(glm::vec3(120, 62, 0));
+		player2->SetLocalPosition(glm::vec3(16, 16, 0));
 		player2->AddComponent<dae::TextureComponent>("enemy.tga");
 		player2->AddComponent<dae::MoveComponent>();
 		player2->AddComponent<dae::PeterComponent>(true, scene, levelName);
