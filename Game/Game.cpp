@@ -4,13 +4,12 @@
 //#include <vld.h>
 #endif
 #include "CustomCommand.h"
-#include "FPSComponent.h"
+#include "EndComponent.h"
 #include "Minigin.h"
 
 #include "ResourceManager.h"
 #include "SceneManager.h"
 #include "SDLSoundSystem.h"
-#include "ServiceLocator.h"
 #include "SoundSystem.h"
 #include "Utils.h"
 #include "Gamepad.h"
@@ -47,16 +46,19 @@ void load()
 	ServiceLocator::RegisterSoundSystem(std::move(ss));
 
 	auto& scene = SceneManager::GetInstance().CreateScene("Level1");
-	//auto& scene2 = SceneManager::GetInstance().CreateScene("Level2");
-	//auto& scene3 = SceneManager::GetInstance().CreateScene("Level3");
 	const auto font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
 
 	std::vector<std::string> levelNames{ "level1.bmp", "level2.bmp", "level3.bmp" };
-	LoadLevel(levelNames[0], &scene);
+	LoadMenu(levelNames[0], &scene);
 	auto& input = InputManager::GetInstance();
 	input.BindCommand(SDLK_F1, std::make_unique<NextLevel>(&scene, levelNames), EventState::keyUp);
+	input.BindCommand(SDLK_ESCAPE, std::make_unique<MenuLoad>(&scene, levelNames[0]), EventState::keyUp);
 
-	//auto& scene2 = SceneManager::GetInstance().CreateScene("Extra");
+	auto& scene2 = SceneManager::GetInstance().CreateScene("Extra");
+
+	const auto go = std::make_shared<GameObject>();
+	go->AddComponent<EndComponent>(&scene, levelNames);
+	scene2.Add(go);
 
 	//auto go = std::make_shared<GameObject>();
 	//const auto fpsfont = ResourceManager::GetInstance().LoadFont("Lingua.otf", 16);

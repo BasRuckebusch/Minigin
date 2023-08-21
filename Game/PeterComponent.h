@@ -9,7 +9,7 @@ namespace dae
 	class PeterComponent final : public Component
 	{
 	public:
-		PeterComponent(GameObject* parent);
+		PeterComponent(GameObject* parent, bool isEvil);
 		~PeterComponent() override = default;
 
 		PeterComponent(const PeterComponent& other) = delete;
@@ -28,7 +28,8 @@ namespace dae
 
 	private:
 		bool m_IsOnLadder{false};
-		bool m_isOnGround{false};
+		bool m_isOnGround{ false };
+		bool m_IsEvil{ false };
 
 		BoxColliderComponent* m_LeftCollider;
 		BoxColliderComponent* m_RightCollider;

@@ -1,8 +1,4 @@
 #include "Keyboard.h"
-
-#include <iostream>
-#include <string>
-
 using namespace dae;
 
 class Keyboard::impl

@@ -1,5 +1,4 @@
 #pragma once
-#include <SDL_rect.h>
 #include <string>
 
 #include "Component.h"
@@ -23,10 +22,8 @@ namespace dae
 		void Render() const override;
 
 	private:
-		SDL_Rect m_Rect{};
 		Scene* m_pScene{};
 		std::vector<std::string> m_LevelNames{};
-
 		bool m_Ended{false};
 	};
 }

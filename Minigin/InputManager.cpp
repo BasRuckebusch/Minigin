@@ -7,6 +7,7 @@
 dae::InputManager::InputManager()
 {
 	m_pControllers.push_back(std::make_unique<Gamepad>(0));
+	m_pControllers.push_back(std::make_unique<Gamepad>(1));
 	m_pKeyboard = std::make_unique<Keyboard>();
 }
 

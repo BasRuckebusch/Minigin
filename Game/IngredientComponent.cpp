@@ -5,8 +5,9 @@
 #include "ScoreComponent.h"
 #include "TextureComponent.h"
 
-dae::IngredientComponent::IngredientComponent(GameObject* parent) :
-	Component(parent)
+dae::IngredientComponent::IngredientComponent(GameObject* parent, int type) :
+	Component(parent),
+	m_Type(type)
 {
 	auto& pos = GetParent()->GetLocalPosition();
 	m_XPos = pos.x;
@@ -67,6 +68,11 @@ void dae::IngredientComponent::StopFalling()
 	}
 	if (m_pScore)
 		m_pScore->ChangeScore(50);
+	if (m_Type == 0)
+	{
+		auto& collisions = CollisionManager::GetInstance();
+		collisions.InPot(GetParent(), GetParent()->GetComponent<BoxColliderComponent>()->GetRect());
+	}
 }
 
 void dae::IngredientComponent::HitPart(int partHit)
