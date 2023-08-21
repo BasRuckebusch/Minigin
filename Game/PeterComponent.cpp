@@ -1,10 +1,14 @@
 #include "PeterComponent.h"
+
 #include "BoxColliderComponent.h"
 #include "CollisionManager.h"
+#include "utils.h"
 
-dae::PeterComponent::PeterComponent(dae::GameObject* parent, bool isEvil) :
+dae::PeterComponent::PeterComponent(GameObject* parent, bool isEvil, Scene* scene, std::string levelName):
 	Component(parent),
-	m_IsEvil(isEvil)
+	m_IsEvil(isEvil),
+	m_pScene(scene),
+	m_LevelName(std::move(levelName))
 {
 	m_LeftCollider = GetParent()->AddComponent<BoxColliderComponent>(GetParent()->GetWorldPosition(), 5, 5);
 	m_LeftCollider->SetOffset({ -1,14 });
@@ -29,6 +33,11 @@ void dae::PeterComponent::Update(float)
 		const auto& collisions = CollisionManager::GetInstance();
 		collisions.CollideWithIngredients(m_LeftCollider->GetRect());
 		collisions.CollideWithIngredients(m_RightCollider->GetRect());
+
+		if (collisions.IsCollidingWithEnemy(m_GroundLeftCollider->GetRect()) || collisions.IsCollidingWithEnemy(m_GroundRightCollider->GetRect()))
+		{
+			Die();
+		}
 	}
 	
 }
@@ -78,4 +87,16 @@ bool dae::PeterComponent::CanMoveRight() const
 	if (collisions.IsCollidingWithLadder(m_GroundRightCollider->GetRect()))
 		return true;
 	return false;
+}
+
+void dae::PeterComponent::Die()
+{
+	if (!m_Dead)
+	{
+		if (m_pScene != nullptr)
+		{
+			LoadMenu(m_LevelName, m_pScene);
+			m_Dead = true;
+		}
+	}
 }

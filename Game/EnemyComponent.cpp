@@ -2,6 +2,7 @@
 #include "Renderer.h"
 #include "BoxColliderComponent.h"
 #include "CollisionManager.h"
+#include "PeterComponent.h"
 
 
 dae::EnemyComponent::EnemyComponent(GameObject* parent) :
@@ -13,57 +14,24 @@ dae::EnemyComponent::EnemyComponent(GameObject* parent) :
 	PickNewDirection();
 }
 
-void dae::EnemyComponent::Update(float)
+void dae::EnemyComponent::Update(float deltaTime)
 {
-	//	if (!m_HasKilled)
-	//	{
-	//		m_DeltaTime = deltaTime;
-	//	
-	//		auto col = GetParent()->GetComponent<BoxColliderComponent>();
-	//		auto& collisions = dae::CollisionManager::GetInstance();
-	//	
-	//		auto rect = col->GetRect();
-	//		float speedtime = m_Speed * m_DeltaTime;
-	//	
-	//		float newx = m_XPos + (m_Direction.x * speedtime);
-	//		rect.x = static_cast<int>(rect.x + (m_Direction.x * speedtime));
-	//	
-	//		float newy = m_YPos + (m_Direction.y * speedtime);
-	//		rect.y = static_cast<int>(rect.y + (m_Direction.y * speedtime));
-	//	
-	//		if (!collisions.CheckRectCollide(rect))
-	//		{
-	//			m_XPos = newx;
-	//			m_YPos = newy;
-	//	
-	//			GameObject* player{nullptr};
-	//	
-	//			auto players = collisions.AllPlayersInRect(rect);
-	//			for (auto gameObject : players)
-	//			{
-	//				collisions.RemovePlayer(gameObject);
-	//				player = gameObject.get();
-	//			}
-	//	
-	//			if (player)
-	//			{
-	//				player->GetComponent<BomberManComponent>()->Die();
-	//				m_HasKilled = true;
-	//			}
-	//		}
-	//		else
-	//		{
-	//			PickNewDirection();
-	//		}
-	//	
-	//	
-	//		GetParent()->SetLocalPosition({ m_XPos, m_YPos , 0 });
-	//	
-	//		if (GetParent()->HasComponent<BoxColliderComponent>())
-	//		{
-	//			GetParent()->GetComponent<BoxColliderComponent>()->SetPosition({ m_XPos, m_YPos });
-	//		}
-	//	}
+	if (!m_HasKilled)
+	{
+		m_DeltaTime = deltaTime;
+	
+		//auto col = GetParent()->GetComponent<BoxColliderComponent>();
+		//auto& collisions = CollisionManager::GetInstance();
+
+		PickNewDirection();
+
+		GetParent()->SetLocalPosition({ m_XPos, m_YPos , 0 });
+	
+		if (GetParent()->HasComponent<BoxColliderComponent>())
+		{
+			GetParent()->GetComponent<BoxColliderComponent>()->SetPosition({ m_XPos, m_YPos });
+		}
+	}
 }
 
 void dae::EnemyComponent::Render() const

@@ -26,15 +26,14 @@ void Scene::RemoveAll()
 
 void Scene::Update(const float& deltaTime)
 {
+	m_Objects.erase(std::remove_if(m_Objects.begin(), m_Objects.end(),
+		[](const std::shared_ptr<GameObject>& obj) {
+			return obj->IsDestroyed();
+		}),
+		m_Objects.end());
 	for (const auto& object : m_Objects)
 	{
 		object->Update(deltaTime);
-	}
-
-	for (size_t i = 0; i < m_Objects.size(); ++i)
-	{
-		if (m_Objects[i]->IsDestroyed())
-			m_Objects.erase(m_Objects.begin() + i);
 	}
 }
 

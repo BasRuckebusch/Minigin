@@ -129,7 +129,7 @@ namespace dae
 			soundsToPlay.pop();
 
 			// Ensure the sound ID is within valid range
-			if (id >= 0 && id < m_pSounds.size())
+			if (id >= 0 && id < static_cast<int>(m_pSounds.size()))
 			{
 				Mix_PlayChannel(-1, m_pSounds[id], 0);
 			}

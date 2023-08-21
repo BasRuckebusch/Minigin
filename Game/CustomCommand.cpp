@@ -8,7 +8,9 @@
 
 void dae::Move::Execute()
 {
-	m_pGameObject->GetComponent<MoveComponent>()->Move(m_Direction);
+	if (!m_pGameObject->IsDestroyed())
+		if (m_pGameObject->HasComponent<MoveComponent>())
+			m_pGameObject->GetComponent<MoveComponent>()->Move(m_Direction);
 }
 
 void dae::NextLevel::Execute()
@@ -28,7 +30,7 @@ void dae::MenuLoad::Execute()
 
 void dae::LevelLoad::Execute()
 {
-	//LoadLevel(m_LevelName, m_pScene);
+	LoadLevel(m_LevelName, m_pScene,0);
 }
 
 void dae::MenuMove::Execute()
