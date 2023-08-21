@@ -4,6 +4,7 @@
 #include "CollisionManager.h"
 #include "ScoreComponent.h"
 #include "TextureComponent.h"
+#include "ServiceLocator.h"
 
 dae::IngredientComponent::IngredientComponent(GameObject* parent, int type) :
 	Component(parent),
@@ -40,6 +41,7 @@ void dae::IngredientComponent::Render() const
 
 void dae::IngredientComponent::Fall()
 {
+	ServiceLocator::GetSoundSystem().PlaySound(1);
 	m_IsFalling =true;
 	for (const auto& texture : GetParent()->GetComponents<TextureComponent>())
 	{
@@ -83,6 +85,7 @@ void dae::IngredientComponent::HitPart(int partHit)
 		auto tex = GetParent()->GetComponents<TextureComponent>().at(partHit);
 		glm::vec2 offset = tex->GetOffset();
 		tex->SetOffset({ offset.x, offset.y +1 });
+		ServiceLocator::GetSoundSystem().PlaySound(0);
 	}
 	if (AllGreaterThan(m_PartsHit, 0))
 		Fall();

@@ -45,3 +45,13 @@ void dae::MenuSelect::Execute()
 		if (m_pGameObject->HasComponent<MenuComponent>())
 			m_pGameObject->GetComponent<MenuComponent>()->Select();
 }
+
+void dae::PauseMusic::Execute()
+{
+	ServiceLocator::GetSoundSystem().TogglePauseMusic();
+}
+
+void dae::StopSound::Execute()
+{
+	ServiceLocator::GetSoundSystem().StopEverySound();
+}
