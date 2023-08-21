@@ -18,7 +18,7 @@ void dae::MenuComponent::Render() const
 
 void dae::MenuComponent::Move(const bool up)
 {
-
+	ServiceLocator::GetSoundSystem().PlaySound(0);
 	auto& pos = GetParent()->GetLocalPosition();
 	float xPos = pos.x;
 	float yPos = pos.y;

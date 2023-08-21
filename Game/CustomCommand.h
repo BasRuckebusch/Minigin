@@ -59,6 +59,20 @@ namespace dae
 		std::vector<std::string> m_LevelNames{};
 	};
 
+	class PauseMusic final : public Command
+	{
+	public:
+		explicit PauseMusic() = default;
+		void Execute() override;
+	};
+
+	class StopSound final : public Command
+	{
+	public:
+		explicit StopSound() = default;
+		void Execute() override;
+	};
+
 	class LevelLoad final : public Command
 	{
 	public:

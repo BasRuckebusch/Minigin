@@ -571,9 +571,8 @@ inline void LoadLevel(const std::string& levelName, dae::Scene* scene, int gameM
 
 inline void LoadMenu(const std::string& levelName, dae::Scene* scene)
 {
-	const std::string title = dae::ResourceManager::GetInstance().GetFullFilePath("TitleScreen.mp3");
-	const auto titleID = dae::ServiceLocator::GetSoundSystem().AddSound(title.c_str());
-	dae::ServiceLocator::GetSoundSystem().Play(titleID, 50.f);
+
+
 
 	const auto objects = scene->GetAll();
 	SaveHighScore(scene);

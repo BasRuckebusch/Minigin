@@ -3,11 +3,23 @@
 
 namespace dae
 {
-	class NullSoundSystem final : public SoundSystem
-	{
-		void Play(const soundID, const float) override {}
-		soundID AddSound(const char*) override { return 0; }
-	};
+    class NullSoundSystem final : public SoundSystem
+    {
+    public:
+
+        void PlaySound(int ) override {}
+        void StopSound(int ) override {}
+        void StopEverySound() override {}
+
+        void PlayMusic() override {}
+        void TogglePauseMusic() override {}
+
+        int LoadSound(const char* ) override { return -1; }
+        void LoadMusic(const char* ) override {}
+
+        void SetEffectVolume(int ) override {}
+        void SetMusicVolume(int) override {}
+    };
 
 	class ServiceLocator final
 	{
