@@ -53,7 +53,9 @@ void load()
 	ServiceLocator::GetSoundSystem().LoadSound(beep.c_str());
 	const std::string fall = dae::ResourceManager::GetInstance().GetFullFilePath("Fall.wav");
 	ServiceLocator::GetSoundSystem().LoadSound(fall.c_str());
-	//ServiceLocator::GetSoundSystem().SetEffectVolume()
+
+	ServiceLocator::GetSoundSystem().SetEffectVolume(50);
+	ServiceLocator::GetSoundSystem().SetMusicVolume(25);
 
 	auto& scene = SceneManager::GetInstance().CreateScene("Level1");
 	const auto font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);

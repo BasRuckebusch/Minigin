@@ -1,7 +1,4 @@
 #include "CollisionManager.h"
-
-#include <iostream>
-
 #include "BoxColliderComponent.h"
 #include "GameObject.h"
 #include "IngredientComponent.h"
@@ -36,6 +33,21 @@ void dae::CollisionManager::CollideWithIngredients(const SDL_Rect& col) const
 			i++;
 		}
 	}
+}
+
+bool dae::CollisionManager::IsCollidingWithEnemy(const SDL_Rect& col) const
+{
+	for (auto& gameObject : m_pEnemies)
+	{
+		for (const auto colliderComponent : gameObject->GetComponents<BoxColliderComponent>())
+		{
+			if (colliderComponent->RectInCollider(col))
+			{
+				return true;
+			}
+		}
+	}
+	return false;
 }
 
 void dae::CollisionManager::ChainFall(GameObject* parent, const SDL_Rect& col) const
@@ -128,7 +140,6 @@ void dae::CollisionManager::InPot(GameObject* , const SDL_Rect& col)
 			m_FilledPots++;
 		}
 	}
-	std::cout << GetAmountPots() << std::endl;
 }
 
 void dae::CollisionManager::AddLadder(std::shared_ptr<GameObject> object)
@@ -172,10 +183,21 @@ void dae::CollisionManager::RemovePot(std::shared_ptr<GameObject> object)
 	std::erase(m_pPots, object);
 }
 
+void dae::CollisionManager::AddEnemy(std::shared_ptr<GameObject> object)
+{
+	m_pEnemies.emplace_back(std::move(object));
+}
+
+void dae::CollisionManager::RemoveEnemy(std::shared_ptr<GameObject> object)
+{
+	std::erase(m_pEnemies, object);
+}
+
 void dae::CollisionManager::RemoveAll()
 {
 	m_pLadders.clear();
 	m_pIngredients.clear();
 	m_pStoppers.clear();
 	m_pPots.clear();
+	m_pEnemies.clear();
 }

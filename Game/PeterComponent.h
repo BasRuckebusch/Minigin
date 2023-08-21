@@ -1,4 +1,6 @@
 #pragma once
+#include <string>
+
 #include "Component.h"
 
 namespace dae
@@ -9,7 +11,7 @@ namespace dae
 	class PeterComponent final : public Component
 	{
 	public:
-		PeterComponent(GameObject* parent, bool isEvil);
+		PeterComponent(GameObject* parent, bool isEvil, Scene* scene, std::string levelName);
 		~PeterComponent() override = default;
 
 		PeterComponent(const PeterComponent& other) = delete;
@@ -26,10 +28,15 @@ namespace dae
 		bool CanMoveLeft() const;
 		bool CanMoveRight() const;
 
+		void Die();
 	private:
 		bool m_IsOnLadder{false};
 		bool m_isOnGround{ false };
 		bool m_IsEvil{ false };
+		bool m_Dead{ false };
+
+		Scene* m_pScene{};
+		std::string m_LevelName{};
 
 		BoxColliderComponent* m_LeftCollider;
 		BoxColliderComponent* m_RightCollider;
@@ -37,5 +44,6 @@ namespace dae
 		BoxColliderComponent* m_UpCollider;
 		BoxColliderComponent* m_GroundLeftCollider;
 		BoxColliderComponent* m_GroundRightCollider;
+
 	};
 }

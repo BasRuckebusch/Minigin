@@ -48,7 +48,6 @@ void dae::MoveComponent::Move(glm::vec2 direction)
 			m_XPos += direction.x * m_Speed * m_DeltaTime;
 		else if (peter->CanMoveRight() && direction.x > 0)
 			m_XPos += direction.x * m_Speed * m_DeltaTime;
-		
 	}
 	else
 	{
