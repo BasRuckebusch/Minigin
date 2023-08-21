@@ -14,13 +14,11 @@
 #include "TextureComponent.h"
 #include "ResourceManager.h"
 #include "CustomCommand.h"
-#include "EndComponent.h"
 #include "EnemyComponent.h"
 #include "PeterComponent.h"
 #include "ScoreComponent.h"
 #include "ScoreUIComponent.h"
 #include "TextComponent.h"
-#include "FPSComponent.h"
 #include "MenuComponent.h"
 #include "TitleComponent.h"
 #include "ServiceLocator.h"
@@ -616,50 +614,19 @@ inline void LoadMenu(const std::string& levelName, dae::Scene* scene)
 	auto& input = dae::InputManager::GetInstance();
 	input.BindCommand(SDLK_w, std::make_unique<dae::MenuMove>(menu.get(),true), dae::EventState::keyUp);
 	input.BindCommand(SDLK_s, std::make_unique<dae::MenuMove>(menu.get(), false), dae::EventState::keyUp);
+	input.BindCommand(SDLK_UP, std::make_unique<dae::MenuMove>(menu.get(), true), dae::EventState::keyUp);
+	input.BindCommand(SDLK_DOWN, std::make_unique<dae::MenuMove>(menu.get(), false), dae::EventState::keyUp);
 
 	input.BindCommand(dae::ControllerButton::Up, std::make_unique<dae::MenuMove>(menu.get(), true), dae::EventState::keyDown);
 	input.BindCommand(dae::ControllerButton::Down, std::make_unique<dae::MenuMove>(menu.get(), false), dae::EventState::keyDown);
 
 	input.BindCommand(SDLK_SPACE, std::make_unique<dae::MenuSelect>(menu.get()), dae::EventState::keyUp);
+	input.BindCommand(SDLK_KP_ENTER, std::make_unique<dae::MenuSelect>(menu.get()), dae::EventState::keyUp);
+
 	input.BindCommand(dae::ControllerButton::Start, std::make_unique<dae::MenuSelect>(menu.get()), dae::EventState::keyDown);
+	input.BindCommand(dae::ControllerButton::Select, std::make_unique<dae::MenuSelect>(menu.get()), dae::EventState::keyDown);
 	input.BindCommand(dae::ControllerButton::ButtonA, std::make_unique<dae::MenuSelect>(menu.get()), dae::EventState::keyDown);
 	input.BindCommand(dae::ControllerButton::ButtonB, std::make_unique<dae::MenuSelect>(menu.get()), dae::EventState::keyDown);
 	input.BindCommand(dae::ControllerButton::ButtonX, std::make_unique<dae::MenuSelect>(menu.get()), dae::EventState::keyDown);
 	input.BindCommand(dae::ControllerButton::ButtonY, std::make_unique<dae::MenuSelect>(menu.get()), dae::EventState::keyDown);
 }
-
-//inline void LoadLevel(const std::string& levelName, dae::Scene* scene)
-//{
-//	const auto objects = scene->GetAll();
-//	for (const auto& gameObject : objects)
-//	{
-//		gameObject->Destroy();
-//	}
-//
-//	// Camera and background
-//	auto& renderer = dae::Renderer::GetInstance();
-//	renderer.SetBackgroundColor(SDL_Color(57, 132, 0));
-//	renderer.SetCameraPosition(glm::vec2(0, -32));
-//	renderer.SetCameraScale(2.f);
-//	
-//	auto& collisions = dae::CollisionManager::GetInstance();
-//	collisions.RemoveAll();
-//	
-//	// Load scene from file
-//	int tileSize{ 16 };
-//	
-//	std::string file{dae::ResourceManager::GetInstance().GetFullFilePath(levelName) };
-//	glm::vec2 worldPos = { 0, 0 };
-//	LoadLevelFromBMP(file, scene, worldPos, tileSize);
-//
-//
-//	// FPS counter
-//	auto go = std::make_shared<dae::GameObject>();
-//	const auto fpsfont = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 16);
-//	go = std::make_shared<dae::GameObject>();
-//	go->AddComponent<dae::TextureComponent>();
-//	go->AddComponent<dae::TextComponent>("0", fpsfont, SDL_Color(0, 255, 0));
-//	go->AddComponent<dae::FPSComponent>();
-//	go->SetPosition(0, -16);
-//	scene->Add(go);
-//}
