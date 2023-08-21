@@ -204,10 +204,11 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="CustomCommand.cpp" />
     <ClCompile Include="IngredientComponent.cpp" />
+    <ClCompile Include="MenuComponent.cpp" />
     <ClCompile Include="PeterComponent.cpp" />
     <ClCompile Include="ScoreComponent.cpp" />
-    <ClCompile Include="ScoreManager.cpp" />
     <ClCompile Include="ScoreUIComponent.cpp" />
+    <ClCompile Include="TitleComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Minigin\FPSComponent.h" />
@@ -218,10 +219,11 @@
     <ClInclude Include="EndComponent.h" />
     <ClInclude Include="EnemyComponent.h" />
     <ClInclude Include="IngredientComponent.h" />
+    <ClInclude Include="MenuComponent.h" />
     <ClInclude Include="PeterComponent.h" />
     <ClInclude Include="ScoreComponent.h" />
-    <ClInclude Include="ScoreManager.h" />
     <ClInclude Include="ScoreUIComponent.h" />
+    <ClInclude Include="TitleComponent.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

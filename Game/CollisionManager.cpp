@@ -1,40 +1,10 @@
 #include "CollisionManager.h"
 
+#include <iostream>
+
 #include "BoxColliderComponent.h"
 #include "GameObject.h"
 #include "IngredientComponent.h"
-
-//	bool dae::CollisionManager::CheckPointInWall(const glm::vec2& point)
-//	{
-//		for (auto& pWall : m_pWalls)
-//		{
-//			if (pWall.get()->HasComponent<BoxColliderComponent>())
-//			{
-//				auto col = pWall.get()->GetComponent<BoxColliderComponent>();
-//				if (col->PointInCollider(point))
-//				{
-//					return true;
-//				}
-//			}
-//		}
-//		return false;
-//	}
-
-//bool dae::CollisionManager::CheckRectCollide(const SDL_Rect& col)
-//{
-//	for (auto& pWall : m_pWalls)
-//	{
-//		if (pWall.get()->HasComponent<BoxColliderComponent>())
-//		{
-//			auto collider = pWall.get()->GetComponent<BoxColliderComponent>();
-//			if (collider->RectInCollider(col))
-//			{
-//				return true;
-//			}
-//		}
-//	}
-//	return false;
-//}
 
 
 bool dae::CollisionManager::IsCollidingWithLadder(const SDL_Rect& col) const
@@ -126,7 +96,7 @@ void dae::CollisionManager::ChainFall(GameObject* parent, const SDL_Rect& col) c
 				}
 			}
 			auto pos = gameObject->GetLocalPosition();
-			pos.y -= 8;
+			pos.y -= tileSize;
 			gameObject->SetLocalPosition(pos);
 			const std::vector<BoxColliderComponent*> colliders2 = gameObject->GetComponents<BoxColliderComponent>();
 			if (!colliders2.empty())
@@ -139,6 +109,26 @@ void dae::CollisionManager::ChainFall(GameObject* parent, const SDL_Rect& col) c
 		}
 		
 	}
+}
+
+void dae::CollisionManager::InPot(GameObject* , const SDL_Rect& col)
+{
+	const int  tileSize{ 8 };
+	const float  range{ 1.0f };
+	const float  yMin = col.y - range;
+	const float  yMax = col.y + tileSize + range;
+	
+
+	for (const auto& gameObject : m_pPots)
+	{
+		const auto target = gameObject->GetComponent<BoxColliderComponent>();
+		if (target->GetRect().x == col.x &&
+			target->GetRect().y >= yMin && target->GetRect().y <= yMax)
+		{
+			m_FilledPots++;
+		}
+	}
+	std::cout << GetAmountPots() << std::endl;
 }
 
 void dae::CollisionManager::AddLadder(std::shared_ptr<GameObject> object)
@@ -174,6 +164,7 @@ void dae::CollisionManager::RemoveStopper(std::shared_ptr<GameObject> object)
 void dae::CollisionManager::AddPot(std::shared_ptr<GameObject> object)
 {
 	m_pPots.emplace_back(std::move(object));
+	m_FilledPots = 0;
 }
 
 void dae::CollisionManager::RemovePot(std::shared_ptr<GameObject> object)

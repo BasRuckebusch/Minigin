@@ -14,11 +14,15 @@
 #include "TextureComponent.h"
 #include "ResourceManager.h"
 #include "CustomCommand.h"
+#include "EndComponent.h"
 #include "PeterComponent.h"
 #include "ScoreComponent.h"
 #include "ScoreUIComponent.h"
 #include "TextComponent.h"
 #include "FPSComponent.h"
+#include "MenuComponent.h"
+#include "TitleComponent.h"
+#include "ServiceLocator.h"
 
 
 //https://stackoverflow.com/questions/9296059/read-pixel-value-in-bmp-file
@@ -298,7 +302,7 @@ inline void AddIngredient(dae::Scene* scene, const glm::vec2& position, int type
 		const auto col = go->AddComponent<dae::BoxColliderComponent>(position, tileSize, tileSize);
 		col->SetOffset({ tileSize * (i - 1), 0 });
 	}
-	const auto ingredient = go->AddComponent<dae::IngredientComponent>();
+	const auto ingredient = go->AddComponent<dae::IngredientComponent>(type);
 	ingredient->SetScoreComponent(scoreGo->GetComponent<dae::ScoreComponent>());
 	scene->Add(go);
 	
@@ -431,7 +435,7 @@ inline void SaveHighScore(dae::Scene* scene)
 	}
 }
 
-inline void LoadLevel(const std::string& levelName, dae::Scene* scene)
+inline void LoadLevel(const std::string& levelName, dae::Scene* scene, int gameMode)
 {
 	const auto objects = scene->GetAll();
 	SaveHighScore(scene);
@@ -443,6 +447,7 @@ inline void LoadLevel(const std::string& levelName, dae::Scene* scene)
 	auto& collisions = dae::CollisionManager::GetInstance();
 	collisions.RemoveAll();
 
+	
 	const auto font = dae::ResourceManager::GetInstance().LoadFont("hobo.otf", 12);
 
 	const auto scoreGO = std::make_shared<dae::GameObject>();
@@ -471,25 +476,149 @@ inline void LoadLevel(const std::string& levelName, dae::Scene* scene)
 	
 	LoadLevelFromBMP(levelfile, scene, worldPos, tileSize);
 	LoadIngredientsFromBMP(ingredientfile, scene, worldPos, halfTileSize, scoreGO);
+	
+	if (gameMode == 0)
+	{
+		//SP
+		const auto player = std::make_shared<dae::GameObject>();
+		player->SetLocalPosition(glm::vec3(104, 62, 0));
+		player->AddComponent<dae::TextureComponent>("player.tga");
+		player->AddComponent<dae::MoveComponent>();
+		player->AddComponent<dae::PeterComponent>(false);
+		scene->Add(player);
 
-	const auto player = std::make_shared<dae::GameObject>();
-	player->SetLocalPosition(glm::vec3(104, 62, 0));
-	player->AddComponent<dae::TextureComponent>("player.tga");
-	player->AddComponent<dae::MoveComponent>();
-	player->AddComponent<dae::PeterComponent>();
-	scene->Add(player);
+		auto& input = dae::InputManager::GetInstance();
+
+		input.BindCommand(dae::ControllerButton::Left, std::make_unique<dae::Move>(player.get(), glm::vec2{ -1.f, 0.f }), dae::EventState::keyPressed);
+		input.BindCommand(dae::ControllerButton::Right, std::make_unique<dae::Move>(player.get(), glm::vec2{ 1.f, 0.f }), dae::EventState::keyPressed);
+		input.BindCommand(dae::ControllerButton::Up, std::make_unique<dae::Move>(player.get(), glm::vec2{ 0.f, -1.f }), dae::EventState::keyPressed);
+		input.BindCommand(dae::ControllerButton::Down, std::make_unique<dae::Move>(player.get(), glm::vec2{ 0.f, 1.f }), dae::EventState::keyPressed);
+
+		input.BindCommand(SDLK_a, std::make_unique<dae::Move>(player.get(), glm::vec2{ -1.f, 0.f }), dae::EventState::keyPressed);
+		input.BindCommand(SDLK_d, std::make_unique<dae::Move>(player.get(), glm::vec2{ 1.f, 0.f }), dae::EventState::keyPressed);
+		input.BindCommand(SDLK_w, std::make_unique<dae::Move>(player.get(), glm::vec2{ 0.f, -1.f }), dae::EventState::keyPressed);
+		input.BindCommand(SDLK_s, std::make_unique<dae::Move>(player.get(), glm::vec2{ 0.f, 1.f }), dae::EventState::keyPressed);
+	}
+	else if (gameMode == 1)
+	{
+		//MP
+		const auto player = std::make_shared<dae::GameObject>();
+		player->SetLocalPosition(glm::vec3(88, 62, 0));
+		player->AddComponent<dae::TextureComponent>("player.tga");
+		player->AddComponent<dae::MoveComponent>();
+		player->AddComponent<dae::PeterComponent>(false);
+		scene->Add(player);
+
+		auto& input = dae::InputManager::GetInstance();
+
+		input.BindCommand(dae::ControllerButton::Left, std::make_unique<dae::Move>(player.get(), glm::vec2{ -1.f, 0.f }), dae::EventState::keyPressed);
+		input.BindCommand(dae::ControllerButton::Right, std::make_unique<dae::Move>(player.get(), glm::vec2{ 1.f, 0.f }), dae::EventState::keyPressed);
+		input.BindCommand(dae::ControllerButton::Up, std::make_unique<dae::Move>(player.get(), glm::vec2{ 0.f, -1.f }), dae::EventState::keyPressed);
+		input.BindCommand(dae::ControllerButton::Down, std::make_unique<dae::Move>(player.get(), glm::vec2{ 0.f, 1.f }), dae::EventState::keyPressed);
+
+		input.BindCommand(SDLK_a, std::make_unique<dae::Move>(player.get(), glm::vec2{ -1.f, 0.f }), dae::EventState::keyPressed);
+		input.BindCommand(SDLK_d, std::make_unique<dae::Move>(player.get(), glm::vec2{ 1.f, 0.f }), dae::EventState::keyPressed);
+		input.BindCommand(SDLK_w, std::make_unique<dae::Move>(player.get(), glm::vec2{ 0.f, -1.f }), dae::EventState::keyPressed);
+		input.BindCommand(SDLK_s, std::make_unique<dae::Move>(player.get(), glm::vec2{ 0.f, 1.f }), dae::EventState::keyPressed);
+
+		const auto player2 = std::make_shared<dae::GameObject>();
+		player2->SetLocalPosition(glm::vec3(120, 62, 0));
+		player2->AddComponent<dae::TextureComponent>("player2.tga");
+		player2->AddComponent<dae::MoveComponent>();
+		player2->AddComponent<dae::PeterComponent>(false);
+		scene->Add(player2);
+
+		input.BindCommand(dae::ControllerButton::Left, std::make_unique<dae::Move>(player2.get(), glm::vec2{ -1.f, 0.f }), dae::EventState::keyPressed);
+		input.BindCommand(dae::ControllerButton::Right, std::make_unique<dae::Move>(player2.get(), glm::vec2{ 1.f, 0.f }), dae::EventState::keyPressed);
+		input.BindCommand(dae::ControllerButton::Up, std::make_unique<dae::Move>(player2.get(), glm::vec2{ 0.f, -1.f }), dae::EventState::keyPressed);
+		input.BindCommand(dae::ControllerButton::Down, std::make_unique<dae::Move>(player2.get(), glm::vec2{ 0.f, 1.f }), dae::EventState::keyPressed);
+	}
+	else if (gameMode == 2)
+	{
+		//VS
+		const auto player = std::make_shared<dae::GameObject>();
+		player->SetLocalPosition(glm::vec3(88, 62, 0));
+		player->AddComponent<dae::TextureComponent>("player.tga");
+		player->AddComponent<dae::MoveComponent>();
+		player->AddComponent<dae::PeterComponent>(false);
+		scene->Add(player);
+
+		auto& input = dae::InputManager::GetInstance();
+
+		input.BindCommand(dae::ControllerButton::Left, std::make_unique<dae::Move>(player.get(), glm::vec2{ -1.f, 0.f }), dae::EventState::keyPressed);
+		input.BindCommand(dae::ControllerButton::Right, std::make_unique<dae::Move>(player.get(), glm::vec2{ 1.f, 0.f }), dae::EventState::keyPressed);
+		input.BindCommand(dae::ControllerButton::Up, std::make_unique<dae::Move>(player.get(), glm::vec2{ 0.f, -1.f }), dae::EventState::keyPressed);
+		input.BindCommand(dae::ControllerButton::Down, std::make_unique<dae::Move>(player.get(), glm::vec2{ 0.f, 1.f }), dae::EventState::keyPressed);
+
+		input.BindCommand(SDLK_a, std::make_unique<dae::Move>(player.get(), glm::vec2{ -1.f, 0.f }), dae::EventState::keyPressed);
+		input.BindCommand(SDLK_d, std::make_unique<dae::Move>(player.get(), glm::vec2{ 1.f, 0.f }), dae::EventState::keyPressed);
+		input.BindCommand(SDLK_w, std::make_unique<dae::Move>(player.get(), glm::vec2{ 0.f, -1.f }), dae::EventState::keyPressed);
+		input.BindCommand(SDLK_s, std::make_unique<dae::Move>(player.get(), glm::vec2{ 0.f, 1.f }), dae::EventState::keyPressed);
+
+		const auto player2 = std::make_shared<dae::GameObject>();
+		player2->SetLocalPosition(glm::vec3(120, 62, 0));
+		player2->AddComponent<dae::TextureComponent>("enemy.tga");
+		player2->AddComponent<dae::MoveComponent>();
+		player2->AddComponent<dae::PeterComponent>(true);
+		scene->Add(player2);
+
+		input.BindCommand(dae::ControllerButton::Left, std::make_unique<dae::Move>(player2.get(), glm::vec2{ -1.f, 0.f }), dae::EventState::keyPressed);
+		input.BindCommand(dae::ControllerButton::Right, std::make_unique<dae::Move>(player2.get(), glm::vec2{ 1.f, 0.f }), dae::EventState::keyPressed);
+		input.BindCommand(dae::ControllerButton::Up, std::make_unique<dae::Move>(player2.get(), glm::vec2{ 0.f, -1.f }), dae::EventState::keyPressed);
+		input.BindCommand(dae::ControllerButton::Down, std::make_unique<dae::Move>(player2.get(), glm::vec2{ 0.f, 1.f }), dae::EventState::keyPressed);
+	}
+}
+
+inline void LoadMenu(const std::string& levelName, dae::Scene* scene)
+{
+	const std::string title = dae::ResourceManager::GetInstance().GetFullFilePath("TitleScreen.mp3");
+	const auto titleID = dae::ServiceLocator::GetSoundSystem().AddSound(title.c_str());
+	dae::ServiceLocator::GetSoundSystem().Play(titleID, 50.f);
+
+	const auto objects = scene->GetAll();
+	SaveHighScore(scene);
+	for (const auto& gameObject : objects)
+	{
+		gameObject->Destroy();
+	}
+	auto& collisions = dae::CollisionManager::GetInstance();
+	collisions.RemoveAll();
+
+	auto go = std::make_shared<dae::GameObject>();
+	go->AddComponent<dae::TextureComponent>("MenuBackground.tga");
+	scene->Add(go);
+
+	collisions.AddPot(go);
+	collisions.AddPot(go);
+
+	go = std::make_shared<dae::GameObject>();
+	go->AddComponent<dae::TextureComponent>("BurgerLogo.tga");
+	go->AddComponent<dae::TitleComponent>();
+	scene->Add(go);
+
+	go = std::make_shared<dae::GameObject>();
+	go->AddComponent<dae::TextureComponent>("MenuItems.tga");
+	scene->Add(go);
+
+	auto menu = std::make_shared<dae::GameObject>();
+	menu->AddComponent<dae::TextureComponent>("MenuSelect.tga");
+	menu->AddComponent<dae::MenuComponent>(levelName, scene);
+	menu->SetLocalPosition({19, 105, 0});
+	scene->Add(menu);
 
 	auto& input = dae::InputManager::GetInstance();
+	input.BindCommand(SDLK_w, std::make_unique<dae::MenuMove>(menu.get(),true), dae::EventState::keyUp);
+	input.BindCommand(SDLK_s, std::make_unique<dae::MenuMove>(menu.get(), false), dae::EventState::keyUp);
 
-	input.BindCommand(dae::ControllerButton::Left, std::make_unique<dae::Move>(player.get(), glm::vec2{ -1.f, 0.f }), dae::EventState::keyPressed);
-	input.BindCommand(dae::ControllerButton::Right, std::make_unique<dae::Move>(player.get(), glm::vec2{ 1.f, 0.f }), dae::EventState::keyPressed);
-	input.BindCommand(dae::ControllerButton::Up, std::make_unique<dae::Move>(player.get(), glm::vec2{ 0.f, -1.f }), dae::EventState::keyPressed);
-	input.BindCommand(dae::ControllerButton::Down, std::make_unique<dae::Move>(player.get(), glm::vec2{ 0.f, 1.f }), dae::EventState::keyPressed);
+	input.BindCommand(dae::ControllerButton::Up, std::make_unique<dae::MenuMove>(menu.get(), true), dae::EventState::keyDown);
+	input.BindCommand(dae::ControllerButton::Down, std::make_unique<dae::MenuMove>(menu.get(), false), dae::EventState::keyDown);
 
-	input.BindCommand(SDLK_a, std::make_unique<dae::Move>(player.get(), glm::vec2{ -1.f, 0.f }), dae::EventState::keyPressed);
-	input.BindCommand(SDLK_d, std::make_unique<dae::Move>(player.get(), glm::vec2{ 1.f, 0.f }), dae::EventState::keyPressed);
-	input.BindCommand(SDLK_w, std::make_unique<dae::Move>(player.get(), glm::vec2{ 0.f, -1.f }), dae::EventState::keyPressed);
-	input.BindCommand(SDLK_s, std::make_unique<dae::Move>(player.get(), glm::vec2{ 0.f, 1.f }), dae::EventState::keyPressed);
+	input.BindCommand(SDLK_SPACE, std::make_unique<dae::MenuSelect>(menu.get()), dae::EventState::keyUp);
+	input.BindCommand(dae::ControllerButton::Start, std::make_unique<dae::MenuSelect>(menu.get()), dae::EventState::keyDown);
+	input.BindCommand(dae::ControllerButton::ButtonA, std::make_unique<dae::MenuSelect>(menu.get()), dae::EventState::keyDown);
+	input.BindCommand(dae::ControllerButton::ButtonB, std::make_unique<dae::MenuSelect>(menu.get()), dae::EventState::keyDown);
+	input.BindCommand(dae::ControllerButton::ButtonX, std::make_unique<dae::MenuSelect>(menu.get()), dae::EventState::keyDown);
+	input.BindCommand(dae::ControllerButton::ButtonY, std::make_unique<dae::MenuSelect>(menu.get()), dae::EventState::keyDown);
 }
 
 //inline void LoadLevel(const std::string& levelName, dae::Scene* scene)

@@ -9,7 +9,7 @@ namespace dae
 	class IngredientComponent final : public Component 
 	{
 	public:
-		IngredientComponent(GameObject* parent);
+		IngredientComponent(GameObject* parent, int type);
 		~IngredientComponent() override = default;
 
 		IngredientComponent(const IngredientComponent& other) = delete;
@@ -25,12 +25,14 @@ namespace dae
 		void HitPart(int partHit);
 
 		bool GetFalling() const { return m_IsFalling; }
+		bool GetType() const { return m_Type; }
 
 		void SetScoreComponent(ScoreComponent* score);
 
 	private:
 		static bool AllGreaterThan(const std::vector<int>& numbers, int num);
 
+		int m_Type{};
 		bool m_IsFalling{false};
 		std::vector<int> m_PartsHit{ 0,0,0,0 };
 		float m_XPos{};

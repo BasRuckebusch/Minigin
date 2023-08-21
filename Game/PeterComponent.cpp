@@ -1,12 +1,10 @@
 #include "PeterComponent.h"
-
-#include <iostream>
-
 #include "BoxColliderComponent.h"
 #include "CollisionManager.h"
 
-dae::PeterComponent::PeterComponent(dae::GameObject* parent) :
-	Component(parent)
+dae::PeterComponent::PeterComponent(dae::GameObject* parent, bool isEvil) :
+	Component(parent),
+	m_IsEvil(isEvil)
 {
 	m_LeftCollider = GetParent()->AddComponent<BoxColliderComponent>(GetParent()->GetWorldPosition(), 5, 5);
 	m_LeftCollider->SetOffset({ -1,14 });
@@ -26,9 +24,13 @@ dae::PeterComponent::PeterComponent(dae::GameObject* parent) :
 
 void dae::PeterComponent::Update(float)
 {
-	const auto& collisions = CollisionManager::GetInstance();
-	collisions.CollideWithIngredients(m_LeftCollider->GetRect());
-	collisions.CollideWithIngredients(m_RightCollider->GetRect());
+	if (!m_IsEvil)
+	{
+		const auto& collisions = CollisionManager::GetInstance();
+		collisions.CollideWithIngredients(m_LeftCollider->GetRect());
+		collisions.CollideWithIngredients(m_RightCollider->GetRect());
+	}
+	
 }
 
 void dae::PeterComponent::Render() const
